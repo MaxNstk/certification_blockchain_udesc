@@ -3,6 +3,6 @@
  */
 
 import {type Contract} from 'fabric-contract-api';
-import {AssetTransferContract} from './assetTransfer';
+import {AssetTransferContract} from './certificate_contract';
 
 export const contracts: typeof Contract[] = [AssetTransferContract];

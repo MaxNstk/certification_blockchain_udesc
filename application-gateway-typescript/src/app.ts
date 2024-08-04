@@ -34,7 +34,7 @@ const peerEndpoint = envOrDefault('PEER_ENDPOINT', 'localhost:7051');
 const peerHostAlias = envOrDefault('PEER_HOST_ALIAS', 'peer0.org1.example.com');
 
 const utf8Decoder = new TextDecoder();
-const assetId = `asset${String(Date.now())}`;
+const CertificateId = `Certificate${String(Date.now())}`;
 
 async function main(): Promise<void> {
     displayInputParameters();
@@ -68,23 +68,23 @@ async function main(): Promise<void> {
         // Get the smart contract from the network.
         const contract = network.getContract(chaincodeName);
 
-        // Initialize a set of asset data on the ledger using the chaincode 'InitLedger' function.
+        // Initialize a set of Certificate data on the ledger using the chaincode 'InitLedger' function.
         await initLedger(contract);
 
-        // Return all the current assets on the ledger.
-        await getAllAssets(contract);
+        // Return all the current Certificates on the ledger.
+        await getAllCertificates(contract);
 
-        // Create a new asset on the ledger.
-        await createAsset(contract);
+        // Create a new Certificate on the ledger.
+        await createCertificate(contract);
 
-        // Update an existing asset asynchronously.
-        await transferAssetAsync(contract);
+        // Update an existing Certificate asynchronously.
+        await transferCertificateAsync(contract);
 
-        // Get the asset details by assetID.
-        await readAssetByID(contract);
+        // Get the Certificate details by CertificateID.
+        await readCertificateByID(contract);
 
-        // Update an asset which does not exist.
-        await updateNonExistentAsset(contract)
+        // Update an Certificate which does not exist.
+        await updateNonExistentCertificate(contract)
     } finally {
         gateway.close();
         client.close();
@@ -131,7 +131,7 @@ async function newSigner(): Promise<Signer> {
  * initial deployment. A new version of the chaincode deployed later would likely not need to run an "init" function.
  */
 async function initLedger(contract: Contract): Promise<void> {
-    console.log('\n--> Submit Transaction: InitLedger, function creates the initial set of assets on the ledger');
+    console.log('\n--> Submit Transaction: InitLedger, function creates the initial set of Certificates on the ledger');
 
     await contract.submitTransaction('InitLedger');
 
@@ -141,10 +141,10 @@ async function initLedger(contract: Contract): Promise<void> {
 /**
  * Evaluate a transaction to query ledger state.
  */
-async function getAllAssets(contract: Contract): Promise<void> {
-    console.log('\n--> Evaluate Transaction: GetAllAssets, function returns all the current assets on the ledger');
+async function getAllCertificates(contract: Contract): Promise<void> {
+    console.log('\n--> Evaluate Transaction: GetAllCertificates, function returns all the current Certificates on the ledger');
 
-    const resultBytes = await contract.evaluateTransaction('GetAllAssets');
+    const resultBytes = await contract.evaluateTransaction('GetAllCertificates');
 
     const resultJson = utf8Decoder.decode(resultBytes);
     const result: unknown = JSON.parse(resultJson);
@@ -154,17 +154,30 @@ async function getAllAssets(contract: Contract): Promise<void> {
 /**
  * Submit a transaction synchronously, blocking until it has been committed to the ledger.
  */
-async function createAsset(contract: Contract): Promise<void> {
-    console.log('\n--> Submit Transaction: CreateAsset, creates new asset with ID, Color, Size, Owner and AppraisedValue arguments');
+async function createCertificate(contract: Contract): Promise<void> {
+    console.log('\n--> Submit Transaction: CreateCertificate, creates new Certificate with ID, Color, Size, Owner and AppraisedValue arguments');
 
     await contract.submitTransaction(
-        'CreateAsset',
-        assetId,
-        'yellow',
-        '5',
-        'Tom',
-        '1300',
+        'CreateCertificate',
+        '3', // certificateNumber
+        '2024-08-04T12:00:00Z', // certificateEmissionDate
+        'Computer Science', // certificateCourse
+        'valid', // certificateStatus
+        'Alice Smith', // ownerName
+        '123456789', // ownerRG
+        '1990-05-15T00:00:00Z', // ownerBirthDate
+        'Santa Catarina', // ownerBirthState
+        'Centro de Ciências Tecnológicas', // campusName
+        'CEAVI', // campusAcronym
+        'Prof. João Santos', // campusDirector
+        'Reitora Maria Oliveira', // universityPresidentName
+        'Coordenador Carlos Pereira', // universityCertificateCoordinator
+        'true', // hasCompletedAllSubjects
+        'true', // hasSentAllRequiredDocuments
+        'true', // wentToDegreeGranting
+        'Certificado emitido sem pendências.' // note
     );
+    
 
     console.log('*** Transaction committed successfully');
 }
@@ -173,11 +186,11 @@ async function createAsset(contract: Contract): Promise<void> {
  * Submit transaction asynchronously, allowing the application to process the smart contract response (e.g. update a UI)
  * while waiting for the commit notification.
  */
-async function transferAssetAsync(contract: Contract): Promise<void> {
-    console.log('\n--> Async Submit Transaction: TransferAsset, updates existing asset owner');
+async function transferCertificateAsync(contract: Contract): Promise<void> {
+    console.log('\n--> Async Submit Transaction: TransferCertificate, updates existing Certificate owner');
 
-    const commit = await contract.submitAsync('TransferAsset', {
-        arguments: [assetId, 'Saptha'],
+    const commit = await contract.submitAsync('TransferCertificate', {
+        arguments: [CertificateId, 'Saptha'],
     });
     const oldOwner = utf8Decoder.decode(commit.getResult());
 
@@ -192,10 +205,10 @@ async function transferAssetAsync(contract: Contract): Promise<void> {
     console.log('*** Transaction committed successfully');
 }
 
-async function readAssetByID(contract: Contract): Promise<void> {
-    console.log('\n--> Evaluate Transaction: ReadAsset, function returns asset attributes');
+async function readCertificateByID(contract: Contract): Promise<void> {
+    console.log('\n--> Evaluate Transaction: ReadCertificate, function returns Certificate attributes');
 
-    const resultBytes = await contract.evaluateTransaction('ReadAsset', assetId);
+    const resultBytes = await contract.evaluateTransaction('ReadCertificate', CertificateId);
 
     const resultJson = utf8Decoder.decode(resultBytes);
     const result: unknown = JSON.parse(resultJson);
@@ -205,18 +218,32 @@ async function readAssetByID(contract: Contract): Promise<void> {
 /**
  * submitTransaction() will throw an error containing details of any error responses from the smart contract.
  */
-async function updateNonExistentAsset(contract: Contract): Promise<void>{
-    console.log('\n--> Submit Transaction: UpdateAsset asset70, asset70 does not exist and should return an error');
+async function updateNonExistentCertificate(contract: Contract): Promise<void>{
+    console.log('\n--> Submit Transaction: UpdateCertificate Certificate70, Certificate70 does not exist and should return an error');
 
     try {
-        await contract.submitTransaction(
-            'UpdateAsset',
-            'asset70',
-            'blue',
-            '5',
-            'Tomoko',
-            '300',
-        );
+
+
+    await contract.submitTransaction(
+        'UpdateCertificate',
+        '4', // certificateNumber
+        '2024-08-04T12:00:00Z', // certificateEmissionDate
+        'Computer Science', // certificateCourse
+        'valid', // certificateStatus
+        'Alice Smith', // ownerName
+        '123456789', // ownerRG
+        '1990-05-15T00:00:00Z', // ownerBirthDate
+        'Santa Catarina', // ownerBirthState
+        'Centro de Ciências Tecnológicas', // campusName
+        'CEAVI', // campusAcronym
+        'Prof. João Santos', // campusDirector
+        'Reitora Maria Oliveira', // universityPresidentName
+        'Coordenador Carlos Pereira', // universityCertificateCoordinator
+        'true', // hasCompletedAllSubjects
+        'true', // hasSentAllRequiredDocuments
+        'true', // wentToDegreeGranting
+        'Certificado emitido sem pendências.' // note
+    );
         console.log('******** FAILED to return an error');
     } catch (error) {
         console.log('*** Successfully caught the error: \n', error);

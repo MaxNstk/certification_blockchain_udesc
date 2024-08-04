@@ -174,9 +174,9 @@ export class AssetTransferContract extends Contract {
         await ctx.stub.putState(id, Buffer.from(stringify(sortKeysRecursive(updatedCertificate))));
     }
 
-    // DeleteAsset deletes an given asset from the world state.
+    // DeleteCertificate deletes an given asset from the world state.
     @Transaction()
-    public async DeleteAsset(ctx: Context, id: string): Promise<void> {
+    public async DeleteCertificate(ctx: Context, id: string): Promise<void> {
         const exists = await this.CertificateExists(ctx, id);
         if (!exists) {
             throw new Error(`The certificate ${id} does not exist`);
