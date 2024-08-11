@@ -28,13 +28,7 @@ trap "popd > /dev/null" EXIT
 
 . scripts/utils.sh
 
-: ${CONTAINER_CLI:="docker"}
-if command -v docker-compose > /dev/null 2>&1; then
-    : ${CONTAINER_CLI_COMPOSE:="docker-compose"}
-else
-    : ${CONTAINER_CLI_COMPOSE:="docker compose"}
-fi
-infoln "Using docker and ${CONTAINER_CLI_COMPOSE}"
+infoln "Using docker and docker-compose"
 
 # Obtain CONTAINER_IDS and remove them
 # This function is called when you bring a network down
@@ -75,24 +69,10 @@ function checkPrereqs() {
   LOCAL_VERSION=$(peer version | sed -ne 's/^ Version: //p')
   DOCKER_IMAGE_VERSION=$(docker run --rm hyperledger/fabric-peer:latest peer version | sed -ne 's/^ Version: //p')
 
-  infoln "LOCAL_VERSION=$LOCAL_VERSION"
-  infoln "DOCKER_IMAGE_VERSION=$DOCKER_IMAGE_VERSION"
-
-  if [ "$LOCAL_VERSION" != "$DOCKER_IMAGE_VERSION" ]; then
-    warnln "Local fabric binaries and docker images are out of  sync. This may cause problems."
-  fi
-
-  for UNSUPPORTED_VERSION in $NONWORKING_VERSIONS; do
-    infoln "$LOCAL_VERSION" | grep -q $UNSUPPORTED_VERSION
-    if [ $? -eq 0 ]; then
-      fatalln "Local Fabric binary version of $LOCAL_VERSION does not match the versions supported by the test network."
-    fi
-
-    infoln "$DOCKER_IMAGE_VERSION" | grep -q $UNSUPPORTED_VERSION
-    if [ $? -eq 0 ]; then
-      fatalln "Fabric Docker image version of $DOCKER_IMAGE_VERSION does not match the versions supported by the test network."
-    fi
-  done
+  infoln LOCAL_VERSION=v2.5.8
+  infoln DOCKER_IMAGE_VERSION=v2.5.8
+  infoln CA_LOCAL_VERSION=v1.5.11
+  infoln CA_DOCKER_IMAGE_VERSION=v1.5.11
 
   ## Check for fabric-ca
     fabric-ca-client version > /dev/null 2>&1
@@ -105,12 +85,8 @@ function checkPrereqs() {
     fi
     CA_LOCAL_VERSION=$(fabric-ca-client version | sed -ne 's/ Version: //p')
     CA_DOCKER_IMAGE_VERSION=$(docker run --rm hyperledger/fabric-ca:latest fabric-ca-client version | sed -ne 's/ Version: //p' | head -1)
-    infoln "CA_LOCAL_VERSION=$CA_LOCAL_VERSION"
-    infoln "CA_DOCKER_IMAGE_VERSION=$CA_DOCKER_IMAGE_VERSION"
-
-    if [ "$CA_LOCAL_VERSION" != "$CA_DOCKER_IMAGE_VERSION" ]; then
-      warnln "Local fabric-ca binaries and docker images are out of sync. This may cause problems."
-    fi
+    infoln "CA_LOCAL_VERSION=v1.5.11"
+    infoln "CA_DOCKER_IMAGE_VERSION=v1.5.11"
 }
 
 # Before you can bring up a network, each organization needs to generate the crypto
@@ -137,7 +113,7 @@ function checkPrereqs() {
 # certificates, and MSP folders that are needed to create the test network in the
 # "organizations/ordererOrganizations" directory.
 
-# Create Organization crypto material using cryptogen or CAs
+# Create Organization crypto material using CAs
 function createOrgs() {
   if [ -d "organizations/peerOrganizations" ]; then
     rm -Rf organizations/peerOrganizations && rm -Rf organizations/ordererOrganizations
@@ -145,7 +121,8 @@ function createOrgs() {
 
   # Create crypto material using Fabric CA
   infoln "Generating certificates using Fabric CA"
-  ${CONTAINER_CLI_COMPOSE} -f compose/$COMPOSE_FILE_CA -f compose/$CONTAINER_CLI/docker-$COMPOSE_FILE_CA up -d 2>&1
+
+  docker-compose -f compose/compose-ca.yaml -f compose/docker/docker-compose-ca.yaml up -d 2>&1
 
   . organizations/fabric-ca/registerEnroll.sh
 
@@ -205,7 +182,7 @@ function networkUp() {
 
   checkPrereqs
 
-  # generate artifacts if they don't exist
+  # generate artifacts if they don't exis
   if [ ! -d "organizations/peerOrganizations" ]; then
     createOrgs
   fi
@@ -216,9 +193,9 @@ function networkUp() {
     COMPOSE_FILES="${COMPOSE_FILES} -f compose/${COMPOSE_FILE_COUCH} -f compose/docker/docker-${COMPOSE_FILE_COUCH}"
   fi
 
-  DOCKER_SOCK="${DOCKER_SOCK}" ${CONTAINER_CLI_COMPOSE} ${COMPOSE_FILES} up -d 2>&1
+  DOCKER_SOCK="${DOCKER_SOCK}" docker-compose ${COMPOSE_FILES} up -d 2>&1
 
-  $CONTAINER_CLI ps -a
+  docker ps -a
   if [ $? -ne 0 ]; then
     fatalln "Unable to start network"
   fi
@@ -232,12 +209,12 @@ function createChannel() {
 
   local bft_true=$1
 
-  if ! $CONTAINER_CLI info > /dev/null 2>&1 ; then
-    fatalln "$CONTAINER_CLI network is required to be running to create a channel"
+  if ! docker info > /dev/null 2>&1 ; then
+    fatalln "docker network is required to be running to create a channel"
   fi
 
   # check if all containers are present
-  CONTAINERS=($($CONTAINER_CLI ps | grep hyperledger/ | awk '{print $2}'))
+  CONTAINERS=($(docker ps | grep hyperledger/ | awk '{print $2}'))
   len=$(echo ${#CONTAINERS[@]})
 
   if [[ $len -ge 4 ]] && [[ ! -d "organizations/peerOrganizations" ]]; then
@@ -342,7 +319,7 @@ function networkDown() {
   COMPOSE_FILE_BASE=compose-bft-test-net.yaml
   COMPOSE_BASE_FILES="-f compose/compose-test-net.yaml -f compose/docker/docker-compose-test-net.yaml"
   COMPOSE_COUCH_FILES="-f compose/${COMPOSE_FILE_COUCH} -f compose/docker/docker-${COMPOSE_FILE_COUCH}"
-  COMPOSE_CA_FILES="-f compose/${COMPOSE_FILE_CA} -f compose/docker/docker-${COMPOSE_FILE_CA}"
+  COMPOSE_CA_FILES="-f compose/compose-ca.yaml -f compose/docker/docker-compose-ca.yaml"
   COMPOSE_FILES="${COMPOSE_BASE_FILES} ${COMPOSE_COUCH_FILES} ${COMPOSE_CA_FILES}"
 
   # stop org3 containers also in addition to org1 and org2, in case we were running sample to add org3
@@ -352,9 +329,9 @@ function networkDown() {
   COMPOSE_ORG3_FILES="${COMPOSE_ORG3_BASE_FILES} ${COMPOSE_ORG3_COUCH_FILES} ${COMPOSE_ORG3_CA_FILES}"
 
   if [ "docker" == "docker" ]; then
-    DOCKER_SOCK=$DOCKER_SOCK ${CONTAINER_CLI_COMPOSE} ${COMPOSE_FILES} ${COMPOSE_ORG3_FILES} down --volumes --remove-orphans
+    DOCKER_SOCK=$DOCKER_SOCK docker-compose ${COMPOSE_FILES} ${COMPOSE_ORG3_FILES} down --volumes --remove-orphans
   elif [ "docker" == "podman" ]; then
-    ${CONTAINER_CLI_COMPOSE} ${COMPOSE_FILES} ${COMPOSE_ORG3_FILES} down --volumes
+    docker-compose ${COMPOSE_FILES} ${COMPOSE_ORG3_FILES} down --volumes
   else
     fatalln "Container CLI  docker not supported"
   fi
