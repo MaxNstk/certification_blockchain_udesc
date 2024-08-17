@@ -87,7 +87,6 @@ function printHelp() {
     println " Examples:"
     println "   network.sh deployCC -ccn certificatesCC -ccp ../asset-transfer-basic/chaincode-javascript/ ./ -ccl javascript"
     println "   network.sh deployCC -ccn mychaincode -ccp ./user/mychaincode -ccv 1 -ccl javascript"
-  elif [ "$USAGE" == "deployCCAAS" ]; then
     println "Usage: "
     println "  network.sh \033[0;32mdeployCCAAS\033[0m [Flags]"
     println

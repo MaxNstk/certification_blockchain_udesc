@@ -196,7 +196,7 @@ function networkDown() {
   COMPOSE_BASE_FILES="-f compose/compose-test-net.yaml -f compose/docker/docker-compose-test-net.yaml"
   COMPOSE_CA_FILES="-f compose/compose-ca.yaml -f compose/docker/docker-compose-ca.yaml"
   COMPOSE_FILES="${COMPOSE_BASE_FILES} ${COMPOSE_CA_FILES}"
-  DOCKER_SOCK=$DOCKER_SOCK docker-compose ${COMPOSE_FILES} ${COMPOSE_ORG3_FILES} down --volumes --remove-orphans
+  DOCKER_SOCK=$DOCKER_SOCK docker-compose ${COMPOSE_FILES} down --volumes --remove-orphans
 
   COMPOSE_FILE_BASE=$temp_compose
 }
@@ -255,7 +255,7 @@ while [[ $# -ge 1 ]] ; do
   -h )
     printHelp $MODE
     exit 0
-    ;;c
+    ;;
   -c )
     CHANNEL_NAME="$2"
     shift
