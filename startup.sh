@@ -6,3 +6,4 @@
 cd ./application-gateway-typescript 
 npm install 
 npm start 
+cd ..
