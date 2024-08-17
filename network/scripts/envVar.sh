@@ -7,13 +7,6 @@
 
 # This is a collection of bash functions used by different scripts
 
-# imports
-# test network home var targets to network folder
-# the reason we use a var here is to accommodate scenarios
-# where execution occurs from folders outside of default as $PWD, such as the network/addOrg3 folder.
-# For setting environment variables, simple relative paths like ".." could lead to unintended references
-# due to how they interact with FABRIC_CFG_PATH. It's advised to specify paths more explicitly,
-# such as using "../${PWD}", to ensure that Fabric's environment variables are pointing to the correct paths.
 TEST_NETWORK_HOME=${TEST_NETWORK_HOME:-${PWD}}
 . ${TEST_NETWORK_HOME}/scripts/utils.sh
 
@@ -41,11 +34,6 @@ setGlobals() {
     export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG2_CA
     export CORE_PEER_MSPCONFIGPATH=${TEST_NETWORK_HOME}/organizations/peerOrganizations/public.local.com/users/Admin@public.local.com/msp
     export CORE_PEER_ADDRESS=localhost:9051
-  elif [ $USING_ORG -eq 3 ]; then
-    export CORE_PEER_LOCALMSPID=Org3MSP
-    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG3_CA
-    export CORE_PEER_MSPCONFIGPATH=${TEST_NETWORK_HOME}/organizations/peerOrganizations/org3.example.com/users/Admin@org3.example.com/msp
-    export CORE_PEER_ADDRESS=localhost:11051
   else
     errorln "ORG Unknown"
   fi

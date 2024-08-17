@@ -1,7 +1,5 @@
 #!/bin/bash
 
-
-
 ROOTDIR=$(cd "$(dirname "$0")" && pwd)
 export PATH=${ROOTDIR}/../bin:${PWD}/../bin:$PATH
 export FABRIC_CFG_PATH=${PWD}/configtx
@@ -348,23 +346,6 @@ while [[ $# -ge 1 ]] ; do
   esac
   shift
 done
-
-## Check if user attempts to use BFT orderer and CA together
-if [[ $BFT -eq 1 && "$CRYPTO" == "Certificate Authorities" ]]; then
-  fatalln "This sample does not yet support the use of consensus type BFT and CA together."
-fi
-
-if [ $BFT -eq 1 ]; then
-  export FABRIC_CFG_PATH=${PWD}/bft-config
-  COMPOSE_FILE_BASE=compose-bft-test-net.yaml
-fi
-
-# Are we generating crypto material with this command?
-if [ ! -d "organizations/peerOrganizations" ]; then
-  CRYPTO_MODE="with crypto from '${CRYPTO}'"
-else
-  CRYPTO_MODE=""
-fi
 
 # Determine mode of operation and printing out what we asked for
 if [ "$MODE" == "prereq" ]; then

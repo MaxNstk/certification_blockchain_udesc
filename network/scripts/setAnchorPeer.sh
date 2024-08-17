@@ -6,11 +6,7 @@
 #
 
 # import utils
-# test network home var targets to test network folder
-# the reason we use a var here is considering with org3 specific folder
-# when invoking this for org3 as network/scripts/org3-scripts
-# the value is changed from default as $PWD(network)
-# to .. as relative path to make the import works
+
 TEST_NETWORK_HOME=${TEST_NETWORK_HOME:-${PWD}}
 . ${TEST_NETWORK_HOME}/scripts/configUpdate.sh
 
@@ -28,9 +24,6 @@ createAnchorPeerUpdate() {
   elif [ $ORG -eq 2 ]; then
     HOST="peer0.public.local.com"
     PORT=9051
-  elif [ $ORG -eq 3 ]; then
-    HOST="peer0.org3.example.com"
-    PORT=11051
   else
     errorln "Org${ORG} unknown"
   fi
