@@ -73,6 +73,8 @@ function checkPrereqs() {
   infoln DOCKER_IMAGE_VERSION=v2.5.8
   infoln CA_LOCAL_VERSION=v1.5.11
   infoln CA_DOCKER_IMAGE_VERSION=v1.5.11
+  infoln CHANNEL_NAME =  $CHANNEL_NAME
+  infoln CHANNEL_NAME = $CHANNEL_NAME
 
   ## Check for fabric-ca
     fabric-ca-client version > /dev/null 2>&1
