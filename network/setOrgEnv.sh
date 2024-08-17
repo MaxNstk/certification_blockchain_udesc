@@ -15,24 +15,24 @@ set -o pipefail
 # Where am I?
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 
-ORDERER_CA=${DIR}/test-network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
-PEER0_ORG1_CA=${DIR}/test-network/organizations/peerOrganizations/udesc.local.com/tlsca/tlsca.udesc.local.com-cert.pem
-PEER0_ORG2_CA=${DIR}/test-network/organizations/peerOrganizations/public.local.com/tlsca/tlsca.public.local.com-cert.pem
+ORDERER_CA=${DIR}/network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
+PEER0_ORG1_CA=${DIR}/network/organizations/peerOrganizations/udesc.local.com/tlsca/tlsca.udesc.local.com-cert.pem
+PEER0_ORG2_CA=${DIR}/network/organizations/peerOrganizations/public.local.com/tlsca/tlsca.public.local.com-cert.pem
 
 
 if [[ ${ORG,,} == "udesc" || ${ORG,,} == "digibank" ]]; then
 
    CORE_PEER_LOCALMSPID=UdescMSP
-   CORE_PEER_MSPCONFIGPATH=${DIR}/test-network/organizations/peerOrganizations/udesc.local.com/users/Admin@udesc.local.com/msp
+   CORE_PEER_MSPCONFIGPATH=${DIR}/network/organizations/peerOrganizations/udesc.local.com/users/Admin@udesc.local.com/msp
    CORE_PEER_ADDRESS=localhost:7051
-   CORE_PEER_TLS_ROOTCERT_FILE=${DIR}/test-network/organizations/peerOrganizations/udesc.local.com/tlsca/tlsca.udesc.local.com-cert.pem
+   CORE_PEER_TLS_ROOTCERT_FILE=${DIR}/network/organizations/peerOrganizations/udesc.local.com/tlsca/tlsca.udesc.local.com-cert.pem
 
 elif [[ ${ORG,,} == "public" || ${ORG,,} == "magnetocorp" ]]; then
 
    CORE_PEER_LOCALMSPID=PublicMSP
-   CORE_PEER_MSPCONFIGPATH=${DIR}/test-network/organizations/peerOrganizations/public.local.com/users/Admin@public.local.com/msp
+   CORE_PEER_MSPCONFIGPATH=${DIR}/network/organizations/peerOrganizations/public.local.com/users/Admin@public.local.com/msp
    CORE_PEER_ADDRESS=localhost:9051
-   CORE_PEER_TLS_ROOTCERT_FILE=${DIR}/test-network/organizations/peerOrganizations/public.local.com/tlsca/tlsca.public.local.com-cert.pem
+   CORE_PEER_TLS_ROOTCERT_FILE=${DIR}/network/organizations/peerOrganizations/public.local.com/tlsca/tlsca.public.local.com-cert.pem
 
 else
    echo "Unknown \"$ORG\", please choose Udesc/Digibank or Public/Magnetocorp"

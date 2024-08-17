@@ -1,6 +1,6 @@
 # certification_blockchain_udesc
 
-cd test-network
+cd network
 
 ./network.sh down
 ./network.sh up createChannel -c certificationchannel -ca
