@@ -12,7 +12,7 @@ import * as path from 'path';
 import { TextDecoder } from 'util';
 
 const channelName = envOrDefault('CHANNEL_NAME', 'certificationchannel');
-const chaincodeName = envOrDefault('CHAINCODE_NAME', 'basic');
+const chaincodeName = envOrDefault('CHAINCODE_NAME', 'certificatesCC');
 const mspId = envOrDefault('MSP_ID', 'Org1MSP');
 
 // Path to crypto materials.
