@@ -1,5 +1,5 @@
 {
-    "name": "asset-transfer-basic",
+    "name": "certification-blockchain-udesc",
     "version": "1.0.0",
     "description": "Asset Transfer certificatesCC Application implemented in typeScript using fabric-gateway",
     "main": "dist/index.js",
