@@ -84,11 +84,9 @@ export class AssetTransferContract extends Contract {
         wentToDegreeGranting: boolean,
         note: string
     ): Promise<void> {
-        const id = certificateNumber;
-        // Check if the asset already exists
         const exists = await this.CertificateExists(ctx, certificateNumber);
         if (exists) {
-            throw new Error(`The certificate ${id} already exists`);
+            throw new Error(`The certificate ${certificateNumber} already exists`);
         }
         // Create the asset object with the new fields
         const certificate: Certificate = {
@@ -111,15 +109,15 @@ export class AssetTransferContract extends Contract {
             note
         };
         // Insert data in deterministic order
-        await ctx.stub.putState(id, Buffer.from(stringify(sortKeysRecursive(certificate))));
+        await ctx.stub.putState(certificateNumber, Buffer.from(stringify(sortKeysRecursive(certificate))));
     }
 
     // ReadAsset returns the asset stored in the world state with given id.
     @Transaction(false)
-    public async ReadCertificate(ctx: Context, id: string): Promise<string> {
-        const assetJSON = await ctx.stub.getState(id); // get the asset from chaincode state
+    public async ReadCertificate(ctx: Context, certificateNumber: string): Promise<string> {
+        const assetJSON = await ctx.stub.getState(certificateNumber); // get the asset from chaincode state
         if (assetJSON.length === 0) {
-            throw new Error(`The certificate ${id} does not exist`);
+            throw new Error(`The certificate ${certificateNumber} does not exist`);
         }
         return assetJSON.toString();
     }
@@ -146,9 +144,9 @@ export class AssetTransferContract extends Contract {
         wentToDegreeGranting: boolean,
         note: string
     ): Promise<void> {
-        const exists = await this.CertificateExists(ctx, id);
+        const exists = await this.CertificateExists(ctx, certificateNumber);
         if (!exists) {
-            throw new Error(`The certificate ${id} does not exist`);
+            throw new Error(`The certificate ${certificateNumber} does not exist`);
         }
         // Update the asset with new data
         const updatedCertificate: Certificate = {
@@ -176,19 +174,19 @@ export class AssetTransferContract extends Contract {
 
     // DeleteCertificate deletes an given asset from the world state.
     @Transaction()
-    public async DeleteCertificate(ctx: Context, id: string): Promise<void> {
-        const exists = await this.CertificateExists(ctx, id);
+    public async DeleteCertificate(ctx: Context, certificateNumber: string): Promise<void> {
+        const exists = await this.CertificateExists(ctx, certificateNumber);
         if (!exists) {
-            throw new Error(`The certificate ${id} does not exist`);
+            throw new Error(`The certificate ${certificateNumber} does not exist`);
         }
-        return ctx.stub.deleteState(id);
+        return ctx.stub.deleteState(certificateNumber);
     }
 
     // CertificateExists returns true when asset with given ID exists in world state.
     @Transaction(false)
     @Returns('boolean')
-    public async CertificateExists(ctx: Context, id: string): Promise<boolean> {
-        const assetJSON = await ctx.stub.getState(id);
+    public async CertificateExists(ctx: Context, certificateNumber: string): Promise<boolean> {
+        const assetJSON = await ctx.stub.getState(certificateNumber);
         return assetJSON.length > 0;
     }
 
