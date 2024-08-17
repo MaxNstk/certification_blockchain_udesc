@@ -5,8 +5,8 @@
 
 
 
-# default to using Org1
-ORG=${1:-Org1}
+# default to using Udesc
+ORG=${1:-Udesc}
 
 # Exit on first error, print all commands.
 set -e
@@ -16,32 +16,32 @@ set -o pipefail
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 
 ORDERER_CA=${DIR}/test-network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
-PEER0_ORG1_CA=${DIR}/test-network/organizations/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
-PEER0_ORG2_CA=${DIR}/test-network/organizations/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
+PEER0_ORG1_CA=${DIR}/test-network/organizations/peerOrganizations/udesc.local.com/tlsca/tlsca.udesc.local.com-cert.pem
+PEER0_ORG2_CA=${DIR}/test-network/organizations/peerOrganizations/public.local.com/tlsca/tlsca.public.local.com-cert.pem
 PEER0_ORG3_CA=${DIR}/test-network/organizations/peerOrganizations/org3.example.com/tlsca/tlsca.org3.example.com-cert.pem
 
 
-if [[ ${ORG,,} == "org1" || ${ORG,,} == "digibank" ]]; then
+if [[ ${ORG,,} == "udesc" || ${ORG,,} == "digibank" ]]; then
 
-   CORE_PEER_LOCALMSPID=Org1MSP
-   CORE_PEER_MSPCONFIGPATH=${DIR}/test-network/organizations/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp
+   CORE_PEER_LOCALMSPID=UdescMSP
+   CORE_PEER_MSPCONFIGPATH=${DIR}/test-network/organizations/peerOrganizations/udesc.local.com/users/Admin@udesc.local.com/msp
    CORE_PEER_ADDRESS=localhost:7051
-   CORE_PEER_TLS_ROOTCERT_FILE=${DIR}/test-network/organizations/peerOrganizations/org1.example.com/tlsca/tlsca.org1.example.com-cert.pem
+   CORE_PEER_TLS_ROOTCERT_FILE=${DIR}/test-network/organizations/peerOrganizations/udesc.local.com/tlsca/tlsca.udesc.local.com-cert.pem
 
-elif [[ ${ORG,,} == "org2" || ${ORG,,} == "magnetocorp" ]]; then
+elif [[ ${ORG,,} == "public" || ${ORG,,} == "magnetocorp" ]]; then
 
-   CORE_PEER_LOCALMSPID=Org2MSP
-   CORE_PEER_MSPCONFIGPATH=${DIR}/test-network/organizations/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp
+   CORE_PEER_LOCALMSPID=PublicMSP
+   CORE_PEER_MSPCONFIGPATH=${DIR}/test-network/organizations/peerOrganizations/public.local.com/users/Admin@public.local.com/msp
    CORE_PEER_ADDRESS=localhost:9051
-   CORE_PEER_TLS_ROOTCERT_FILE=${DIR}/test-network/organizations/peerOrganizations/org2.example.com/tlsca/tlsca.org2.example.com-cert.pem
+   CORE_PEER_TLS_ROOTCERT_FILE=${DIR}/test-network/organizations/peerOrganizations/public.local.com/tlsca/tlsca.public.local.com-cert.pem
 
 else
-   echo "Unknown \"$ORG\", please choose Org1/Digibank or Org2/Magnetocorp"
-   echo "For example to get the environment variables to set upa Org2 shell environment run:  ./setOrgEnv.sh Org2"
+   echo "Unknown \"$ORG\", please choose Udesc/Digibank or Public/Magnetocorp"
+   echo "For example to get the environment variables to set upa Public shell environment run:  ./setOrgEnv.sh Public"
    echo
    echo "This can be automated to set them as well with:"
    echo
-   echo 'export $(./setOrgEnv.sh Org2 | xargs)'
+   echo 'export $(./setOrgEnv.sh Public | xargs)'
    exit 1
 fi
 

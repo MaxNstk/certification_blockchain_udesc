@@ -130,26 +130,26 @@ function createOrgs() {
 
   while :
   do
-    if [ ! -f "organizations/fabric-ca/org1/tls-cert.pem" ]; then
+    if [ ! -f "organizations/fabric-ca/udesc/tls-cert.pem" ]; then
       sleep 1
     else
       break
     fi
   done
 
-  infoln "Creating Org1 Identities"
+  infoln "Creating Udesc Identities"
 
-  createOrg1
+  createUdesc
 
-  infoln "Creating Org2 Identities"
+  infoln "Creating Public Identities"
 
-  createOrg2
+  createPublic
 
   infoln "Creating Orderer Org Identities"
 
   createOrderer
 
-  infoln "Generating CCP files for Org1 and Org2"
+  infoln "Generating CCP files for Udesc and Public"
   ./organizations/ccp-generate.sh
 }
 
@@ -203,7 +203,7 @@ function networkUp() {
   fi
 }
 
-# call the script to create the channel, join the peers of org1 and org2,
+# call the script to create the channel, join the peers of udesc and public,
 # and then update the anchor peers for each organization
 function createChannel() {
   # Bring up the network if it is not already up.
@@ -324,7 +324,7 @@ function networkDown() {
   COMPOSE_CA_FILES="-f compose/compose-ca.yaml -f compose/docker/docker-compose-ca.yaml"
   COMPOSE_FILES="${COMPOSE_BASE_FILES} ${COMPOSE_COUCH_FILES} ${COMPOSE_CA_FILES}"
 
-  # stop org3 containers also in addition to org1 and org2, in case we were running sample to add org3
+  # stop org3 containers also in addition to udesc and public, in case we were running sample to add org3
   COMPOSE_ORG3_BASE_FILES="-f addOrg3/compose/${COMPOSE_FILE_ORG3_BASE} -f addOrg3/compose/docker/docker-${COMPOSE_FILE_ORG3_BASE}"
   COMPOSE_ORG3_COUCH_FILES="-f addOrg3/compose/${COMPOSE_FILE_ORG3_COUCH} -f addOrg3/compose/docker/docker-${COMPOSE_FILE_ORG3_COUCH}"
   COMPOSE_ORG3_CA_FILES="-f addOrg3/compose/${COMPOSE_FILE_ORG3_CA} -f addOrg3/compose/docker/docker-${COMPOSE_FILE_ORG3_CA}"
@@ -343,7 +343,7 @@ function networkDown() {
   # Don't remove the generated artifacts -- note, the ledgers are always removed
   if [ "$MODE" != "restart" ]; then
     # Bring down the network, deleting the volumes
-    docker volume rm docker_orderer.example.com docker_peer0.org1.example.com docker_peer0.org2.example.com
+    docker volume rm docker_orderer.example.com docker_peer0.udesc.local.com docker_peer0.public.local.com
     #Cleanup the chaincode containers
     clearContainers
     #Cleanup images
@@ -351,8 +351,8 @@ function networkDown() {
     # remove orderer block and other channel configuration transactions and certs
     docker run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf system-genesis-block/*.block organizations/peerOrganizations organizations/ordererOrganizations'
     ## remove fabric ca artifacts
-    docker run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf organizations/fabric-ca/org1/msp organizations/fabric-ca/org1/tls-cert.pem organizations/fabric-ca/org1/ca-cert.pem organizations/fabric-ca/org1/IssuerPublicKey organizations/fabric-ca/org1/IssuerRevocationPublicKey organizations/fabric-ca/org1/fabric-ca-server.db'
-    docker run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf organizations/fabric-ca/org2/msp organizations/fabric-ca/org2/tls-cert.pem organizations/fabric-ca/org2/ca-cert.pem organizations/fabric-ca/org2/IssuerPublicKey organizations/fabric-ca/org2/IssuerRevocationPublicKey organizations/fabric-ca/org2/fabric-ca-server.db'
+    docker run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf organizations/fabric-ca/udesc/msp organizations/fabric-ca/udesc/tls-cert.pem organizations/fabric-ca/udesc/ca-cert.pem organizations/fabric-ca/udesc/IssuerPublicKey organizations/fabric-ca/udesc/IssuerRevocationPublicKey organizations/fabric-ca/udesc/fabric-ca-server.db'
+    docker run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf organizations/fabric-ca/public/msp organizations/fabric-ca/public/tls-cert.pem organizations/fabric-ca/public/ca-cert.pem organizations/fabric-ca/public/IssuerPublicKey organizations/fabric-ca/public/IssuerRevocationPublicKey organizations/fabric-ca/public/fabric-ca-server.db'
     docker run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf organizations/fabric-ca/ordererOrg/msp organizations/fabric-ca/ordererOrg/tls-cert.pem organizations/fabric-ca/ordererOrg/ca-cert.pem organizations/fabric-ca/ordererOrg/IssuerPublicKey organizations/fabric-ca/ordererOrg/IssuerRevocationPublicKey organizations/fabric-ca/ordererOrg/fabric-ca-server.db'
     docker run --rm -v "$(pwd):/data" busybox sh -c 'cd /data && rm -rf addOrg3/fabric-ca/org3/msp addOrg3/fabric-ca/org3/tls-cert.pem addOrg3/fabric-ca/org3/ca-cert.pem addOrg3/fabric-ca/org3/IssuerPublicKey addOrg3/fabric-ca/org3/IssuerRevocationPublicKey addOrg3/fabric-ca/org3/fabric-ca-server.db'
     # remove channel and script artifacts
