@@ -50,7 +50,7 @@ function removeUnwantedImages() {
 # Versions of fabric known not to work with the test network
 NONWORKING_VERSIONS="^1\.0\. ^1\.1\. ^1\.2\. ^1\.3\. ^1\.4\."
 
-# Do some basic sanity checking to make sure that the appropriate versions of fabric
+# Do some certificatesCC sanity checking to make sure that the appropriate versions of fabric
 # binaries/images are available. In the future, additional checking for the presence
 # of go or other items could be added.
 function checkPrereqs() {
