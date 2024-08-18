@@ -51,6 +51,7 @@ createChannel() {
 	local COUNTER=1
 	local bft_true=$1
 	infoln "Adding orderers"
+	docker ps -a
 	while [ $rc -ne 0 -a $COUNTER -lt $MAX_RETRY ] ; do
 		sleep $DELAY
 		set -x
@@ -62,6 +63,10 @@ createChannel() {
 	done
 	cat log.txt
 	verifyResult $res "Channel creation failed"
+	infoln "after adding orderers"
+	docker ps -a
+	docker logs peerCEAVI.udesc.local.com
+
 }
 
 # joinChannel ORG
@@ -110,6 +115,7 @@ createChannelGenesisBlock $BFT
 
 ## Create channel
 infoln "Creating channel ${CHANNEL_NAME}"
+docker ps
 createChannel $BFT
 successln "Channel '$CHANNEL_NAME' created"
 
