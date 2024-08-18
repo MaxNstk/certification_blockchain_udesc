@@ -5,8 +5,9 @@
 
 version: '3.7'
 services:
-  peer0.udesc.local.com:
-    container_name: peer0.udesc.local.com
+
+  peerCEAVI.udesc.local.com:
+    container_name: peerCEAVI.udesc.local.com
     image: hyperledger/fabric-peer:latest
     labels:
       service: hyperledger-fabric

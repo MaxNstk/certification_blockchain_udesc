@@ -33,15 +33,6 @@ elif [[ ${ORG,,} == "public" || ${ORG,,} == "magnetocorp" ]]; then
    CORE_PEER_MSPCONFIGPATH=${DIR}/network/organizations/peerOrganizations/public.local.com/users/Admin@public.local.com/msp
    CORE_PEER_ADDRESS=localhost:9051
    CORE_PEER_TLS_ROOTCERT_FILE=${DIR}/network/organizations/peerOrganizations/public.local.com/tlsca/tlsca.public.local.com-cert.pem
-
-else
-   echo "Unknown \"$ORG\", please choose Udesc/Digibank or Public/Magnetocorp"
-   echo "For example to get the environment variables to set upa Public shell environment run:  ./setOrgEnv.sh Public"
-   echo
-   echo "This can be automated to set them as well with:"
-   echo
-   echo 'export $(./setOrgEnv.sh Public | xargs)'
-   exit 1
 fi
 
 # output the variables that need to be set

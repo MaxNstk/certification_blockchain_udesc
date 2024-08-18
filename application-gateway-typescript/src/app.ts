@@ -25,13 +25,13 @@ const keyDirectoryPath = envOrDefault('KEY_DIRECTORY_PATH', path.resolve(cryptoP
 const certDirectoryPath = envOrDefault('CERT_DIRECTORY_PATH', path.resolve(cryptoPath, 'users', 'User1@udesc.local.com', 'msp', 'signcerts'));
 
 // Path to peer tls certificate.
-const tlsCertPath = envOrDefault('TLS_CERT_PATH', path.resolve(cryptoPath, 'peers', 'peer0.udesc.local.com', 'tls', 'ca.crt'));
+const tlsCertPath = envOrDefault('TLS_CERT_PATH', path.resolve(cryptoPath, 'peers', 'peerCEAVI.udesc.local.com', 'tls', 'ca.crt'));
 
 // Gateway peer endpoint.
 const peerEndpoint = envOrDefault('PEER_ENDPOINT', 'localhost:7051');
 
 // Gateway peer SSL host name override.
-const peerHostAlias = envOrDefault('PEER_HOST_ALIAS', 'peer0.udesc.local.com');
+const peerHostAlias = envOrDefault('PEER_HOST_ALIAS', 'peerCEAVI.udesc.local.com');
 
 const utf8Decoder = new TextDecoder();
 const CertificateId = `Certificate${String(Date.now())}`;

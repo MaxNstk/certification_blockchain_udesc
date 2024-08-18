@@ -73,8 +73,8 @@ checkPrereqs
 
 PACKAGE_ID=$(peer lifecycle chaincode calculatepackageid ${CC_NAME}.tar.gz)
 
-## Install chaincode on peer0.udesc and peer0.public
-infoln "Installing chaincode on peer0.udesc..."
+## Install chaincode on peerCEAVI.udesc and peer0.public
+infoln "Installing chaincode on peerCEAVI.udesc..."
 installChaincode 1
 infoln "Install chaincode on peer0.public..."
 installChaincode 2
