@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# i don't know how this works
+  echo "registering enrollments"
+  . scripts/org_definitions.sh
+
 function createUdesc() {
 
   infoln "Enrolling the CA admin"
@@ -50,8 +54,7 @@ function createUdesc() {
 
   cp "${PWD}/organizations/peerOrganizations/udesc.local.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/udesc.local.com/users/Admin@udesc.local.com/msp/config.yaml"
 
-  PEERS=("CEAVI" "CCT") #PEERS=("CEAVI" "CCT" "CEPLAN" "CESMO")
-  for PEER in "${PEERS[@]}"; do
+  for PEER in "${UDESC_PEERS_NAMES[@]}"; do
     PEER_NAME=peer${PEER}
     PEER_PASSWORD=peer${PEER}pw
 

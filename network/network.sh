@@ -197,9 +197,8 @@ function networkDown() {
 
   COMPOSE_FILE_BASE=$temp_compose
 
-  docker kill $(docker ps -q)
-  rm -r organizations/ordererOrganizations
-  rm -r organizations/peerOrganizations
+  sudo rm -rf organizations/ordererOrganizations
+  sudo rm -rf organizations/peerOrganizations
   rm channel-artifacts/*
 
 }
