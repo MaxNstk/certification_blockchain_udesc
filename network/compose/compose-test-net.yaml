@@ -9,6 +9,7 @@ volumes:
   orderer.example.com:
   peerCEAVI.udesc.local.com:
   peerCCT.udesc.local.com:
+  peerCEPLAN.udesc.local.com:
   peer0.public.local.com:
 
 networks:
@@ -134,6 +135,45 @@ services:
     ports:
       - 7055:7055
       - 9446:9446
+    networks:
+      - test
+
+  peerCEPLAN.udesc.local.com:
+    container_name: peerCEPLAN.udesc.local.com
+    image: hyperledger/fabric-peer:latest
+    labels:
+      service: hyperledger-fabric
+    environment:
+      - FABRIC_CFG_PATH=/etc/hyperledger/peercfg
+      - FABRIC_LOGGING_SPEC=INFO
+      #- FABRIC_LOGGING_SPEC=DEBUG
+      - CORE_PEER_TLS_ENABLED=true
+      - CORE_PEER_PROFILE_ENABLED=false
+      - CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt
+      - CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key
+      - CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt
+      # Peer specific variables
+      - CORE_PEER_ID=peerCEPLAN.udesc.local.com
+      - CORE_PEER_ADDRESS=peerCEPLAN.udesc.local.com:7057
+      - CORE_PEER_LISTENADDRESS=0.0.0.0:7057
+      - CORE_PEER_CHAINCODEADDRESS=peerCEPLAN.udesc.local.com:7058
+      - CORE_PEER_CHAINCODELISTENADDRESS=0.0.0.0:7058
+      - CORE_PEER_GOSSIP_BOOTSTRAP=peerCEPLAN.udesc.local.com:7057
+      - CORE_PEER_GOSSIP_EXTERNALENDPOINT=peerCEPLAN.udesc.local.com:7057
+      - CORE_PEER_LOCALMSPID=UdescMSP
+      - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+      - CORE_OPERATIONS_LISTENADDRESS=peerCEPLAN.udesc.local.com:9447
+      - CORE_METRICS_PROVIDER=prometheus
+      - CHAINCODE_AS_A_SERVICE_BUILDER_CONFIG={"peername":"peerCEPLAN"}
+      - CORE_CHAINCODE_EXECUTETIMEOUT=300s
+    volumes:
+      - ../organizations/peerOrganizations/udesc.local.com/peers/peerCEPLAN.udesc.local.com:/etc/hyperledger/fabric
+      - peerCEPLAN.udesc.local.com:/var/hyperledger/production
+    working_dir: /root
+    command: peer node start
+    ports:
+      - 7057:7057
+      - 9447:9447
     networks:
       - test
 
