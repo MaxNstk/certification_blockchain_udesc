@@ -59,78 +59,39 @@ function createUdesc() {
     USER_PASSWORD=user${PEER}pw
 
     infoln "Registering peer$PEER"
-    #set -x
+    set -x
     fabric-ca-client register --caname ca-udesc --id.name ${PEER_NAME} --id.secret ${PEER_PASSWORD} --id.type peer --tls.certfiles "${PWD}/organizations/fabric-ca/udesc/ca-cert.pem"
-    #{ set +x; } 2>/dev/null 
+    { set +x; } 2>/dev/null 
     
     infoln "Registering client user for peer$PEER"
-    #set -x
+    set -x
     fabric-ca-client register --caname ca-udesc --id.name ${USER_NAME} --id.secret ${USER_PASSWORD} --id.type client --tls.certfiles "${PWD}/organizations/fabric-ca/udesc/ca-cert.pem"
-    #{ set +x; } 2>/dev/null 
+    { set +x; } 2>/dev/null 
 
     infoln "Generating the $PEER_NAME msp and enrolling $USER_NAME"
-    #set -x
+    set -x
     fabric-ca-client enroll -u https://${PEER_NAME}:${PEER_PASSWORD}@localhost:7054 --caname ca-udesc -M "${PWD}/organizations/peerOrganizations/udesc.local.com/peers/${PEER_NAME}.udesc.local.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/udesc/ca-cert.pem"
-    #{ set +x; } 2>/dev/null 
+    { set +x; } 2>/dev/null 
 
     cp "${PWD}/organizations/peerOrganizations/udesc.local.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/udesc.local.com/peers/${PEER_NAME}.udesc.local.com/msp/config.yaml"
 
     infoln "Generating the ${PEER_NAME}-tls certificates, use --csr.hosts to specify Subject Alternative Names"
-    #set -x
+    set -x
     fabric-ca-client enroll -u https://${PEER_NAME}:${PEER_PASSWORD}@localhost:7054 --caname ca-udesc -M "${PWD}/organizations/peerOrganizations/udesc.local.com/peers/${PEER_NAME}.udesc.local.com/tls" --enrollment.profile tls --csr.hosts ${PEER_NAME}.udesc.local.com --csr.hosts localhost --tls.certfiles "${PWD}/organizations/fabric-ca/udesc/ca-cert.pem"
-    #{ set +x; } 2>/dev/null 
+    { set +x; } 2>/dev/null 
 
     cp "${PWD}/organizations/peerOrganizations/udesc.local.com/peers/${PEER_NAME}.udesc.local.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/udesc.local.com/peers/${PEER_NAME}.udesc.local.com/tls/ca.crt"
     cp "${PWD}/organizations/peerOrganizations/udesc.local.com/peers/${PEER_NAME}.udesc.local.com/tls/signcerts/"* "${PWD}/organizations/peerOrganizations/udesc.local.com/peers/${PEER_NAME}.udesc.local.com/tls/server.crt"
     cp "${PWD}/organizations/peerOrganizations/udesc.local.com/peers/${PEER_NAME}.udesc.local.com/tls/keystore/"* "${PWD}/organizations/peerOrganizations/udesc.local.com/peers/${PEER_NAME}.udesc.local.com/tls/server.key"
 
     infoln "Generating the user msp"
-    #set -x
+    set -x
     fabric-ca-client enroll -u https://${USER_NAME}:${USER_PASSWORD}@localhost:7054 --caname ca-udesc -M "${PWD}/organizations/peerOrganizations/udesc.local.com/users/${USER_NAME}@udesc.local.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/udesc/ca-cert.pem"
-    #{ set +x; } 2>/dev/null      
+    { set +x; } 2>/dev/null      
+
+    cp "${PWD}/organizations/peerOrganizations/udesc.local.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/udesc.local.com/users/${USER_NAME}@udesc.local.com/msp/config.yaml"
+
   done
-
-
-  #infoln "Registering peer0"
-  #set -x
-  #fabric-ca-client register --caname ca-udesc --id.name peer0 --id.secret peer0pw --id.type peer --tls.certfiles "${PWD}/organizations/fabric-ca/udesc/ca-cert.pem"
-  #{ set +x; } 2>/dev/null
-
-  #infoln "Registering client"
-  #set -x
-  #fabric-ca-client register --caname ca-udesc --id.name user1 --id.secret user1pw --id.type client --tls.certfiles "${PWD}/organizations/fabric-ca/udesc/ca-cert.pem"
-  #{ set +x; } 2>/dev/null
-
-  #infoln "Generating the peer0 msp"
-  #set -x
-  #fabric-ca-client enroll -u https://peer0:peer0pw@localhost:7054 --caname ca-udesc -M "${PWD}/organizations/peerOrganizations/udesc.local.com/peers/peer0.udesc.local.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/udesc/ca-cert.pem"
-  #{ set +x; } 2>/dev/null
-
-  #cp "${PWD}/organizations/peerOrganizations/udesc.local.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/udesc.local.com/peers/peer0.udesc.local.com/msp/config.yaml"
-
-  #infoln "Generating the peer0-tls certificates, use --csr.hosts to specify Subject Alternative Names"
-  #set -x
-  #fabric-ca-client enroll -u https://peer0:peer0pw@localhost:7054 --caname ca-udesc -M "${PWD}/organizations/peerOrganizations/udesc.local.com/peers/peer0.udesc.local.com/tls" --enrollment.profile tls --csr.hosts peer0.udesc.local.com --csr.hosts localhost --tls.certfiles "${PWD}/organizations/fabric-ca/udesc/ca-cert.pem"
-  #{ set +x; } 2>/dev/null
-
-  # Copy the tls CA cert, server cert, server keystore to well known file names in the peer's tls directory that are referenced by peer startup config
-  #cp "${PWD}/organizations/peerOrganizations/udesc.local.com/peers/peer0.udesc.local.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/udesc.local.com/peers/peer0.udesc.local.com/tls/ca.crt"
-  #cp "${PWD}/organizations/peerOrganizations/udesc.local.com/peers/peer0.udesc.local.com/tls/signcerts/"* "${PWD}/organizations/peerOrganizations/udesc.local.com/peers/peer0.udesc.local.com/tls/server.crt"
-  #cp "${PWD}/organizations/peerOrganizations/udesc.local.com/peers/peer0.udesc.local.com/tls/keystore/"* "${PWD}/organizations/peerOrganizations/udesc.local.com/peers/peer0.udesc.local.com/tls/server.key"
-
-  #infoln "Generating the user msp"
-  #set -x
-  #fabric-ca-client enroll -u https://user1:user1pw@localhost:7054 --caname ca-udesc -M "${PWD}/organizations/peerOrganizations/udesc.local.com/users/User1@udesc.local.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/udesc/ca-cert.pem"
-  #{ set +x; } 2>/dev/null
-#
-  #cp "${PWD}/organizations/peerOrganizations/udesc.local.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/udesc.local.com/users/User1@udesc.local.com/msp/config.yaml"
-#
-  #infoln "Generating the org admin msp"
-  #set -x
-  #fabric-ca-client enroll -u https://udescadmin:udescadminpw@localhost:7054 --caname ca-udesc -M "${PWD}/organizations/peerOrganizations/udesc.local.com/users/Admin@udesc.local.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/udesc/ca-cert.pem"
-  #{ set +x; } 2>/dev/null
-#
-  #cp "${PWD}/organizations/peerOrganizations/udesc.local.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/udesc.local.com/users/Admin@udesc.local.com/msp/config.yaml"
 }
 
 function createPublic() {
