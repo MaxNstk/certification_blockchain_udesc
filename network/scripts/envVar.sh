@@ -49,6 +49,11 @@ setUdescGlobals(){
   export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG1_CA
   export CORE_PEER_MSPCONFIGPATH=${TEST_NETWORK_HOME}/organizations/peerOrganizations/udesc.local.com/users/Admin@udesc.local.com/msp
 }
+setPublicGlobals(){
+  export CORE_PEER_LOCALMSPID=PublicMSP
+  export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG2_CA
+  export CORE_PEER_MSPCONFIGPATH=${TEST_NETWORK_HOME}/organizations/peerOrganizations/public.local.com/users/Admin@public.local.com/msp
+}
 
 # parsePeerConnectionParameters $@
 # Helper function that sets the peer connection parameters for a chaincode

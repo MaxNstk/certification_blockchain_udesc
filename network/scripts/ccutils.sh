@@ -1,12 +1,10 @@
 #!/bin/bash
 
-# installChaincode PEER ORG
 
-PEER_PORTS=(7051 7055)
+UDESC_PEERS_PORTS=(7051 7055)
+PUBLIC_PEERS_PORTS=(9051)
 
-function installChaincode() {
-  ORG=$1
-  setGlobals $ORG
+function _installChaincode(){
   set -x
   peer lifecycle chaincode queryinstalled --output json | jq -r 'try (.installed_chaincodes[].package_id)' | grep ^${PACKAGE_ID}$ >&log.txt
   if test $? -ne 0; then
@@ -19,24 +17,23 @@ function installChaincode() {
   successln "Chaincode is installed on peer0.org${ORG}"
 }
 
-function installChaincodeOnUdescPeers() {
-  setUdescGlobals 
-  for PORT in "${PEER_PORTS[@]}"; do
-    infoln "insalling chaincode on udesc peer running on: $PORT"	  
-    export CORE_PEER_ADDRESS=localhost:$PORT
-    set -x
-    peer lifecycle chaincode queryinstalled --output json | jq -r 'try (.installed_chaincodes[].package_id)' | grep ^${PACKAGE_ID}$ >&log.txt
-    if test $? -ne 0; then
-      peer lifecycle chaincode install ${CC_NAME}.tar.gz >&log.txt
-      res=$?
-    fi
-    { set +x; } 2>/dev/null
-    cat log.txt
-    verifyResult $res "Chaincode installation on udesc peer running on: ${PORT} has failed"
-    successln "Chaincode is installed on udesc peer running on: ${PORT}"
-  done 
-}
+function installChaincode() {
+  infoln "installing chaincode on udesc peers"
+  setUdescGlobals
+  for UDESC_PORT in "${UDESC_PEERS_PORTS[@]}"; do
+    infoln "insalling chaincode on udesc peer running on: $UDESC_PORT"
+    export CORE_PEER_ADDRESS=localhost:$UDESC_PORT
+    _installChaincode
+  done
 
+  infoln "installing chaincode on public peers"
+  setPublicGlobals
+  for PUBLIC_PORT in "${PUBLIC_PEERS_PORTS[@]}"; do
+    infoln "insalling chaincode on public peer running on: $PUBLIC_PORT"
+    export CORE_PEER_ADDRESS=localhost:$PUBLIC_PORT
+    _installChaincode
+  done  
+}
 
 # queryInstalled PEER ORG
 function queryInstalled() {
