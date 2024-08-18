@@ -190,13 +190,17 @@ function packageChaincode() {
 # Tear down running network
 function networkDown() {
   local temp_compose=$COMPOSE_FILE_BASE
-  COMPOSE_FILE_BASE=compose-bft-test-net.yaml
   COMPOSE_BASE_FILES="-f compose/compose-test-net.yaml -f compose/docker/docker-compose-test-net.yaml"
   COMPOSE_CA_FILES="-f compose/compose-ca.yaml -f compose/docker/docker-compose-ca.yaml"
   COMPOSE_FILES="${COMPOSE_BASE_FILES} ${COMPOSE_CA_FILES}"
   DOCKER_SOCK=$DOCKER_SOCK docker-compose ${COMPOSE_FILES} down --volumes --remove-orphans
 
   COMPOSE_FILE_BASE=$temp_compose
+
+  docker kill $(docker ps -a -q)
+  rm -r organizations/ordererOrganizations
+  rm -r organizations/peerOrganizations
+
 }
 
 . ./network.config
