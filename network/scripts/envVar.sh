@@ -8,6 +8,7 @@
 # This is a collection of bash functions used by different scripts
 
 TEST_NETWORK_HOME=${TEST_NETWORK_HOME:-${PWD}}
+infoln "TEST_NETWORK_HOME = $TEST_NETWORK_HOME"
 . ${TEST_NETWORK_HOME}/scripts/utils.sh
 
 export CORE_PEER_TLS_ENABLED=true
