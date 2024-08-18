@@ -50,7 +50,7 @@ function createUdesc() {
 
   cp "${PWD}/organizations/peerOrganizations/udesc.local.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/udesc.local.com/users/Admin@udesc.local.com/msp/config.yaml"
 
-  PEERS=("CEAVI") #PEERS=("CEAVI" "CCT" "CEPLAN" "CESMO")
+  PEERS=("CEAVI" "CCT") #PEERS=("CEAVI" "CCT" "CEPLAN" "CESMO")
   for PEER in "${PEERS[@]}"; do
     PEER_NAME=peer${PEER}
     PEER_PASSWORD=peer${PEER}pw
@@ -59,35 +59,35 @@ function createUdesc() {
     USER_PASSWORD=user${PEER}pw
 
     infoln "Registering peer$PEER"
-    set -x
+    #set -x
     fabric-ca-client register --caname ca-udesc --id.name ${PEER_NAME} --id.secret ${PEER_PASSWORD} --id.type peer --tls.certfiles "${PWD}/organizations/fabric-ca/udesc/ca-cert.pem"
-    { set +x; } 2>/dev/null 
+    #{ set +x; } 2>/dev/null 
     
     infoln "Registering client user for peer$PEER"
-    set -x
+    #set -x
     fabric-ca-client register --caname ca-udesc --id.name ${USER_NAME} --id.secret ${USER_PASSWORD} --id.type client --tls.certfiles "${PWD}/organizations/fabric-ca/udesc/ca-cert.pem"
-    { set +x; } 2>/dev/null 
+    #{ set +x; } 2>/dev/null 
 
     infoln "Generating the $PEER_NAME msp and enrolling $USER_NAME"
-    set -x
+    #set -x
     fabric-ca-client enroll -u https://${PEER_NAME}:${PEER_PASSWORD}@localhost:7054 --caname ca-udesc -M "${PWD}/organizations/peerOrganizations/udesc.local.com/peers/${PEER_NAME}.udesc.local.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/udesc/ca-cert.pem"
-    { set +x; } 2>/dev/null 
+    #{ set +x; } 2>/dev/null 
 
     cp "${PWD}/organizations/peerOrganizations/udesc.local.com/msp/config.yaml" "${PWD}/organizations/peerOrganizations/udesc.local.com/peers/${PEER_NAME}.udesc.local.com/msp/config.yaml"
 
     infoln "Generating the ${PEER_NAME}-tls certificates, use --csr.hosts to specify Subject Alternative Names"
-    set -x
+    #set -x
     fabric-ca-client enroll -u https://${PEER_NAME}:${PEER_PASSWORD}@localhost:7054 --caname ca-udesc -M "${PWD}/organizations/peerOrganizations/udesc.local.com/peers/${PEER_NAME}.udesc.local.com/tls" --enrollment.profile tls --csr.hosts ${PEER_NAME}.udesc.local.com --csr.hosts localhost --tls.certfiles "${PWD}/organizations/fabric-ca/udesc/ca-cert.pem"
-    { set +x; } 2>/dev/null 
+    #{ set +x; } 2>/dev/null 
 
     cp "${PWD}/organizations/peerOrganizations/udesc.local.com/peers/${PEER_NAME}.udesc.local.com/tls/tlscacerts/"* "${PWD}/organizations/peerOrganizations/udesc.local.com/peers/${PEER_NAME}.udesc.local.com/tls/ca.crt"
     cp "${PWD}/organizations/peerOrganizations/udesc.local.com/peers/${PEER_NAME}.udesc.local.com/tls/signcerts/"* "${PWD}/organizations/peerOrganizations/udesc.local.com/peers/${PEER_NAME}.udesc.local.com/tls/server.crt"
     cp "${PWD}/organizations/peerOrganizations/udesc.local.com/peers/${PEER_NAME}.udesc.local.com/tls/keystore/"* "${PWD}/organizations/peerOrganizations/udesc.local.com/peers/${PEER_NAME}.udesc.local.com/tls/server.key"
 
     infoln "Generating the user msp"
-    set -x
+    #set -x
     fabric-ca-client enroll -u https://${USER_NAME}:${USER_PASSWORD}@localhost:7054 --caname ca-udesc -M "${PWD}/organizations/peerOrganizations/udesc.local.com/users/${USER_NAME}@udesc.local.com/msp" --tls.certfiles "${PWD}/organizations/fabric-ca/udesc/ca-cert.pem"
-    { set +x; } 2>/dev/null      
+    #{ set +x; } 2>/dev/null      
   done
 
 

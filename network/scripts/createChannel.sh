@@ -65,7 +65,6 @@ createChannel() {
 	verifyResult $res "Channel creation failed"
 	infoln "after adding orderers"
 	docker ps -a
-	docker logs peerCEAVI.udesc.local.com
 
 }
 
@@ -90,16 +89,37 @@ joinChannel() {
 	verifyResult $res "After $MAX_RETRY attempts, peer0.org${ORG} has failed to join channel '$CHANNEL_NAME' "
 }
 
+joinUdescPeers(){
+
+	FABRIC_CFG_PATH=$PWD/../config/  
+	setUdescGlobals
+
+	PEER_PORTS=(7051 7055)
+	for PORT in "${PORT[@]}"; do
+		  infoln "setting global variables for udesc, peer running on: $PORT"	  
+		  export CORE_PEER_ADDRESS=localhost:$PORT
+			local rc=1
+			local COUNTER=1
+			## Sometimes Join takes time, hence retry
+			while [ $rc -ne 0 -a $COUNTER -lt $MAX_RETRY ] ; do
+				sleep $DELAY
+				set -x
+				peer channel join -b $BLOCKFILE >&log.txt
+				res=$?
+				{ set +x; } 2>/dev/null
+					let rc=$res
+					COUNTER=$(expr $COUNTER + 1)
+			done
+			cat log.txt
+			verifyResult $res "After $MAX_RETRY attempts, udesc peer on port ${PORT} has failed to join channel '$CHANNEL_NAME' "
+  	done
+}
+
 setAnchorPeer() {
   ORG=$1
   . scripts/setAnchorPeer.sh $ORG $CHANNEL_NAME 
 }
 
-
-## User attempts to use BFT orderer in Fabric network with CA
-if [ $BFT -eq 1 ] && [ -d "organizations/fabric-ca/ordererOrg/msp" ]; then
-  fatalln "Fabric network seems to be using CA. This sample does not yet support the use of consensus type BFT and CA together."
-fi
 
 ## Create channel genesis block
 FABRIC_CFG_PATH=$PWD/../config/
@@ -121,7 +141,8 @@ successln "Channel '$CHANNEL_NAME' created"
 
 ## Join all the peers to the channel
 infoln "Joining udesc peer to the channel..."
-joinChannel 1
+joinUdescPeers
+
 infoln "Joining public peer to the channel..."
 joinChannel 2
 

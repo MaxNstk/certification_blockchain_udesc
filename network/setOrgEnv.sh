@@ -16,8 +16,8 @@ set -o pipefail
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
 
 ORDERER_CA=${DIR}/network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem
-PEER0_ORG1_CA=${DIR}/network/organizations/peerOrganizations/udesc.local.com/tlsca/tlsca.udesc.local.com-cert.pem
-PEER0_ORG2_CA=${DIR}/network/organizations/peerOrganizations/public.local.com/tlsca/tlsca.public.local.com-cert.pem
+UDESC_CA_ROOTCERT_FILE=${DIR}/network/organizations/peerOrganizations/udesc.local.com/tlsca/tlsca.udesc.local.com-cert.pem
+PUBLIC_CA_ROOTCERT_FILE=${DIR}/network/organizations/peerOrganizations/public.local.com/tlsca/tlsca.public.local.com-cert.pem
 
 
 if [[ ${ORG,,} == "udesc" || ${ORG,,} == "digibank" ]]; then
@@ -38,8 +38,8 @@ fi
 # output the variables that need to be set
 echo "CORE_PEER_TLS_ENABLED=true"
 echo "ORDERER_CA=${ORDERER_CA}"
-echo "PEER0_ORG1_CA=${PEER0_ORG1_CA}"
-echo "PEER0_ORG2_CA=${PEER0_ORG2_CA}"
+echo "UDESC_CA_ROOTCERT_FILE=${UDESC_CA_ROOTCERT_FILE}"
+echo "PUBLIC_CA_ROOTCERT_FILE=${PUBLIC_CA_ROOTCERT_FILE}"
 
 echo "CORE_PEER_MSPCONFIGPATH=${CORE_PEER_MSPCONFIGPATH}"
 echo "CORE_PEER_ADDRESS=${CORE_PEER_ADDRESS}"

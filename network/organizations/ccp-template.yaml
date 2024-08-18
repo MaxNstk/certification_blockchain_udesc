@@ -1,35 +1,35 @@
 ---
-name: test-network-org${ORG}
+name: network-public
 version: 1.0.0
 client:
-  organization: Org${ORG}
+  organization: Public
   connection:
     timeout:
       peer:
         endorser: '300'
 organizations:
-  Org${ORG}:
-    mspid: Org${ORG}MSP
+  Public:
+    mspid: PublicMSP
     peers:
-    - peer0.org${ORG}.example.com
+    - peer0.public.local.com
     certificateAuthorities:
-    - ca.org${ORG}.example.com
+    - ca.public.local.com
 peers:
-  peer0.org${ORG}.example.com:
-    url: grpcs://localhost:${P0PORT}
+  peer0.public.local.com:
+    url: grpcs://localhost:9051
     tlsCACerts:
       pem: |
-          ${PEERPEM}
+          organizations/peerOrganizations/public.local.com/tlsca/tlsca.public.local.com-cert.pem
     grpcOptions:
-      ssl-target-name-override: peer0.org${ORG}.example.com
-      hostnameOverride: peer0.org${ORG}.example.com
+      ssl-target-name-override: peer0.public.local.com
+      hostnameOverride: peer0.public.local.com
 certificateAuthorities:
-  ca.org${ORG}.example.com:
-    url: https://localhost:${CAPORT}
-    caName: ca-org${ORG}
+  ca.public.local.com:
+    url: https://localhost:8054
+    caName: ca-public
     tlsCACerts:
       pem: 
         - |
-          ${CAPEM}
+          organizations/peerOrganizations/public.local.com/ca/ca.public.local.com-cert.pem
     httpOptions:
       verify: false

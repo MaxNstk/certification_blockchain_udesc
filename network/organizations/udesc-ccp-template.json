@@ -1,0 +1,60 @@
+{
+    "name": "network-udesc",
+    "version": "1.0.0",
+    "client": {
+        "organization": "Udesc",
+        "connection": {
+            "timeout": {
+                "peer": {
+                    "endorser": "300"
+                }
+            }
+        }
+    },
+    "organizations": {
+        "Udesc": {
+            "mspid": "UdescMSP",
+            "peers": [
+                "peerCEAVI.udesc.local.com",
+                "peerCct.udesc.local.com"
+            ],
+            "certificateAuthorities": [
+                "ca.udesc.local.com"
+            ]
+        }
+    },
+    "peers": {
+        "peerCEAVI.udesc.local.com": {
+            "url": "grpcs://localhost:7051",
+            "tlsCACerts": {
+                "pem": "organizations/peerOrganizations/udesc.local.com/tlsca/tlsca.udesc.local.com-cert.pem"
+            },
+            "grpcOptions": {
+                "ssl-target-name-override": "peerCEAVI.udesc.local.com",
+                "hostnameOverride": "peerCEAVI.udesc.local.com"
+            }
+        },
+        "peerCCT.udesc.local.com": {
+            "url": "grpcs://localhost:7053",
+            "tlsCACerts": {
+                "pem": "organizations/peerOrganizations/udesc.local.com/tlsca/tlsca.udesc.local.com-cert.pem"
+            },
+            "grpcOptions": {
+                "ssl-target-name-override": "peerCCT.udesc.local.com",
+                "hostnameOverride": "peerCCT.udesc.local.com"
+            }
+        }
+    },
+    "certificateAuthorities": {
+        "ca.udesc.local.com": {
+            "url": "https://localhost:7054",
+            "caName": "ca-udesc",
+            "tlsCACerts": {
+                "pem": ["organizations/peerOrganizations/udesc.local.com/ca/ca.udesc.local.com-cert.pem"]
+            },
+            "httpOptions": {
+                "verify": false
+            }
+        }
+    }
+}
