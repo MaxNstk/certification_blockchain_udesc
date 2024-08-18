@@ -35,7 +35,7 @@ function yaml_ccp {
         -e "s#\${CAPEM}#$CP#" \
         organizations/ccp-template.yaml | sed -e $'s/\\\\n/\\\n          /g'
 }
-function udsec_yaml_ccp {
+function udesc_yaml_ccp {
     local PP=$(one_line_pem $4)
     local CP=$(one_line_pem $5)
     sed -e "s/\${ORG}/$1/" \
@@ -54,7 +54,7 @@ PEERPEM=organizations/peerOrganizations/udesc.local.com/tlsca/tlsca.udesc.local.
 CAPEM=organizations/peerOrganizations/udesc.local.com/ca/ca.udesc.local.com-cert.pem
 
 echo "$(udsec_json_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrganizations/udesc.local.com/connection-org1.json
-echo "$(udsec_yaml_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrganizations/udesc.local.com/connection-org1.yaml
+echo "$(udesc_yaml_ccp $ORG $P0PORT $CAPORT $PEERPEM $CAPEM)" > organizations/peerOrganizations/udesc.local.com/connection-org1.yaml
 
 ORG=2
 P0PORT=9051
