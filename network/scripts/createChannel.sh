@@ -90,7 +90,7 @@ joinUdescPeers(){
 	setUdescGlobals
 
 	PEER_PORTS=(7051 7055)
-	for PORT in "${PORT[@]}"; do
+	for PORT in "${PEER_PORTS[@]}"; do
 		  infoln "setting global variables for udesc, peer running on: $PORT"	  
 		  export CORE_PEER_ADDRESS=localhost:$PORT
 			local rc=1

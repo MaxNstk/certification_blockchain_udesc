@@ -1,6 +1,9 @@
 #!/bin/bash
 
 # installChaincode PEER ORG
+
+PEER_PORTS=(7051 7055)
+
 function installChaincode() {
   ORG=$1
   setGlobals $ORG
@@ -16,6 +19,25 @@ function installChaincode() {
   successln "Chaincode is installed on peer0.org${ORG}"
 }
 
+function installChaincodeOnUdescPeers() {
+  setUdescGlobals 
+  for PORT in "${PEER_PORTS[@]}"; do
+    infoln "insalling chaincode on udesc peer running on: $PORT"	  
+    export CORE_PEER_ADDRESS=localhost:$PORT
+    set -x
+    peer lifecycle chaincode queryinstalled --output json | jq -r 'try (.installed_chaincodes[].package_id)' | grep ^${PACKAGE_ID}$ >&log.txt
+    if test $? -ne 0; then
+      peer lifecycle chaincode install ${CC_NAME}.tar.gz >&log.txt
+      res=$?
+    fi
+    { set +x; } 2>/dev/null
+    cat log.txt
+    verifyResult $res "Chaincode installation on udesc peer running on: ${PORT} has failed"
+    successln "Chaincode is installed on udesc peer running on: ${PORT}"
+  done 
+}
+
+
 # queryInstalled PEER ORG
 function queryInstalled() {
   ORG=$1
@@ -29,17 +51,53 @@ function queryInstalled() {
   successln "Query installed successful on peer0.org${ORG} on channel"
 }
 
+# queryInstalled PEER ORG
+function queryInstalledUDESC() {
+  setUdescGlobals 
+  for PORT in "${PEER_PORTS[@]}"; do
+    infoln "insalling chaincode on udesc peer running on: $PORT"	  
+    export CORE_PEER_ADDRESS=localhost:$PORT
+    set -x
+    peer lifecycle chaincode queryinstalled --output json | jq -r 'try (.installed_chaincodes[].package_id)' | grep ^${PACKAGE_ID}$ >&log.txt
+    res=$?
+    { set +x; } 2>/dev/null
+    cat log.txt
+    verifyResult $res "Query installed on udesc peer running on: $PORT has failed"
+    successln "Query installed successful on udesc peer running on: $PORT on channel"
+  done
+  
+}
+
 # approveForMyOrg VERSION PEER ORG
 function approveForMyOrg() {
   ORG=$1
   setGlobals $ORG
   set -x
   peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile "$ORDERER_CA" --channelID $CHANNEL_NAME --name ${CC_NAME} --version ${CC_VERSION} --package-id ${PACKAGE_ID} --sequence ${CC_SEQUENCE} ${INIT_REQUIRED} ${CC_END_POLICY} ${CC_COLL_CONFIG} >&log.txt
+  #peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile /home/max/go/src/github.com/MaxNstk/certification_blockchain_udesc/network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem --channelID certificationchannel --name certificatesCC --version 1.0.1 --package-id certificatesCC_1.0.1:0f1e9fc0fab96b35e8f0c7204e2bcce13eb8b136205b8e7988b2ab8f8d7386d0 --sequence 1
   res=$?
   { set +x; } 2>/dev/null
   cat log.txt
   verifyResult $res "Chaincode definition approved on peer0.org${ORG} on channel '$CHANNEL_NAME' failed"
   successln "Chaincode definition approved on peer0.org${ORG} on channel '$CHANNEL_NAME'"
+}
+
+function approveForUdescOrg(){
+    setUdescGlobals 
+  for PORT in "${PEER_PORTS[@]}"; do
+    infoln "insalling chaincode on udesc peer running on: $PORT"	  
+    export CORE_PEER_ADDRESS=localhost:$PORT
+    ORG=$1
+    setGlobals $ORG
+    set -x
+    peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile "$ORDERER_CA" --channelID $CHANNEL_NAME --name ${CC_NAME} --version ${CC_VERSION} --package-id ${PACKAGE_ID} --sequence ${CC_SEQUENCE} ${INIT_REQUIRED} ${CC_END_POLICY} ${CC_COLL_CONFIG} >&log.txt
+    #peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.example.com --tls --cafile /home/max/go/src/github.com/MaxNstk/certification_blockchain_udesc/network/organizations/ordererOrganizations/example.com/tlsca/tlsca.example.com-cert.pem --channelID certificationchannel --name certificatesCC --version 1.0.1 --package-id certificatesCC_1.0.1:0f1e9fc0fab96b35e8f0c7204e2bcce13eb8b136205b8e7988b2ab8f8d7386d0 --sequence 1
+    res=$?
+    { set +x; } 2>/dev/null
+    cat log.txt
+    verifyResult $res "Chaincode definition approved on udesc peer running on: $PORT on channel '$CHANNEL_NAME' failed"
+    successln "Chaincode definition approved on udesc peer running on: $PORT on channel '$CHANNEL_NAME'"
+  done 
 }
 
 # checkCommitReadiness VERSION PEER ORG
