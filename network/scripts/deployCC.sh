@@ -102,7 +102,10 @@ checkCommitReadiness 1 "\"UdescMSP\": true" "\"PublicMSP\": true"
 checkCommitReadiness 2 "\"UdescMSP\": true" "\"PublicMSP\": true"
 
 ## now that we know for sure both orgs have approved, commit the definition
+infoln "Commiting chaincode on udesc"
 commitChaincodeDefinition 1 2
+#infoln "Commiting chaincode on public"
+#commitChaincodeDefinition 2
 
 ## query on both orgs to see that the definition committed successfully
 queryCommitted 1
