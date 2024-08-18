@@ -5,7 +5,7 @@
 function _installChaincode(){
   PORT=$1
   export CORE_PEER_ADDRESS=localhost:$PORT
-  infoln "insalling chaincode on peer running on port $PORT"
+  infoln "installing chaincode on peer running on port $PORT"
 
   set -x
   peer lifecycle chaincode queryinstalled --output json | jq -r 'try (.installed_chaincodes[].package_id)' | grep ^${PACKAGE_ID}$ >&log.txt
@@ -26,7 +26,7 @@ function installChaincode() {
   for PORT in "${UDESC_PEERS_PORTS[@]}"; do
     _installChaincode $PORT
   done
-  
+
   infoln "installing chaincode on public peers"
   setPublicGlobals
   for PORT in "${PUBLIC_PEERS_PORTS[@]}"; do
@@ -51,7 +51,7 @@ function queryInstalled() {
 function queryInstalledUDESC() {
   setUdescGlobals 
   for PORT in "${PEER_PORTS[@]}"; do
-    infoln "insalling chaincode on udesc peer running on: $PORT"	  
+    infoln "installing chaincode on udesc peer running on: $PORT"	  
     export CORE_PEER_ADDRESS=localhost:$PORT
     set -x
     peer lifecycle chaincode queryinstalled --output json | jq -r 'try (.installed_chaincodes[].package_id)' | grep ^${PACKAGE_ID}$ >&log.txt
@@ -81,7 +81,7 @@ function approveForMyOrg() {
 function approveForUdescOrg(){
     setUdescGlobals 
   for PORT in "${PEER_PORTS[@]}"; do
-    infoln "insalling chaincode on udesc peer running on: $PORT"	  
+    infoln "installing chaincode on udesc peer running on: $PORT"	  
     export CORE_PEER_ADDRESS=localhost:$PORT
     ORG=$1
     setGlobals $ORG

@@ -2,6 +2,7 @@
 
 # imports  
 . scripts/envVar.sh
+. scripts/org_definitions.sh
 
 CHANNEL_NAME="$1"
 DELAY="$2"
@@ -63,51 +64,42 @@ createChannel() {
 
 }
 
-# joinChannel ORG
-joinChannel() {
-  ORG=$1
-  FABRIC_CFG_PATH=$PWD/../config/
-  setGlobals $ORG
+_joinChannel(){
+	PORT=$1
+	export CORE_PEER_ADDRESS=localhost:$PORT
+	infoln "joining channel with peer running on port $PORT"
 	local rc=1
 	local COUNTER=1
+
 	## Sometimes Join takes time, hence retry
 	while [ $rc -ne 0 -a $COUNTER -lt $MAX_RETRY ] ; do
-    sleep $DELAY
-    set -x
-    peer channel join -b $BLOCKFILE >&log.txt
-    res=$?
-    { set +x; } 2>/dev/null
-		let rc=$res
-		COUNTER=$(expr $COUNTER + 1)
+		sleep $DELAY
+		set -x
+		peer channel join -b $BLOCKFILE >&log.txt
+		res=$?
+		{ set +x; } 2>/dev/null
+			let rc=$res
+			COUNTER=$(expr $COUNTER + 1)
 	done
 	cat log.txt
-	verifyResult $res "After $MAX_RETRY attempts, peer0.org${ORG} has failed to join channel '$CHANNEL_NAME' "
+	verifyResult $res "After $MAX_RETRY attempts, peer running on port $PORT has failed to join channel '$CHANNEL_NAME' "
+
 }
+# joinChannel ORG
+joinChannel() {
+  FABRIC_CFG_PATH=$PWD/../config/
 
-joinUdescPeers(){
+	infoln "joining channel with udesc peers"
+  setUdescGlobals
+  for PORT in "${UDESC_PEERS_PORTS[@]}"; do
+    _joinChannel $PORT
+  done
 
-	FABRIC_CFG_PATH=$PWD/../config/  
-	setUdescGlobals
-
-	PEER_PORTS=(7051 7055)
-	for PORT in "${PEER_PORTS[@]}"; do
-		  infoln "setting global variables for udesc, peer running on: $PORT"	  
-		  export CORE_PEER_ADDRESS=localhost:$PORT
-			local rc=1
-			local COUNTER=1
-			## Sometimes Join takes time, hence retry
-			while [ $rc -ne 0 -a $COUNTER -lt $MAX_RETRY ] ; do
-				sleep $DELAY
-				set -x
-				peer channel join -b $BLOCKFILE >&log.txt
-				res=$?
-				{ set +x; } 2>/dev/null
-					let rc=$res
-					COUNTER=$(expr $COUNTER + 1)
-			done
-			cat log.txt
-			verifyResult $res "After $MAX_RETRY attempts, udesc peer on port ${PORT} has failed to join channel '$CHANNEL_NAME' "
-  	done
+	infoln "joining channel with public peers"
+  setPublicGlobals
+  for PORT in "${PUBLIC_PEERS_PORTS[@]}"; do
+    _joinChannel $PORT
+  done
 }
 
 setAnchorPeer() {
@@ -135,11 +127,8 @@ createChannel $BFT
 successln "Channel '$CHANNEL_NAME' created"
 
 ## Join all the peers to the channel
-infoln "Joining udesc peer to the channel..."
-joinUdescPeers
-
-infoln "Joining public peer to the channel..."
-joinChannel 2
+infoln "Joining channel..."
+joinChannel 
 
 ## Set the anchor peers for each org in the channel
 infoln "Setting anchor peer for udesc..."
