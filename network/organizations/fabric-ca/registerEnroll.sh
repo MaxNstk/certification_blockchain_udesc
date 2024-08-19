@@ -2,7 +2,7 @@
 
 # i don't know how this works
   echo "registering enrollments"
-  . scripts/org_definitions.sh
+  . ${PWD}/scripts/org_definitions.sh
 
 function createUdesc() {
 

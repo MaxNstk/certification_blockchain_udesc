@@ -1,8 +1,9 @@
 #!/bin/bash
 
 # imports  
-. scripts/envVar.sh
+
 . scripts/org_definitions.sh
+. scripts/envVar.sh
 
 CHANNEL_NAME="$1"
 DELAY="$2"

@@ -109,6 +109,7 @@ function createOrgs() {
 
   infoln "Generating CCP files for Udesc and Public"
   ./organizations/ccp-generate.sh
+
 }
 
 function networkUp() {
