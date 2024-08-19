@@ -8,7 +8,14 @@
 # import utils
 
 NETWORK_HOME=${NETWORK_HOME:-${PWD}}
+
+echo "NETWORK_HOME= ${NETWORK_HOME}"
+
+echo "import script from ${NETWORK_HOME}/scripts/configUpdate.sh"
 . ${NETWORK_HOME}/scripts/configUpdate.sh
+
+echo "import script from ${NETWORK_HOME}/scripts/org_definitions.sh"
+. ${NETWORK_HOME}/scripts/org_definitions.sh
 
 
 # NOTE: This requires jq and configtxlator for execution.
@@ -20,13 +27,15 @@ createAnchorPeerUpdate() {
 
   if [ $ORG -eq 1 ]; then
     HOST="peerCEAVI.udesc.local.com"
-    PORT=7051
+    PORT=${UDESC_ANCHOR_PEER_PORT}
   elif [ $ORG -eq 2 ]; then
     HOST="peer0.public.local.com"
-    PORT=9051
+    PORT=${PUBLIC_ANCHOR_PEER_PORT}
   else
     errorln "Org${ORG} unknown"
   fi
+
+  infoln "Using host ${HOST} and port ${PORT}"
 
   set -x
   # Modify the configuration to append the anchor peer 
