@@ -4,8 +4,8 @@ cd network
 
 ./network.sh down
 ./network.sh up createChannel -c certificationchannel -ca
-./network.sh deployCC -ccn certificatesCC -ccp ../chaincode-typescript/ -ccl typescript
+./network.sh deployCC -ccn certificatesCC -ccp ../chaincode/ -ccl typescript
 
-cd ../application-gateway-typescript
+cd ../application-gateway
 npm install
 npm start
