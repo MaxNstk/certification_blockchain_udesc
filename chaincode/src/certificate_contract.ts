@@ -31,9 +31,9 @@ export class AssetTransferContract extends Contract {
                 hasSentAllRequiredDocuments: true, 
                 wentToDegreeGranting: true,
                 note: "Certificado emitido sem pendências." ,
-                creationUser: 'Caue Lopes',
+                creationUser: "Caue Lopes",
                 creationDate: new Date().toISOString(),
-                updateUser: 'Davi Lemes',
+                updateUser: "Davi Lemes",
                 updateDate: new Date().toISOString(),
             },
             {
@@ -54,14 +54,15 @@ export class AssetTransferContract extends Contract {
                 hasSentAllRequiredDocuments: true, 
                 wentToDegreeGranting: false, 
                 note: "João faltou na cerimônia, é um pangaré" ,
-                creationUser: 'Caue Lopes',
+                creationUser: "Caue Lopes",
                 creationDate: new Date().toISOString(),
-                updateUser: 'Davi Lemes',
+                updateUser: "Davi Lemes",
                 updateDate: new Date().toISOString(),                
             }
         ];
         for (const certificate of certificates) {
             console.info(`Certificate ${certificate.certificateNumber} initialized`);
+            await ctx.stub.putState(certificate.certificateNumber, Buffer.from(stringify(sortKeysRecursive(certificate))));
         }
     }
 
@@ -133,7 +134,6 @@ export class AssetTransferContract extends Contract {
     // UpdateAsset updates an existing asset in the world state with provided parameters.
     @Transaction()
     public async UpdateCertificate(ctx: Context,
-        id: string,
         certificateNumber: string,
         certificateEmissionDate: string,
         certificateCourse: string,
@@ -178,7 +178,7 @@ export class AssetTransferContract extends Contract {
             creationUser:currentCertificate.creationUser,
             creationDate:currentCertificate.creationDate
         };
-        await ctx.stub.putState(id, Buffer.from(stringify(sortKeysRecursive(updatedCertificate))));
+        await ctx.stub.putState(certificateNumber, Buffer.from(stringify(sortKeysRecursive(updatedCertificate))));
     }
 
     // DeleteCertificate deletes an given asset from the world state.
