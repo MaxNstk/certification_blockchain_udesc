@@ -34,7 +34,6 @@ const peerEndpoint = envOrDefault('PEER_ENDPOINT', 'localhost:7051');
 const peerHostAlias = envOrDefault('PEER_HOST_ALIAS', 'peerCEAVI.udesc.local.com');
 
 const utf8Decoder = new TextDecoder();
-const CertificateId = `Certificate${String(Date.now())}`;
 
 async function main(): Promise<void> {
     displayInputParameters();
@@ -77,14 +76,15 @@ async function main(): Promise<void> {
         // Create a new Certificate on the ledger.
         await createCertificate(contract);
 
-        // Update an existing Certificate asynchronously.
-        await transferCertificateAsync(contract);
-
         // Get the Certificate details by CertificateID.
-        await readCertificateByID(contract);
+        await readCertificateByNumber(contract);
 
-        // Update an Certificate which does not exist.
-        await updateNonExistentCertificate(contract)
+        // Create a new Certificate on the ledger.
+        await updateCertificate(contract);
+
+        // Return all the current Certificates on the ledger.
+        await getAllCertificates(contract);
+
     } finally {
         gateway.close();
         client.close();
@@ -126,10 +126,6 @@ async function newSigner(): Promise<Signer> {
     return signers.newPrivateKeySigner(privateKey);
 }
 
-/**
- * This type of transaction would typically only be run once by an application the first time it was started after its
- * initial deployment. A new version of the chaincode deployed later would likely not need to run an "init" function.
- */
 async function initLedger(contract: Contract): Promise<void> {
     console.log('\n--> Submit Transaction: InitLedger, function creates the initial set of Certificates on the ledger');
 
@@ -138,9 +134,6 @@ async function initLedger(contract: Contract): Promise<void> {
     console.log('*** Transaction committed successfully');
 }
 
-/**
- * Evaluate a transaction to query ledger state.
- */
 async function getAllCertificates(contract: Contract): Promise<void> {
     console.log('\n--> Evaluate Transaction: GetAllCertificates, function returns all the current Certificates on the ledger');
 
@@ -151,11 +144,8 @@ async function getAllCertificates(contract: Contract): Promise<void> {
     console.log('*** Result:', result);
 }
 
-/**
- * Submit a transaction synchronously, blocking until it has been committed to the ledger.
- */
 async function createCertificate(contract: Contract): Promise<void> {
-    console.log('\n--> Submit Transaction: CreateCertificate, creates new Certificate with ID, Color, Size, Owner and AppraisedValue arguments');
+    console.log('\n--> Submit Transaction: CreateCertificate');
 
     await contract.submitTransaction(
         'CreateCertificate',
@@ -175,79 +165,49 @@ async function createCertificate(contract: Contract): Promise<void> {
         'true', // hasCompletedAllSubjects
         'true', // hasSentAllRequiredDocuments
         'true', // wentToDegreeGranting
-        'Certificado emitido sem pendências.' // note
+        'Certificado emitido sem pendências.', // note
+        'Caue',
+        new Date().toISOString(),
     );
-    
-
     console.log('*** Transaction committed successfully');
 }
 
-/**
- * Submit transaction asynchronously, allowing the application to process the smart contract response (e.g. update a UI)
- * while waiting for the commit notification.
- */
-async function transferCertificateAsync(contract: Contract): Promise<void> {
-    console.log('\n--> Async Submit Transaction: TransferCertificate, updates existing Certificate owner');
-
-    const commit = await contract.submitAsync('TransferCertificate', {
-        arguments: [CertificateId, 'Saptha'],
-    });
-    const oldOwner = utf8Decoder.decode(commit.getResult());
-
-    console.log(`*** Successfully submitted transaction to transfer ownership from ${oldOwner} to Saptha`);
-    console.log('*** Waiting for transaction commit');
-
-    const status = await commit.getStatus();
-    if (!status.successful) {
-        throw new Error(`Transaction ${status.transactionId} failed to commit with status code ${String(status.code)}`);
-    }
-
-    console.log('*** Transaction committed successfully');
-}
-
-async function readCertificateByID(contract: Contract): Promise<void> {
-    console.log('\n--> Evaluate Transaction: ReadCertificate, function returns Certificate attributes');
-
-    const resultBytes = await contract.evaluateTransaction('ReadCertificate', CertificateId);
-
-    const resultJson = utf8Decoder.decode(resultBytes);
-    const result: unknown = JSON.parse(resultJson);
-    console.log('*** Result:', result);
-}
-
-/**
- * submitTransaction() will throw an error containing details of any error responses from the smart contract.
- */
-async function updateNonExistentCertificate(contract: Contract): Promise<void>{
-    console.log('\n--> Submit Transaction: UpdateCertificate Certificate70, Certificate70 does not exist and should return an error');
-
-    try {
-
+async function updateCertificate(contract: Contract): Promise<void> {
 
     await contract.submitTransaction(
         'UpdateCertificate',
-        '4', // certificateNumber
+        '1', // certificateNumber
         '2024-08-04T12:00:00Z', // certificateEmissionDate
         'Computer Science', // certificateCourse
         'valid', // certificateStatus
-        'Alice Smith', // ownerName
+        'Max Starke', // ownerName
         '123456789', // ownerRG
         '1990-05-15T00:00:00Z', // ownerBirthDate
         'Santa Catarina', // ownerBirthState
         'Centro de Ciências Tecnológicas', // campusName
         'CEAVI', // campusAcronym
-        'Prof. João Santos', // campusDirector
-        'Reitora Maria Oliveira', // universityPresidentName
+        'Mudou diretor', // campusDirector
+        'Presidente', // universityPresidentName
         'Coordenador Carlos Pereira', // universityCertificateCoordinator
         'true', // hasCompletedAllSubjects
         'true', // hasSentAllRequiredDocuments
         'true', // wentToDegreeGranting
-        'Certificado emitido sem pendências.' // note
+        'Certificado emitido sem pendências.', // note
+        'Davi',
+        new Date().toISOString(),
     );
-        console.log('******** FAILED to return an error');
-    } catch (error) {
-        console.log('*** Successfully caught the error: \n', error);
-    }
+    console.log('*** Transaction committed successfully');
+}
+
+
+async function readCertificateByNumber(contract: Contract): Promise<void> {
+    console.log('\n--> Evaluate Transaction: ReadCertificate, function returns Certificate attributes');
+
+    const resultBytes = await contract.evaluateTransaction('ReadCertificate', "1");
+
+    const resultJson = utf8Decoder.decode(resultBytes);
+    const result: unknown = JSON.parse(resultJson);
+    console.log('*** Result:', result);
 }
 
 /**

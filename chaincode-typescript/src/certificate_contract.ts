@@ -30,7 +30,11 @@ export class AssetTransferContract extends Contract {
                 hasCompletedAllSubjects: true, 
                 hasSentAllRequiredDocuments: true, 
                 wentToDegreeGranting: true,
-                note: "Certificado emitido sem pendências." 
+                note: "Certificado emitido sem pendências.", 
+                creationUser: "Maxuel",
+                creationDate: "2002-05-29T00:00:00Z",
+                updateUser: "Jones",
+                updateDate: "2002-05-29T00:00:00Z"
             },
             {
                 certificateNumber: "2",
@@ -49,21 +53,20 @@ export class AssetTransferContract extends Contract {
                 hasCompletedAllSubjects: true,
                 hasSentAllRequiredDocuments: true, 
                 wentToDegreeGranting: false, 
-                note: "João faltou na cerimônia, é um pangaré" 
+                note: "João faltou na cerimônia, é um pangaré" ,
+                creationUser: "Jones",
+                creationDate: "2002-05-29T00:00:00Z",
+                updateUser: "Maxuel",
+                updateDate: "2002-05-29T00:00:00Z"                
             }
         ];
 
         for (const certificate of certificates) {
-            // example of how to write to world state deterministically
-            // use convetion of alphabetic order
-            // we insert data in alphabetic order using 'json-stringify-deterministic' and 'sort-keys-recursive'
-            // when retrieving data, in any lang, the order of data will be the same and consequently also the corresonding hash
             await ctx.stub.putState(certificate.certificateNumber, Buffer.from(stringify(sortKeysRecursive(certificate))));
             console.info(`Certificate ${certificate.certificateNumber} initialized`);
         }
     }
 
-    // CreateAsset issues a new asset to the world state with given details.
     @Transaction()
     public async CreateCertificate(ctx: Context,
         certificateNumber: string,
@@ -82,13 +85,15 @@ export class AssetTransferContract extends Contract {
         hasCompletedAllSubjects: boolean,
         hasSentAllRequiredDocuments: boolean,
         wentToDegreeGranting: boolean,
-        note: string
+        note: string,
+        user: string,
+        dateString: string
     ): Promise<void> {
+        console.info("creating certificate with number "+certificateNumber);
         const exists = await this.CertificateExists(ctx, certificateNumber);
         if (exists) {
             throw new Error(`The certificate ${certificateNumber} already exists`);
         }
-        // Create the asset object with the new fields
         const certificate: Certificate = {
             certificateNumber,
             certificateEmissionDate,
@@ -106,13 +111,15 @@ export class AssetTransferContract extends Contract {
             hasCompletedAllSubjects,
             hasSentAllRequiredDocuments,
             wentToDegreeGranting,
-            note
+            note,
+            creationUser: user,
+            creationDate: dateString,
+            updateUser: user,
+            updateDate: dateString
         };
-        // Insert data in deterministic order
         await ctx.stub.putState(certificateNumber, Buffer.from(stringify(sortKeysRecursive(certificate))));
     }
 
-    // ReadAsset returns the asset stored in the world state with given id.
     @Transaction(false)
     public async ReadCertificate(ctx: Context, certificateNumber: string): Promise<string> {
         const assetJSON = await ctx.stub.getState(certificateNumber); // get the asset from chaincode state
@@ -122,10 +129,8 @@ export class AssetTransferContract extends Contract {
         return assetJSON.toString();
     }
 
-    // UpdateAsset updates an existing asset in the world state with provided parameters.
     @Transaction()
     public async UpdateCertificate(ctx: Context,
-        id: string,
         certificateNumber: string,
         certificateEmissionDate: string,
         certificateCourse: string,
@@ -142,13 +147,16 @@ export class AssetTransferContract extends Contract {
         hasCompletedAllSubjects: boolean,
         hasSentAllRequiredDocuments: boolean,
         wentToDegreeGranting: boolean,
-        note: string
+        note: string,
+        user: string,
+        dateString: string
     ): Promise<void> {
         const exists = await this.CertificateExists(ctx, certificateNumber);
         if (!exists) {
             throw new Error(`The certificate ${certificateNumber} does not exist`);
         }
-        // Update the asset with new data
+        const currentCertificate: Certificate = JSON.parse(await this.ReadCertificate(ctx, certificateNumber)) as Certificate;
+        
         const updatedCertificate: Certificate = {
             certificateNumber,
             certificateEmissionDate,
@@ -166,13 +174,15 @@ export class AssetTransferContract extends Contract {
             hasCompletedAllSubjects,
             hasSentAllRequiredDocuments,
             wentToDegreeGranting,
-            note
+            note,
+            creationUser: currentCertificate.creationUser,
+            creationDate: currentCertificate.creationDate,
+            updateUser: user,
+            updateDate: dateString
         };
-        // Insert data in deterministic order
-        await ctx.stub.putState(id, Buffer.from(stringify(sortKeysRecursive(updatedCertificate))));
+        await ctx.stub.putState(certificateNumber, Buffer.from(stringify(sortKeysRecursive(updatedCertificate))));
     }
 
-    // DeleteCertificate deletes an given asset from the world state.
     @Transaction()
     public async DeleteCertificate(ctx: Context, certificateNumber: string): Promise<void> {
         const exists = await this.CertificateExists(ctx, certificateNumber);
@@ -182,20 +192,19 @@ export class AssetTransferContract extends Contract {
         return ctx.stub.deleteState(certificateNumber);
     }
 
-    // CertificateExists returns true when asset with given ID exists in world state.
     @Transaction(false)
     @Returns('boolean')
     public async CertificateExists(ctx: Context, certificateNumber: string): Promise<boolean> {
+        console.info(`Checking if certificate with number ${certificateNumber} exists`);
         const assetJSON = await ctx.stub.getState(certificateNumber);
+        console.info(`Response exists: ${assetJSON.toString()}`);
         return assetJSON.length > 0;
     }
 
-    // GetAllAssets returns all assets found in the world state.
     @Transaction(false)
     @Returns('string')
     public async GetAllCertificates(ctx: Context): Promise<string> {
         const allResults = [];
-        // range query with empty string for startKey and endKey does an open-ended query of all assets in the chaincode namespace.
         const iterator = await ctx.stub.getStateByRange('', '');
         let result = await iterator.next();
         while (!result.done) {
