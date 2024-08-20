@@ -121,7 +121,7 @@ export class AssetTransferContract extends Contract {
     }
 
     @Transaction(false)
-    public async ReadCertificate(ctx: Context, certificateNumber: string): Promise<string> {
+    public async RetrieveCompleteCertificate(ctx: Context, certificateNumber: string): Promise<string> {
         const assetJSON = await ctx.stub.getState(certificateNumber); // get the asset from chaincode state
         if (assetJSON.length === 0) {
             throw new Error(`The certificate ${certificateNumber} does not exist`);
@@ -155,7 +155,7 @@ export class AssetTransferContract extends Contract {
         if (!exists) {
             throw new Error(`The certificate ${certificateNumber} does not exist`);
         }
-        const currentCertificate: Certificate = JSON.parse(await this.ReadCertificate(ctx, certificateNumber)) as Certificate;
+        const currentCertificate: Certificate = JSON.parse(await this.RetrieveCompleteCertificate(ctx, certificateNumber)) as Certificate;
         
         const updatedCertificate: Certificate = {
             certificateNumber,

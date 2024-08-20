@@ -77,7 +77,7 @@ async function main(): Promise<void> {
         await createCertificate(contract);
 
         // Get the Certificate details by CertificateID.
-        await readCertificateByNumber(contract);
+        await RetrieveCompleteCertificateByNumber(contract);
 
         // Create a new Certificate on the ledger.
         await updateCertificate(contract);
@@ -200,10 +200,10 @@ async function updateCertificate(contract: Contract): Promise<void> {
 }
 
 
-async function readCertificateByNumber(contract: Contract): Promise<void> {
-    console.log('\n--> Evaluate Transaction: ReadCertificate, function returns Certificate attributes');
+async function RetrieveCompleteCertificateByNumber(contract: Contract): Promise<void> {
+    console.log('\n--> Evaluate Transaction: RetrieveCompleteCertificate, function returns Certificate attributes');
 
-    const resultBytes = await contract.evaluateTransaction('ReadCertificate', "1");
+    const resultBytes = await contract.evaluateTransaction('RetrieveCompleteCertificate', "1");
 
     const resultJson = utf8Decoder.decode(resultBytes);
     const result: unknown = JSON.parse(resultJson);
