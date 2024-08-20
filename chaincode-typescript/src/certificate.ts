@@ -66,4 +66,5 @@ export class Certificate {
 
     @Property()
     public updateDate: string = new Date().toISOString(); 
+
 }

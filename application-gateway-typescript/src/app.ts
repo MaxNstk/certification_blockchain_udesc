@@ -216,41 +216,6 @@ async function readCertificateByID(contract: Contract): Promise<void> {
 }
 
 /**
- * submitTransaction() will throw an error containing details of any error responses from the smart contract.
- */
-async function updateNonExistentCertificate(contract: Contract): Promise<void>{
-    console.log('\n--> Submit Transaction: UpdateCertificate Certificate70, Certificate70 does not exist and should return an error');
-
-    try {
-
-
-    await contract.submitTransaction(
-        'UpdateCertificate',
-        '4', // certificateNumber
-        '2024-08-04T12:00:00Z', // certificateEmissionDate
-        'Computer Science', // certificateCourse
-        'valid', // certificateStatus
-        'Alice Smith', // ownerName
-        '123456789', // ownerRG
-        '1990-05-15T00:00:00Z', // ownerBirthDate
-        'Santa Catarina', // ownerBirthState
-        'Centro de Ciências Tecnológicas', // campusName
-        'CEAVI', // campusAcronym
-        'Prof. João Santos', // campusDirector
-        'Reitora Maria Oliveira', // universityPresidentName
-        'Coordenador Carlos Pereira', // universityCertificateCoordinator
-        'true', // hasCompletedAllSubjects
-        'true', // hasSentAllRequiredDocuments
-        'true', // wentToDegreeGranting
-        'Certificado emitido sem pendências.' // note
-    );
-        console.log('******** FAILED to return an error');
-    } catch (error) {
-        console.log('*** Successfully caught the error: \n', error);
-    }
-}
-
-/**
  * envOrDefault() will return the value of an environment variable, or a default value if the variable is undefined.
  */
 function envOrDefault(key: string, defaultValue: string): string {
