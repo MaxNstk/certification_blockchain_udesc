@@ -108,7 +108,7 @@ function printHelp() {
     println
     println " Examples:"
     println "   network.sh deployCCAAS  -ccn basicj -ccp ../asset-transfer-basic/chaincode-java"
-    println "   network.sh deployCCAAS  -ccn basict -ccp ../asset-transfer-basic/chaincode-typescript -ccaasdocker false" 
+    println "   network.sh deployCCAAS  -ccn basict -ccp ../asset-transfer-basic/chaincode -ccaasdocker false" 
   elif [ "$USAGE" == "cc" ] ; then
     println "Usage: "
     println "  network.sh cc <Mode> [Flags]"
