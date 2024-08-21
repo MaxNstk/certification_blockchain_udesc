@@ -16,7 +16,7 @@ const chaincodeName = envOrDefault('CHAINCODE_NAME', 'certificatesCC');
 const mspId = envOrDefault('MSP_ID', 'UdescMSP');
 
 // Path to crypto materials.
-const cryptoPath = envOrDefault('CRYPTO_PATH', path.resolve(__dirname, '..', '..', 'network', 'organizations', 'peerOrganizations', 'udesc.local.com'));
+const cryptoPath = envOrDefault('CRYPTO_PATH', path.resolve(__dirname, '..', '..','blockchain', 'network', 'organizations', 'peerOrganizations', 'udesc.local.com'));
 
 // Path to user private key directory.
 const keyDirectoryPath = envOrDefault('KEY_DIRECTORY_PATH', path.resolve(cryptoPath, 'users', 'userCEAVI@udesc.local.com', 'msp', 'keystore'));
