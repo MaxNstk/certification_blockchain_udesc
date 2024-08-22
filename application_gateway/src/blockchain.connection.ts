@@ -15,9 +15,12 @@ class BlockchainConnection {
   private chaincodeName: string;
   private cryptoPath: string;
   private certDirectoryPath: string;
+  private keyDirectoryPath: string;
   private tlsCertPath: string;
   private peerEndpoint: string;
   private peerHostAlias: string;
+
+  private utf8Decoder = new TextDecoder();
 
   private constructor() {
     // Inicialização privada não pode ser assíncrona, então inicialize variáveis aqui
@@ -89,8 +92,7 @@ class BlockchainConnection {
   }
 
   private async newSigner(): Promise<Signer> {
-    const keyDirectoryPath = this.envOrDefault('KEY_DIRECTORY_PATH', path.resolve(this.cryptoPath, 'users', 'userCEAVI@udesc.local.com', 'msp', 'keystore'));
-    const keyPath = await this.getFirstDirFileName(keyDirectoryPath);
+    const keyPath = await this.getFirstDirFileName(this.keyDirectoryPath);
     const privateKeyPem = await fs.readFile(keyPath);
     const privateKey = crypto.createPrivateKey(privateKeyPem);
     return signers.newPrivateKeySigner(privateKey);
@@ -104,6 +106,7 @@ class BlockchainConnection {
     this.cryptoPath = this.envOrDefault('CRYPTO_PATH', path.resolve(__dirname, '..', '..', 'blockchain', 'network', 'organizations', 'peerOrganizations', 'udesc.local.com'));
     this.certDirectoryPath = this.envOrDefault('CERT_DIRECTORY_PATH', path.resolve(this.cryptoPath, 'users', 'userCEAVI@udesc.local.com', 'msp', 'signcerts'));
     this.tlsCertPath = this.envOrDefault('TLS_CERT_PATH', path.resolve(this.cryptoPath, 'peers', 'peerCEAVI.udesc.local.com', 'tls', 'ca.crt'));
+    this.keyDirectoryPath = this.envOrDefault('KEY_DIRECTORY_PATH', path.resolve(this.cryptoPath, 'users', 'userCEAVI@udesc.local.com', 'msp', 'keystore'));
     this.peerEndpoint = this.envOrDefault('PEER_ENDPOINT', 'localhost:7051');
     this.peerHostAlias = this.envOrDefault('PEER_HOST_ALIAS', 'peerCEAVI.udesc.local.com');
     this.channelName = this.envOrDefault('CHANNEL_NAME', 'certificationchannel');
@@ -115,9 +118,19 @@ class BlockchainConnection {
     console.log(`chaincodeName:     ${this.chaincodeName}`);
     console.log(`cryptoPath:        ${this.cryptoPath}`);
     console.log(`certDirectoryPath: ${this.certDirectoryPath}`);
+    console.log(`keyDirectoryPath:  ${this.keyDirectoryPath}`);
     console.log(`tlsCertPath:       ${this.tlsCertPath}`);
     console.log(`peerEndpoint:      ${this.peerEndpoint}`);
     console.log(`peerHostAlias:     ${this.peerHostAlias}`);
+  }
+
+  public async evaluateTransaction(transaction:string, ...args: Array<string | Uint8Array>): Promise<any> {
+    console.log(`\n--> Evaluate Transaction: ${transaction}, with args: ${args}`);
+    const resultBytes = await this.getContract().evaluateTransaction(transaction,...args);
+    const resultJson = this.utf8Decoder.decode(resultBytes);
+    const result: unknown = JSON.parse(resultJson);
+    console.log('*** Result:', result);
+    return result;
   }
 }
 
