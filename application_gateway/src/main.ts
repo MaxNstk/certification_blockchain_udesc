@@ -17,55 +17,23 @@ async function main(): Promise<void> {
 
   try {
       const contract = connection.getContract();
-
-      // Initialize a set of Certificate data on the ledger using the chaincode 'InitLedger' function.
       await initLedger(contract);
-
-      // Return all the current Certificates on the ledger.
-      await getAllCertificates(contract);
-
-      // Create a new Certificate on the ledger.
-      await createCertificate(contract);
-
-      // Get the Certificate details by CertificateID.
-      await RetrieveCompleteCertificateByNumber(contract, "1");
-
-      // Create a new Certificate on the ledger.
-      await updateCertificate(contract);
-
-      // Return all the current Certificates on the ledger.
-      await getAllCertificates(contract);
-
       bootstrap();
-
   } catch(e){
     console.log(e);
   }
-  finally {
-    connection.disconnect();
-  }
 }
-
 main().catch((error: unknown) => {
     console.error('******** FAILED to run the application:', error);
     process.exitCode = 1;
 });
+
 async function initLedger(contract: Contract): Promise<void> {
     console.log('\n--> Submit Transaction: InitLedger, function creates the initial set of Certificates on the ledger');
 
     await contract.submitTransaction('InitLedger');
 
     console.log('*** Transaction committed successfully');
-}
-
-async function getAllCertificates(contract: Contract): Promise<void> {
-    console.log('\n--> Evaluate Transaction: GetAllCertificates, function returns all the current Certificates on the ledger');
-
-    const resultBytes = await contract.evaluateTransaction('GetAllCertificates');
-
-    const resultJson = utf8Decoder.decode(resultBytes);
-    const result: unknown = JSON.parse(resultJson);
-    console.log('*** Result:', result);
 }
 
 async function createCertificate(contract: Contract): Promise<void> {
@@ -124,12 +92,4 @@ async function updateCertificate(contract: Contract): Promise<void> {
 }
 
 
-async function RetrieveCompleteCertificateByNumber(contract: Contract, certificateNumber:string): Promise<void> {
-    console.log('\n--> Evaluate Transaction: RetrieveCompleteCertificate, function returns Certificate attributes');
 
-    const resultBytes = await contract.evaluateTransaction('RetrieveCompleteCertificate', certificateNumber);
-
-    const resultJson = utf8Decoder.decode(resultBytes);
-    const result: unknown = JSON.parse(resultJson);
-    console.log('*** Result:', result);
-}
