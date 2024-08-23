@@ -52,6 +52,8 @@ class BlockchainConnection {
 
     this.network = this.gateway.getNetwork(this.channelName);
     this.contract = this.network.getContract(this.chaincodeName);
+
+    this.initLedger();
   }
 
   public disconnect(): void {
@@ -136,6 +138,11 @@ class BlockchainConnection {
       console.log(`Erro: ${e}`)
     }
   }
+  public async initLedger(): Promise<void> {
+    console.log('\n--> Submit Transaction: InitLedger, function creates the initial set of Certificates on the ledger');
+    await this.getContract().submitTransaction('InitLedger');
+    console.log('*** Transaction committed successfully');
+}
 }
 
 export default BlockchainConnection;
