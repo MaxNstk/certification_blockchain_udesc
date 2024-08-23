@@ -5,11 +5,14 @@ import { CertificatesModule } from './certificates/certificates.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
 
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 @Module({
   controllers: [AppController],
   providers: [AppService],
   imports: [
-    MongooseModule.forRoot('mongodb://admin:admin@localhost:27017/gatewaydb'),
+    MongooseModule.forRoot(process.env.MONGO_URI),
     UsersModule,
     CertificatesModule
   ],
