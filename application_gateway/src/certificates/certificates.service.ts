@@ -15,21 +15,66 @@ export class CertificatesService {
         return await connection.evaluateTransaction('RetrieveCompleteCertificate',certificateNumber)
     }
 
-    async createCertificate(certificateDTO: CertificateDTO): Promise<void> {
+    async createCertificate(certificateDTO: CertificateDTO): Promise<any> {
         const connection: BlockchainConnection = await BlockchainConnection.getInstance();
-        certificateDTO = new CertificateDTO(certificateDTO);
-        return await connection.evaluateTransaction('CreateCertificate',
-            ...[...certificateDTO.toTransactionFormat(),'UsuarioSessao',new Date().toISOString(),
-            ]
-        );
+        try{
+            await connection.getContract().submitTransaction(  
+                'CreateCertificate',
+                certificateDTO.certificateNumber,
+                new Date(certificateDTO.certificateEmissionDate).toISOString(),
+                certificateDTO.certificateCourse,
+                certificateDTO.certificateStatus,
+                certificateDTO.ownerName,
+                certificateDTO.ownerRG,
+                new Date(certificateDTO.ownerBirthDate).toISOString(),
+                certificateDTO.ownerBirthState,
+                certificateDTO.campusName,
+                certificateDTO.campusAcronym,
+                certificateDTO.campusDirector,
+                certificateDTO.universityPresidentName,
+                certificateDTO.universityCertificateCoordinator,
+                certificateDTO.hasCompletedAllSubjects.toString(),
+                certificateDTO.hasSentAllRequiredDocuments.toString(),
+                certificateDTO.wentToDegreeGranting.toString(),
+                certificateDTO.note,
+                'UsuarioSessao',
+                new Date().toISOString(),
+            );
+            return await connection.evaluateTransaction('RetrieveCompleteCertificate',certificateDTO.certificateNumber)         
+        } catch (error) {
+            console.log('*** Successfully caught the error: \n', error);
+        }
     }
 
-    async updateCertificate(certificateDTO: CertificateDTO): Promise<void> {
+    async updateCertificate(certificateDTO: CertificateDTO, certificateNumber:string): Promise<void> {
         const connection: BlockchainConnection = await BlockchainConnection.getInstance();
-        return await connection.evaluateTransaction('UpdateCertificate',
-            ...[...certificateDTO.toTransactionFormat(),'UsuarioSessao',new Date().toISOString(),
-            ]
-        );
+        try{
+            await connection.getContract().submitTransaction(  
+                'UpdateCertificate',
+                certificateNumber,
+                new Date(certificateDTO.certificateEmissionDate).toISOString(),
+                certificateDTO.certificateCourse,
+                certificateDTO.certificateStatus,
+                certificateDTO.ownerName,
+                certificateDTO.ownerRG,
+                new Date(certificateDTO.ownerBirthDate).toISOString(),
+                certificateDTO.ownerBirthState,
+                certificateDTO.campusName,
+                certificateDTO.campusAcronym,
+                certificateDTO.campusDirector,
+                certificateDTO.universityPresidentName,
+                certificateDTO.universityCertificateCoordinator,
+                certificateDTO.hasCompletedAllSubjects.toString(),
+                certificateDTO.hasSentAllRequiredDocuments.toString(),
+                certificateDTO.wentToDegreeGranting.toString(),
+                certificateDTO.note,
+                'UsuarioSessao',
+                new Date().toISOString(),
+            );
+            return await connection.evaluateTransaction('RetrieveCompleteCertificate',certificateDTO.certificateNumber)         
+        } catch (error) {
+            console.log('*** Successfully caught the error: \n', error);
+        }
     }
   
 }

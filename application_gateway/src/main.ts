@@ -41,23 +41,23 @@ async function createCertificate(contract: Contract): Promise<void> {
 
     await contract.submitTransaction(
         'CreateCertificate',
-        '3', // certificateNumber
-        '2024-08-04T12:00:00Z', // certificateEmissionDate
-        'Computer Science', // certificateCourse
-        'valid', // certificateStatus
-        'Alice Smith', // ownerName
-        '123456789', // ownerRG
-        '1990-05-15T00:00:00Z', // ownerBirthDate
-        'Santa Catarina', // ownerBirthState
-        'Centro de Ciências Tecnológicas', // campusName
-        'CEAVI', // campusAcronym
-        'Prof. João Santos', // campusDirector
-        'Reitora Maria Oliveira', // universityPresidentName
-        'Coordenador Carlos Pereira', // universityCertificateCoordinator
-        'true', // hasCompletedAllSubjects
-        'true', // hasSentAllRequiredDocuments
-        'true', // wentToDegreeGranting
-        'Certificado emitido sem pendências.', // note
+        '3', 
+        '2024-08-04T12:00:00Z',
+        'Computer Science', 
+        'valid', 
+        'Alice Smith', 
+        '123456789', 
+        '1990-05-15T00:00:00Z',
+        'Santa Catarina', 
+        'Centro de Ciências Tecnológicas', 
+        'CEAVI', 
+        'Prof. João Santos', 
+        'Reitora Maria Oliveira', 
+        'Coordenador Carlos Pereira',
+        'true', 
+        'true', 
+        'true', 
+        'Certificado emitido sem pendências.',
         'Caue',
         new Date().toISOString(),
     );

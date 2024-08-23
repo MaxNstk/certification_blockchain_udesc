@@ -125,12 +125,16 @@ class BlockchainConnection {
   }
 
   public async evaluateTransaction(transaction:string, ...args: Array<string | Uint8Array>): Promise<any> {
-    console.log(`\n--> Evaluate Transaction: ${transaction}, with args: ${args}`);
-    const resultBytes = await this.getContract().evaluateTransaction(transaction,...args);
-    const resultJson = this.utf8Decoder.decode(resultBytes);
-    const result: unknown = JSON.parse(resultJson);
-    console.log('*** Result:', result);
-    return result;
+    try{
+      console.log(`\n--> Evaluate Transaction: ${transaction}, with args: ${args}`);
+      const resultBytes = await this.getContract().evaluateTransaction(transaction,...args);
+      const resultJson = this.utf8Decoder.decode(resultBytes);
+      const result: unknown = JSON.parse(resultJson);
+      console.log('*** Result:', result);
+      return result;
+    }catch(e){
+      console.log(`Erro: ${e}`)
+    }
   }
 }
 

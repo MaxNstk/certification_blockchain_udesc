@@ -88,36 +88,45 @@ export class AssetTransferContract extends Contract {
         note: string,
         user: string,
         dateString: string
-    ): Promise<void> {
+    ): Promise<string> {
         console.info("creating certificate with number "+certificateNumber);
         const exists = await this.CertificateExists(ctx, certificateNumber);
         if (exists) {
             throw new Error(`The certificate ${certificateNumber} already exists`);
         }
-        const certificate: Certificate = {
-            certificateNumber,
-            certificateEmissionDate,
-            certificateCourse,
-            certificateStatus,
-            ownerName,
-            ownerRG,
-            ownerBirthDate,
-            ownerBirthState,
-            campusName,
-            campusAcronym,
-            campusDirector,
-            universityPresidentName,
-            universityCertificateCoordinator,
-            hasCompletedAllSubjects,
-            hasSentAllRequiredDocuments,
-            wentToDegreeGranting,
-            note,
-            creationUser: user,
-            creationDate: dateString,
-            updateUser: user,
-            updateDate: dateString
-        };
-        await ctx.stub.putState(certificateNumber, Buffer.from(stringify(sortKeysRecursive(certificate))));
+        try{
+            const certificate: Certificate = {
+                certificateNumber,
+                certificateEmissionDate,
+                certificateCourse,
+                certificateStatus,
+                ownerName,
+                ownerRG,
+                ownerBirthDate,
+                ownerBirthState,
+                campusName,
+                campusAcronym,
+                campusDirector,
+                universityPresidentName,
+                universityCertificateCoordinator,
+                hasCompletedAllSubjects,
+                hasSentAllRequiredDocuments,
+                wentToDegreeGranting,
+                note,
+                creationUser: user,
+                creationDate: dateString,
+                updateUser: user,
+                updateDate: dateString
+            };
+            const stringContent = stringify(sortKeysRecursive(certificate));
+            await ctx.stub.putState(certificateNumber, Buffer.from(stringContent));
+            console.info(`Certificate ${certificateNumber} created`);
+            return await this.RetrieveCompleteCertificate(ctx,certificate.certificateNumber);
+        }catch(e){
+            const response = `Error creating certificate: ${e}` 
+            console.info(response);
+            return response;        }
+            
     }
 
     @Transaction(false)
@@ -150,37 +159,46 @@ export class AssetTransferContract extends Contract {
         note: string,
         user: string,
         dateString: string
-    ): Promise<void> {
+    ): Promise<string> {
+        console.info("updating certificate with number "+certificateNumber);
         const exists = await this.CertificateExists(ctx, certificateNumber);
         if (!exists) {
             throw new Error(`The certificate ${certificateNumber} does not exist`);
         }
-        const currentCertificate: Certificate = JSON.parse(await this.RetrieveCompleteCertificate(ctx, certificateNumber)) as Certificate;
-        
-        const updatedCertificate: Certificate = {
-            certificateNumber,
-            certificateEmissionDate,
-            certificateCourse,
-            certificateStatus,
-            ownerName,
-            ownerRG,
-            ownerBirthDate,
-            ownerBirthState,
-            campusName,
-            campusAcronym,
-            campusDirector,
-            universityPresidentName,
-            universityCertificateCoordinator,
-            hasCompletedAllSubjects,
-            hasSentAllRequiredDocuments,
-            wentToDegreeGranting,
-            note,
-            creationUser: currentCertificate.creationUser,
-            creationDate: currentCertificate.creationDate,
-            updateUser: user,
-            updateDate: dateString
-        };
-        await ctx.stub.putState(certificateNumber, Buffer.from(stringify(sortKeysRecursive(updatedCertificate))));
+        try{
+            const currentCertificate: Certificate = JSON.parse(await this.RetrieveCompleteCertificate(ctx, certificateNumber)) as Certificate;       
+            const updatedCertificate: Certificate = {
+                certificateNumber,
+                certificateEmissionDate,
+                certificateCourse,
+                certificateStatus,
+                ownerName,
+                ownerRG,
+                ownerBirthDate,
+                ownerBirthState,
+                campusName,
+                campusAcronym,
+                campusDirector,
+                universityPresidentName,
+                universityCertificateCoordinator,
+                hasCompletedAllSubjects,
+                hasSentAllRequiredDocuments,
+                wentToDegreeGranting,
+                note,
+                creationUser: currentCertificate.creationUser,
+                creationDate: currentCertificate.creationDate,
+                updateUser: user,
+                updateDate: dateString
+            };
+            const stringContent = stringify(sortKeysRecursive(updatedCertificate));
+            await ctx.stub.putState(certificateNumber, Buffer.from(stringContent));
+            console.info(`Certificate ${certificateNumber} updated`);
+            return await this.RetrieveCompleteCertificate(ctx, updatedCertificate.certificateNumber);
+        }catch(e){
+            const response = `Error updating certificate: ${e}` 
+            console.info(response);
+            return response;
+        }
     }
 
     @Transaction()

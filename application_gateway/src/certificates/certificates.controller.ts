@@ -11,9 +11,9 @@ export class CertificatesController {
       return this.certificateService.getAllCertificates();
     }
 
-    @Get(':id')
-    async getCertificate(@Param('id') id: string) {
-      return this.certificateService.getCertificateByNumber(id);
+    @Get(':certificateNumber')
+    async getCertificate(@Param('certificateNumber') certificateNumber: string) {
+      return this.certificateService.getCertificateByNumber(certificateNumber);
     }
 
     @Post()
@@ -21,9 +21,11 @@ export class CertificatesController {
       await this.certificateService.createCertificate(certificateDTO);
     }
 
-    @Put()
-    async updateCertificate(@Body() certificateDTO: CertificateDTO): Promise<void> {
-      await this.certificateService.updateCertificate(certificateDTO);
+    @Put(':certificateNumber')
+    async updateCertificate(
+      @Param('certificateNumber') certificateNumber: string,
+      @Body() certificateDTO: CertificateDTO): Promise<void> {
+        await this.certificateService.updateCertificate(certificateDTO,certificateNumber);
     }
   
 }
