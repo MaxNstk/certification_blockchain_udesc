@@ -124,12 +124,12 @@ class BlockchainConnection {
     console.log(`peerHostAlias:     ${this.peerHostAlias}`);
   }
 
-  public async evaluateTransaction(transaction:string, ...args: Array<string | Uint8Array>): Promise<any> {
+  public async evaluateTransaction(transaction:string, ...args: Array<string | Uint8Array>): Promise<JSON> {
     try{
       console.log(`\n--> Evaluate Transaction: ${transaction}, with args: ${args}`);
       const resultBytes = await this.getContract().evaluateTransaction(transaction,...args);
       const resultJson = this.utf8Decoder.decode(resultBytes);
-      const result: unknown = JSON.parse(resultJson);
+      const result: JSON = JSON.parse(resultJson);
       console.log('*** Result:', result);
       return result;
     }catch(e){

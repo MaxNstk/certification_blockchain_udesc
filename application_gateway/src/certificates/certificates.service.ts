@@ -1,21 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import BlockchainConnection from 'src/blockchain.connection';
 import { CertificateDTO } from './certificate.dto';
 
 @Injectable()
 export class CertificatesService {
 
-    async getAllCertificates(): Promise<any> {
+    async getAllCertificates(): Promise<JSON>  {
         const connection: BlockchainConnection = await BlockchainConnection.getInstance();
         return await connection.evaluateTransaction('GetAllCertificates');
     }
   
-    async getCertificateByNumber(certificateNumber: string): Promise<any> {
+    async getCertificateByNumber(certificateNumber: string): Promise<JSON>  {
         const connection: BlockchainConnection = await BlockchainConnection.getInstance();
         return await connection.evaluateTransaction('RetrieveCompleteCertificate',certificateNumber)
     }
 
-    async createCertificate(certificateDTO: CertificateDTO): Promise<any> {
+    async createCertificate(certificateDTO: CertificateDTO): Promise<JSON>  {
         const connection: BlockchainConnection = await BlockchainConnection.getInstance();
         try{
             await connection.getContract().submitTransaction(  
@@ -40,13 +40,13 @@ export class CertificatesService {
                 'UsuarioSessao',
                 new Date().toISOString(),
             );
-            return await connection.evaluateTransaction('RetrieveCompleteCertificate',certificateDTO.certificateNumber)         
+            return await this.getCertificateByNumber(certificateDTO.certificateNumber);
         } catch (error) {
-            console.log('*** Successfully caught the error: \n', error);
+            throw new HttpException(`Certificate with number ${certificateDTO.certificateNumber} already exist.`, HttpStatus.BAD_REQUEST);
         }
     }
 
-    async updateCertificate(certificateDTO: CertificateDTO, certificateNumber:string): Promise<void> {
+    async updateCertificate(certificateDTO: CertificateDTO, certificateNumber:string): Promise<JSON>  {
         const connection: BlockchainConnection = await BlockchainConnection.getInstance();
         try{
             await connection.getContract().submitTransaction(  
@@ -71,9 +71,9 @@ export class CertificatesService {
                 'UsuarioSessao',
                 new Date().toISOString(),
             );
-            return await connection.evaluateTransaction('RetrieveCompleteCertificate',certificateDTO.certificateNumber)         
+            return await this.getCertificateByNumber(certificateDTO.certificateNumber);         
         } catch (error) {
-            console.log('*** Successfully caught the error: \n', error);
+            throw new HttpException('Failed to retrieve certificate', HttpStatus.BAD_REQUEST);
         }
     }
   
