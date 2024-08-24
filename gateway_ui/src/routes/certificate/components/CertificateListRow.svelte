@@ -7,17 +7,21 @@
           {certificate.certificateNumber}
       </th>
       <td class="px-6 py-4">
+          {certificate.ownerName}
+      </td>
+      <td class="px-6 py-4">
           {certificate.certificateEmissionDate}
       </td>
       <td class="px-6 py-4">
           {certificate.certificateCourse}
       </td>
       <td class="px-6 py-4">
-          {certificate.certificateStatus}
-      </td>
-      <td class="px-6 py-4">
-          {certificate.ownerName}
-      </td>
+        {#if certificate.certificateStatus === 'valid'}
+            Válido
+        {:else}
+            Revogado
+            {/if}
+        </td>
       <td class="px-6 py-4">
           {certificate.campusAcronym}
       </td>
