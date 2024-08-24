@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { CertificatesModule } from './certificates/certificates.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
+import { CampusModule } from './campus/campus.module';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -14,7 +15,8 @@ dotenv.config();
   imports: [
     MongooseModule.forRoot(process.env.MONGO_URI),
     AuthModule,
-    CertificatesModule
+    CertificatesModule,
+    CampusModule,
   ],
 })
 export class AppModule {}

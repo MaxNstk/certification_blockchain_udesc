@@ -1,32 +1,29 @@
 import { Module } from '@nestjs/common';
-import { User, UserSchema } from './user.schema';
-import UsersService from './users.service';
-import { UsersController } from './users.controller';
 import {getConnectionToken, MongooseModule} from '@nestjs/mongoose';
 import * as AutoIncrementFactory from 'mongoose-sequence';
 import { Connection } from 'mongoose';
-
-import * as dotenv from 'dotenv';
-dotenv.config();
+import { Campus, CampusSchema } from './campus.schema';
+import { CampusService } from './campus.service';
+import { CampusController } from './campus.controller';
 
 @Module({
   imports: [
     MongooseModule.forFeatureAsync([
     { 
-      name: User.name, 
+      name: Campus.name, 
       useFactory: async (connection: Connection)=>{
-        const schema = UserSchema;
+        const schema = CampusSchema;
         const autoIncrement = AutoIncrementFactory(connection);
-        schema.plugin(autoIncrement, {inc_field: 'userId'});
+        schema.plugin(autoIncrement, {inc_field: 'campusId'});
         return schema;
       },
       inject: [getConnectionToken()]
     }
     ])
   ],
-  providers: [UsersService],
-  controllers: [UsersController],
-  exports: [UsersService]
+  providers: [CampusService],
+  controllers: [CampusController],
+  exports: [CampusService]
 })
+export class CampusModule {}
 
-export class UsersModule {}

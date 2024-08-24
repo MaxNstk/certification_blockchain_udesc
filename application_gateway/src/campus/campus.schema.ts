@@ -6,14 +6,14 @@ export type CampusDocument = HydratedDocument<Campus>;
 @Schema()
 export class Campus {
   
-  @Prop({required: true, unique: true})
-  id: number;
-
-  @Prop({required: true})
-  description: string;
+  @Prop({unique: true})
+  campusId: number;
 
   @Prop({required: true, unique: true})
   acronym: string;
+
+  @Prop({required: true})
+  description: string;
 
   @Prop({default: Date.now})
   createdAt: Date;
