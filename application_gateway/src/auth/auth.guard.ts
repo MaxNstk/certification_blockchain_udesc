@@ -1,3 +1,6 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
+
 import {
     CanActivate,
     ExecutionContext,
@@ -5,7 +8,6 @@ import {
     UnauthorizedException,
   } from '@nestjs/common';
   import { JwtService } from '@nestjs/jwt';
-  import { jwtConstants } from './constants';
   import { Request } from 'express';
   
   @Injectable()
@@ -20,10 +22,7 @@ import {
       }
       try {
         const payload = await this.jwtService.verifyAsync(
-          token,
-          {
-            secret: jwtConstants.secret
-          }
+          token, {secret: process.env.JWT_SECRET}
         );
         // 💡 We're assigning the payload to the request object here
         // so that we can access it in our route handlers
