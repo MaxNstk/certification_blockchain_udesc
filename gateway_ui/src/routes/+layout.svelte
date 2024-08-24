@@ -1,11 +1,22 @@
 <script>
 	import "../app.css";
+	import Nav from "./components/Nav.svelte";
 </script>
 
-<nav>
-	<a href="/">home</a>
-	<a href="/about">about</a>
-	<a href="/blog">blog</a>
-</nav>
+<style lang="postcss">
+    :global(html) {
+      background-color: theme(colors.gray.900);
+    }
+</style>
 
-<slot />
+<div class="dark">
+    <Nav />
+    <main class="pt-16"> 
+        <div class="container mx-auto px-4">
+            <div class="mt-12">
+                <slot />
+            </div>
+        </div>
+    </main>
+</div>
+

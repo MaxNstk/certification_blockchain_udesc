@@ -13,12 +13,6 @@
       }
     });
   </script>
-  
-  <style lang="postcss">
-    :global(html) {
-      background-color: theme(colors.gray.900);
-    }
-  </style>
 
   <div class="dark">
     <CertificateList {certificates}/>
