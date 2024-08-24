@@ -8,7 +8,7 @@ import { User } from "./user.schema";
 @Injectable()
 export default class UsersService{
 
-    constructor(@InjectModel('User') private userModel: Model<User>){}
+    constructor(@InjectModel(User.name) private userModel: Model<User>){}
 
     findAll(): Promise<User[]> {
       return this.userModel.find().exec();

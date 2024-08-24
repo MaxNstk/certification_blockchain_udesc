@@ -5,9 +5,11 @@ import { Connection } from 'mongoose';
 import { Campus, CampusSchema } from './campus.schema';
 import { CampusService } from './campus.service';
 import { CampusController } from './campus.controller';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
+    UsersModule,
     MongooseModule.forFeatureAsync([
     { 
       name: Campus.name, 

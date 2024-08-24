@@ -15,8 +15,8 @@ dotenv.config();
   imports: [
     MongooseModule.forRoot(process.env.MONGO_URI),
     AuthModule,
-    CertificatesModule,
     CampusModule,
+    CertificatesModule,
   ],
 })
 export class AppModule {}
