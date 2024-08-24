@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
 import UsersService from "./users.service";
-import { User } from "./user.model";
 import { AuthGuard } from "src/auth/auth.guard";
+import { User } from "./user.schema";
 
 
 @Controller('users')
@@ -11,8 +11,8 @@ export class UsersController{
 
     @UseGuards(AuthGuard)
     @Get()
-    async getAllUsers(): Promise<User[]> {
-      return await this.userService.getAllUsers();
+    async findAll(): Promise<User[]> {
+      return await this.userService.findAll();
     }
 
     @UseGuards(AuthGuard)

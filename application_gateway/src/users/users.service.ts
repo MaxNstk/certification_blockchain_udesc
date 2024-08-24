@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { User } from "./user.model";
 import * as bcrypt from 'bcrypt';
+import { User } from "./user.schema";
 
 
 @Injectable()
@@ -10,7 +10,7 @@ export default class UsersService{
 
     constructor(@InjectModel('User') private userModel: Model<User>){}
 
-    getAllUsers(): Promise<User[]> {
+    findAll(): Promise<User[]> {
         return this.userModel.find().exec();
       }
 
