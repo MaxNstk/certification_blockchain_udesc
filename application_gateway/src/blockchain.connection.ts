@@ -53,7 +53,7 @@ class BlockchainConnection {
     this.network = this.gateway.getNetwork(this.channelName);
     this.contract = this.network.getContract(this.chaincodeName);
 
-    this.initLedger();
+    await this.initLedger();
   }
 
   public disconnect(): void {

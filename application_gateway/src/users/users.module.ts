@@ -7,6 +7,7 @@ import * as AutoIncrementFactory from 'mongoose-sequence';
 import { Connection } from 'mongoose';
 
 import * as dotenv from 'dotenv';
+import { InitService } from './init.service';
 dotenv.config();
 
 @Module({
@@ -24,7 +25,7 @@ dotenv.config();
     }
     ])
   ],
-  providers: [UsersService],
+  providers: [UsersService, InitService],
   controllers: [UsersController],
   exports: [UsersService]
 })
