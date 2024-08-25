@@ -3,7 +3,7 @@
 
   /** @type {import('./$types').PageLoad} */
   export let data;
-  $: certificates = data.certificates 
+  $: certificates = data.certificates;
 </script>
 
 {#if certificates.length > 0}
