@@ -1,11 +1,17 @@
 <script lang="ts">
   import CertificateList from './components/CertificateList.svelte';
-	import type { SimplifiedCertificate } from './simplifiedCertificate';
 
-  export let certificates: SimplifiedCertificate[];
+  /** @type {import('./$types').PageLoad} */
+  export let data;
+  $: certificates = data.certificates 
 </script>
 
+{#if certificates.length > 0}
 <div class="dark">
   <CertificateList {certificates}/>
 </div>
-  
+{:else}
+<h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+  Sem diplomas para listar
+</h2>
+{/if}
