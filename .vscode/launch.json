@@ -21,6 +21,14 @@
         "stopOnEntry": false,
         "console": "integratedTerminal",
         "cwd": "${workspaceFolder}/application_gateway"
+      },
+      {
+        "command": "npm run dev",
+        "name": "Run svelte server",
+        "request": "launch",
+        "type": "node-terminal",
+        "cwd": "${workspaceFolder}/gateway_ui/"
+
       }
     ]
   }

@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { goto } from "$app/navigation";
+		import type { Certificate } from "$lib/types";
+
   export let certificate: Certificate = {
     certificateNumber: '',
     certificateEmissionDate: '',
@@ -13,40 +16,53 @@
     campusDirector: '',
     universityPresidentName: '',
     universityCertificateCoordinator: '',
-    hasCompletedAllSubjects: false,
-    hasSentAllRequiredDocuments: false,
-    wentToDegreeGranting: false,
+    hasCompletedAllSubjects: true,
+    hasSentAllRequiredDocuments: true,
+    wentToDegreeGranting: true,
     note: ''
   };
 
-  function handleSubmit(event: Event) {
+  export async function handleSubmit(event: Event) {
     event.preventDefault();
-    console.log('Form submitted with data:', certificate);
+    const formData = new FormData(event.target as HTMLFormElement);
+    
+    const response = await fetch('?/create', {
+      method: 'POST',
+      body: formData,
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      goto('/certificate');
+    } else {
+      console.error(result.error);
+    }
   }
+
 </script>
 
 <h1 class="text-2xl font-bold text-gray-900 dark:text-white mb-4"> Cadastro de diploma </h1>
 
-
 <div class="w-full p-4 bg-white border border-gray-200 rounded-lg shadow sm:p-6 md:p-8 dark:bg-gray-800 dark:border-gray-700">
 
-  <form class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 p-6" on:submit={handleSubmit}>
+  <form method="POST" on:submit={handleSubmit} class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
 
     <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 col-span-2"> Dados do diploma </h2>
 
     <div class="mb-5">
       <label for="certificateNumber" class="block mb-2 text-sm font-medium dark:text-white">Número</label>
-      <input type="number" id="certificateNumber" bind:value={certificate.certificateNumber} class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
+      <input type="number" id="certificateNumber" name="certificateNumber" bind:value={certificate.certificateNumber} class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
     </div>
 
     <div class="mb-5">
       <label for="certificateEmissionDate" class="block mb-2 text-sm font-medium dark:text-white">Data de Emissão</label>
-      <input type="date" id="certificateEmissionDate" bind:value={certificate.certificateEmissionDate} class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
+      <input type="date" id="certificateEmissionDate" name="certificateEmissionDate" bind:value={certificate.certificateEmissionDate} class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
     </div>
 
     <div class="mb-5">
       <label for="certificateStatus" class="block mb-2 text-sm font-medium dark:text-white">Status</label>
-      <select id="certificateStatus" bind:value={certificate.certificateStatus} class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
+      <select id="certificateStatus" name="certificateStatus" bind:value={certificate.certificateStatus} class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
         <option value="valid">Válido</option>
         <option value="revoked">Revogado</option>
       </select>
@@ -56,22 +72,22 @@
 
     <div class="mb-5">
       <label for="ownerName" class="block mb-2 text-sm font-medium dark:text-white">Nome completo</label>
-      <input type="text" id="ownerName" bind:value={certificate.ownerName} class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
+      <input type="text" id="ownerName" name="ownerName" bind:value={certificate.ownerName} class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
     </div>
 
     <div class="mb-5">
       <label for="ownerRG" class="block mb-2 text-sm font-medium dark:text-white">Registro Geral (RG)</label>
-      <input type="text" id="ownerRG" bind:value={certificate.ownerRG} class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
+      <input type="text" id="ownerRG" name="ownerRG" bind:value={certificate.ownerRG} class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
     </div>
 
     <div class="mb-5">
       <label for="ownerBirthDate" class="block mb-2 text-sm font-medium dark:text-white">Data de Nascimento</label>
-      <input type="date" id="ownerBirthDate" bind:value={certificate.ownerBirthDate} class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
+      <input type="date" id="ownerBirthDate" name="ownerBirthDate" bind:value={certificate.ownerBirthDate} class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
     </div>
 
     <div class="mb-5">
       <label for="ownerBirthState" class="block mb-2 text-sm font-medium dark:text-white">Estado de Nascimento</label>
-      <select id="ownerBirthState" bind:value={certificate.ownerBirthState} class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
+      <select id="ownerBirthState" name="ownerBirthState" bind:value={certificate.ownerBirthState} class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
         <option value="" disabled selected>Selecione o estado</option>
         <option value="AC">Acre (AC)</option>
         <option value="AL">Alagoas (AL)</option>
@@ -107,49 +123,49 @@
 
     <div class="mb-5">
       <label for="certificateCourse" class="block mb-2 text-sm font-medium dark:text-white">Curso</label>
-      <input type="text" id="certificateCourse" bind:value={certificate.certificateCourse} class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
+      <input type="text" id="certificateCourse" name="certificateCourse" bind:value={certificate.certificateCourse} class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
     </div>
     
     <div class="mb-5">
       <label for="campusName" class="block mb-2 text-sm font-medium dark:text-white">Nome do Campus</label>
-      <input type="text" id="campusName" bind:value={certificate.campusName} class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
+      <input type="text" id="campusName" name="campusName" bind:value={certificate.campusName} class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
     </div>
 
     <div class="mb-5">
       <label for="campusAcronym" class="block mb-2 text-sm font-medium dark:text-white">Sigla do Campus</label>
-      <input type="text" id="campusAcronym" bind:value={certificate.campusAcronym} class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
+      <input type="text" id="campusAcronym" name="campusAcronym" bind:value={certificate.campusAcronym} class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
     </div>
 
     <div class="mb-5">
       <label for="campusDirector" class="block mb-2 text-sm font-medium dark:text-white">Diretor(a) do Campus</label>
-      <input type="text" id="campusDirector" bind:value={certificate.campusDirector} class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
+      <input type="text" id="campusDirector" name="campusDirector" bind:value={certificate.campusDirector} class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
     </div>
 
     <div class="mb-5">
       <label for="universityPresidentName" class="block mb-2 text-sm font-medium dark:text-white">Nome do Reitor(a)</label>
-      <input type="text" id="universityPresidentName" bind:value={certificate.universityPresidentName} class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
+      <input type="text" id="universityPresidentName" name="universityPresidentName" bind:value={certificate.universityPresidentName} class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
     </div>
 
     <div class="mb-5">
       <label for="universityCertificateCoordinator" class="block mb-2 text-sm font-medium dark:text-white">Nome do(a) coordenadordor(a) de diplomas</label>
-      <input type="text" id="universityCertificateCoordinator" bind:value={certificate.universityCertificateCoordinator} class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
+      <input type="text" id="universityCertificateCoordinator" name="universityCertificateCoordinator" bind:value={certificate.universityCertificateCoordinator} class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
     </div>
 
     <div class="mb-5 col-span-2">
       <label class="inline-flex items-center mb-5 mr-3 cursor-pointer">
-        <input type="checkbox" id="hasCompletedAllSubjects" bind:checked={certificate.hasCompletedAllSubjects} class="sr-only peer" required>
+        <input type="checkbox" id="hasCompletedAllSubjects" name="hasCompletedAllSubjects" bind:checked={certificate.hasCompletedAllSubjects} class="sr-only peer" required>
         <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
         <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Concluiu todas as disciplinas</span>
       </label>
 
       <label class="inline-flex items-center mb-5 mr-3 cursor-pointer">
-        <input type="checkbox" id="hasSentAllRequiredDocuments" bind:checked={certificate.hasSentAllRequiredDocuments} class="sr-only peer" required>
+        <input type="checkbox" id="hasSentAllRequiredDocuments" name="hasSentAllRequiredDocuments" bind:checked={certificate.hasSentAllRequiredDocuments} class="sr-only peer" required>
         <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
         <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Enviou todos os documentos</span>
       </label>
 
       <label class="inline-flex items-center mb-5 cursor-pointer">
-        <input type="checkbox" id="wentToDegreeGranting" bind:checked={certificate.wentToDegreeGranting} class="sr-only peer" required>
+        <input type="checkbox" id="wentToDegreeGranting" name="wentToDegreeGranting" bind:checked={certificate.wentToDegreeGranting} class="sr-only peer" required>
         <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
         <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">Participou da colação de grau</span>
       </label>
@@ -157,11 +173,11 @@
 
     <div class="mb-5 col-span-2">
       <label for="note" class="block mb-2 text-sm font-medium dark:text-white">Observações</label>
-      <textarea id="note" bind:value={certificate.note} class="block p-2.5 w-full text-sm bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required></textarea>
+      <textarea id="note" name="note" bind:value={certificate.note} class="block p-2.5 w-full text-sm bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required></textarea>
     </div>
 
     <div class="col-span-2">
-      <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Salvar Certificado</button>
+      <button type="submit" class="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Salvar Diploma</button>
     </div>
   </form>
 </div>

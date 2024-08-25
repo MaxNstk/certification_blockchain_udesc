@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { SimplifiedCertificate } from "$lib/types";
 	import CertificateListHeader from "./CertificateListHeader.svelte";
 	import CertificateListRow from "./CertificateListRow.svelte";
 	

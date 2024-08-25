@@ -1,17 +1,17 @@
-type SimplifiedCertificate = {
+export interface SimplifiedCertificate {
     certificateNumber: string;
-    certificateEmissionDate: string;
+    certificateEmissionDate: Date;
     certificateCourse: string;
     certificateStatus: string;
     ownerName: string;
     campusAcronym: string;
   };
 
-  type Certificate = {
+export interface Certificate {
     certificateNumber: string;
     certificateEmissionDate: string;
     certificateCourse: string;
-    certificateStatus: 'valid' | 'revoked';
+    certificateStatus: string;
     ownerName: string;
     ownerRG: string;
     ownerBirthDate: string;
@@ -21,8 +21,8 @@ type SimplifiedCertificate = {
     campusDirector: string;
     universityPresidentName: string;
     universityCertificateCoordinator: string;
-    hasCompletedAllSubjects: boolean;
-    hasSentAllRequiredDocuments: boolean;
-    wentToDegreeGranting: boolean;
-    note: string;
-  }
+    hasCompletedAllSubjects?: boolean;
+    hasSentAllRequiredDocuments?: boolean;
+    wentToDegreeGranting?: boolean;
+    note?: string;
+}

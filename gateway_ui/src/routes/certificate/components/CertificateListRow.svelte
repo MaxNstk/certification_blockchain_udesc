@@ -1,5 +1,6 @@
 <script lang="ts">
-	import type { SimplifiedCertificate } from "../simplifiedCertificate";
+	import type { SimplifiedCertificate } from "$lib/types";
+
 
     export let certificate: SimplifiedCertificate;
 </script>
