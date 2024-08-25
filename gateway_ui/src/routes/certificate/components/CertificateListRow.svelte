@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { SimplifiedCertificate } from "$lib/types";
 
-
     export let certificate: SimplifiedCertificate;
 </script>
   
@@ -29,7 +28,7 @@
           {certificate.campusAcronym}
       </td>
       <td class="px-6 py-4 text-right">
-          <a href="/certificate" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
+          <a href="/certificate/update/{certificate.certificateNumber}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
       </td>
   </tr>
   

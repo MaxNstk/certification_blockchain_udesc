@@ -1,4 +1,4 @@
-import { createCertificate } from "$lib/certificateService";
+import { updateCertificate } from "$lib/certificateService";
 import { certificateFromFormData } from "$lib/certificateUtils";
 
 export const actions = {
@@ -14,7 +14,7 @@ export const actions = {
         }
 
         try{
-            return await createCertificate(certificate);
+            return await updateCertificate(certificate);
         }catch(e){
             return { error: 'Erro ao criar diploma: '+e};
         }

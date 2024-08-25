@@ -26,7 +26,7 @@
     event.preventDefault();
     const formData = new FormData(event.target as HTMLFormElement);
     
-    const response = await fetch('?/create', {
+    const response = await fetch('?/POST', {
       method: 'POST',
       body: formData,
     });
