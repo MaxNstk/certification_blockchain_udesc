@@ -1,4 +1,4 @@
-type Certificate = {
+type SimplifiedCertificate = {
     certificateNumber: string;
     certificateEmissionDate: string;
     certificateCourse: string;
