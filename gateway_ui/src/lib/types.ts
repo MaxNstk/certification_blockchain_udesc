@@ -26,3 +26,7 @@ export interface Certificate {
     wentToDegreeGranting?: boolean;
     note?: string;
 }
+
+export type User = {
+  username:string
+}
