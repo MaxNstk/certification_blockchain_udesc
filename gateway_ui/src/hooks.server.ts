@@ -15,7 +15,7 @@ export const handle = async ({ event, resolve }) => {
   let user = null
   
   // check if the cookie exist, and if exists, parse it to the user variable
-  if(event.cookies.get('user') != undefined && event.cookies.get('user') != null){
+  if(event.cookies.get('user')){
     user = JSON.parse(event.cookies.get('user'))
   }
   const url = new URL(event.request.url);

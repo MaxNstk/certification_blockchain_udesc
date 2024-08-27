@@ -1,4 +1,4 @@
-// signup/+page.server.js
+
 import { user } from '$lib/stores/user.js'
 import { redirect } from '@sveltejs/kit'
 
@@ -18,13 +18,13 @@ export const actions = {
           username,
           password,
       })
-    })
+    });
 
     if (response.ok) {
       const data  = await response.json();
-      
-      cookies.set('user', JSON.stringify(data), { path: '/' });
-      user.set(data);
+      cookies.set('jwt', data.access_token, { path: '/' });
+      cookies.set('user', JSON.stringify(data.user), { path: '/' });
+      user.set(data.user);
 
       throw redirect(302, '/')
     } else {
