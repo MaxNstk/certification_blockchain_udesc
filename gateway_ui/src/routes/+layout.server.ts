@@ -1,8 +1,8 @@
-import type { PageData } from "./certificate/$types";
+import type { User } from "$lib/types";
+import type { PageLoad } from "./certificate/$types";
 
-export const load: PageData = async ({ locals }) => {
-    return {
-      user: locals.user,
-    };
+export const load: PageLoad = async ({ locals }) => {
+  return {
+    user: locals.user as User,
   };
-  
+};
