@@ -4,8 +4,8 @@
 import type { Certificate, User } from "$lib/types";
 
 declare global {
-	declare namespace App {
-		interface Error {}
+	namespace App {
+		// interface Error {}
 		interface Locals {
 			user: User;
 		}

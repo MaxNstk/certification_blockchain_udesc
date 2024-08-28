@@ -16,7 +16,7 @@ export class HttpClient{
     async get(endpoint:string): Promise<Response> {
       return await fetch(this.baseUrl+endpoint,{
         method: 'GET',
-        
+        headers:this.headers
       });
     };
 
