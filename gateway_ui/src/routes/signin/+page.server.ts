@@ -1,5 +1,5 @@
 
-import { user } from '$lib/stores/user.js'
+import { user } from '../../stores/user.js'
 import { redirect } from '@sveltejs/kit'
 
 export const actions = {

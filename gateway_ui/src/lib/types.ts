@@ -27,6 +27,7 @@ export interface Certificate {
     note?: string;
 }
 
-export type User = {
-  username:string
+export interface User {
+  username: string;
+  userId: number;
 }

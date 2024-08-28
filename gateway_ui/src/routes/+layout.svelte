@@ -1,9 +1,9 @@
 <script lang="ts">
     import "../app.css";
+	import type { PageLoad } from "./certificate/$types";
     import Nav from "./components/Nav.svelte";
 
-    /** @type {import('./$types').PageLoad} */
-    export let data;
+    export let data: PageLoad;
     $: user = data.user;
 </script>
 
