@@ -10,7 +10,7 @@ export class AuthController{
 
     @Post()
     @HttpCode(200)
-    async signIn(@Body() createUserDto: {username: string; password: string}): Promise<{ access_token: string, user:User}> {
+    async signIn(@Body() createUserDto: {username: string; password: string}): Promise<{ jwt: string, user:User}> {
         return await this.authService.signIn(createUserDto.username, createUserDto.password);
     }
 

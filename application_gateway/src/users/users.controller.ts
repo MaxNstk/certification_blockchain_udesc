@@ -23,8 +23,8 @@ export class UsersController{
 
     @UseGuards(AuthGuard)
     @Post()
-    async createUser(@Body() createUserDto: {username: string; password: string}): Promise<User> {
-      return await this.userService.createUser(createUserDto.username, createUserDto.password);
+    async createUser(@Body() createUserDto: {username: string; password: string, fullName:string}): Promise<User> {
+      return await this.userService.createUser(createUserDto.username, createUserDto.password, createUserDto.fullName);
     }
 
 

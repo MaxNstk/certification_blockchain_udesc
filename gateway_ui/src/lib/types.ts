@@ -28,6 +28,8 @@ export interface Certificate {
 }
 
 export interface User {
-  username: string;
   userId: number;
+  username: string;
+  fullName:string;
+  jwt: string;
 }

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { PageLoad } from './$types';
-  import CertificateList from './components/CertificateList.svelte';
+	import type { PageData } from './$types';
+	import CertificateList from './components/CertificateList.svelte';
 
-  export let data: PageLoad;
+  export let data: PageData;
   $: certificates = data.certificates;
 </script>
 

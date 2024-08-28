@@ -16,9 +16,11 @@ export class InitService implements OnModuleInit {
     }catch(e){
 			if (!(e instanceof NotFoundException)){ throw e }
 			else{
+        const fullName = "Admin Admin";
 				await this.usersService.createUser(
 					username,
 					password,
+          fullName
 				);
 			}
     }

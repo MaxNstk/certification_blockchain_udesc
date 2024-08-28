@@ -14,7 +14,7 @@ export default class UsersService{
       return this.userModel.find().exec();
     }
 
-    async createUser(username: string, password:string): Promise<User>{
+    async createUser(username: string, password:string, fullName:string): Promise<User>{
       try{
         await this.findUserByUsername(username);
         throw new BadRequestException('user already exists');
@@ -24,7 +24,7 @@ export default class UsersService{
         }
         const salt = await bcrypt.genSalt();
         const hashPassword = await bcrypt.hash(password,salt);
-        const newUser = new this.userModel({username, password:hashPassword})
+        const newUser = new this.userModel({username, password:hashPassword, fullName})
         return newUser.save();
       }
     }

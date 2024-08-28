@@ -1,10 +1,11 @@
 <script lang="ts">
     import "../app.css";
-	import type { PageLoad } from "./certificate/$types";
+	import type { User } from "$lib/types";
+	import type { PageData } from "./$types";
     import Nav from "./components/Nav.svelte";
 
-    export let data: PageLoad;
-    $: user = data.user;
+    export let data: PageData;
+    $: user = data.user as User;
 </script>
 
 <style lang="postcss">

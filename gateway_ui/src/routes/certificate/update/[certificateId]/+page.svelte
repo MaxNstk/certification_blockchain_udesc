@@ -1,8 +1,8 @@
 <script lang="ts">
+	import type { PageData } from "../$types";
 	import CertificateForm from "../../components/CertificateForm.svelte";
 
-  /** @type {import('./$types').PageLoad} */
-  export let data;
+  export let data: PageData;
   $: certificate = data.certificate;
   
 </script>
