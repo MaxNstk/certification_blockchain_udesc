@@ -77,7 +77,7 @@ Organizations:
         Rule: "OR('PublicMSP.admin', 'PublicMSP.peer', 'PublicMSP.client')"
       Writers:
         Type: Signature
-        Rule: "OR('PublicMSP.admin', 'PublicMSP.client')"
+        Rule: "OR('PublicMSP.admin')"
       Admins:
         Type: Signature
         Rule: "OR('PublicMSP.admin')"
