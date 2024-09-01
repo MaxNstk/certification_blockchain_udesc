@@ -105,7 +105,7 @@ class BlockchainConnection {
   }
 
   private initializeVariables(): void {
-    this.cryptoPath = this.envOrDefault('CRYPTO_PATH', path.resolve(__dirname, '..', '..', 'blockchain', 'network', 'organizations', 'peerOrganizations', 'udesc.local.com'));
+    this.cryptoPath = this.envOrDefault('CRYPTO_PATH', path.resolve(__dirname,'..', '..', '..', 'blockchain', 'network', 'organizations', 'peerOrganizations', 'udesc.local.com'));
     this.certDirectoryPath = this.envOrDefault('CERT_DIRECTORY_PATH', path.resolve(this.cryptoPath, 'users', 'userCEAVI@udesc.local.com', 'msp', 'signcerts'));
     this.tlsCertPath = this.envOrDefault('TLS_CERT_PATH', path.resolve(this.cryptoPath, 'peers', 'peerCEAVI.udesc.local.com', 'tls', 'ca.crt'));
     this.keyDirectoryPath = this.envOrDefault('KEY_DIRECTORY_PATH', path.resolve(this.cryptoPath, 'users', 'userCEAVI@udesc.local.com', 'msp', 'keystore'));
