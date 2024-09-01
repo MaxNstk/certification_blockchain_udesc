@@ -6,12 +6,14 @@ import {Context, Contract, Info, Returns, Transaction} from 'fabric-contract-api
 import stringify from 'json-stringify-deterministic';
 import sortKeysRecursive from 'sort-keys-recursive';
 import {Certificate} from './certificate';
+import {CAMPI} from './campusInfo'
 
 @Info({title: 'AssetTransfer', description: 'Smart contract for trading assets'})
 export class AssetTransferContract extends Contract {
 
     @Transaction()
     public async InitLedger(ctx: Context): Promise<void> {
+        console.info("Initing ledger");
         const certificates: Certificate[] = [
             {
                 certificateNumber: "1",
@@ -77,8 +79,6 @@ export class AssetTransferContract extends Contract {
         ownerRG: string,
         ownerBirthDate: string,
         ownerBirthState: string,
-        campusName: string,
-        campusAcronym: string,
         campusDirector: string,
         universityPresidentName: string,
         universityCertificateCoordinator: string,
@@ -94,6 +94,10 @@ export class AssetTransferContract extends Contract {
         if (exists) {
             throw new Error(`The certificate ${certificateNumber} already exists`);
         }
+        const clientId: string|null = ctx.clientIdentity.getAttributeValue('hf.EnrollmentID');
+        if (!clientId){
+            throw new Error(`The clientId is not defined`);
+        }
         try{
             const certificate: Certificate = {
                 certificateNumber,
@@ -104,8 +108,8 @@ export class AssetTransferContract extends Contract {
                 ownerRG,
                 ownerBirthDate,
                 ownerBirthState,
-                campusName,
-                campusAcronym,
+                campusName: CAMPI[clientId].campusName,
+                campusAcronym: CAMPI[clientId].campusAcronym,
                 campusDirector,
                 universityPresidentName,
                 universityCertificateCoordinator,
@@ -131,7 +135,8 @@ export class AssetTransferContract extends Contract {
 
     @Transaction(false)
     public async RetrieveCompleteCertificate(ctx: Context, certificateNumber: string): Promise<string> {
-        const assetJSON = await ctx.stub.getState(certificateNumber); // get the asset from chaincode state
+        console.info("Retrieving complete certificate with number "+certificateNumber);
+        const assetJSON = await ctx.stub.getState(certificateNumber);
         if (assetJSON.length === 0) {
             throw new Error(`The certificate ${certificateNumber} does not exist`);
         }
@@ -199,15 +204,6 @@ export class AssetTransferContract extends Contract {
             console.info(response);
             return response;
         }
-    }
-
-    @Transaction()
-    public async DeleteCertificate(ctx: Context, certificateNumber: string): Promise<void> {
-        const exists = await this.CertificateExists(ctx, certificateNumber);
-        if (!exists) {
-            throw new Error(`The certificate ${certificateNumber} does not exist`);
-        }
-        return ctx.stub.deleteState(certificateNumber);
     }
 
     @Transaction(false)
