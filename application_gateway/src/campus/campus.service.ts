@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Body, Injectable, NotFoundException } from '@nestjs/common';
 import { Campus } from './campus.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -28,15 +28,26 @@ export class CampusService {
     return this.campusModel.find().exec();
   }
 
-  async createCampus(acronym: string, description: string): Promise<Campus> {
+  async createCampus(
+    @Body() createCampusDto: {
+      acronym:string
+      description:string
+      cryptoPath:string
+      certDirectoryPath:string
+      tlsCertPath:string
+      keyDirectoryPath:string
+      peerEndpoint:string
+      peerHostAlias:string
+    }
+  ): Promise<Campus> {
     try{
-      await this.findCampusByAcronym(acronym);
+      await this.findCampusByAcronym(createCampusDto.acronym);
       throw new BadRequestException('campus already exists');
     }catch (e){
       if (!(e instanceof NotFoundException)){
         throw e;
       }
-      const newCampus = new this.campusModel({acronym, description})
+      const newCampus = new this.campusModel(createCampusDto)
       return newCampus.save();
     }
   }

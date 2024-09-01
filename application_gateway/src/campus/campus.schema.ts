@@ -17,6 +17,24 @@ export class Campus {
 
   @Prop({default: Date.now})
   createdAt: Date;
+
+  @Prop({required: true})
+  cryptoPath: string;
+
+  @Prop({required: true})
+  certDirectoryPath: string;
+
+  @Prop({required: true})
+  tlsCertPath: string;
+
+  @Prop({required: true})
+  keyDirectoryPath: string;
+
+  @Prop({required: true})
+  peerEndpoint: string;
+
+  @Prop({required: true})
+  peerHostAlias: string;
 }
 
 export const CampusSchema = SchemaFactory.createForClass(Campus);

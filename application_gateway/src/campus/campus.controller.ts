@@ -16,14 +16,14 @@ export class CampusController {
 
     //@UseGuards(AuthGuard)
     //@Get(':campusId')
-    async getCampus(@Param('campusId') campusId: number): Promise<Campus>{
-        return await this.campusService.findCampus(campusId);
-    }
+    // async getCampus(@Param('campusId') campusId: number): Promise<Campus>{
+    //     return await this.campusService.findCampus(campusId);
+    // }
 
     //@UseGuards(AuthGuard)
     //@Post()
-    async createCampus(@Body() createCampusDto: {acronym: string; description: string}): Promise<Campus> {
-      return await this.campusService.createCampus(createCampusDto.acronym, createCampusDto.description);
-    }
+    //async createCampus(@Body() createCampusDto: {acronym: string; description: string}): Promise<Campus> {
+    //  return await this.campusService.createCampus(createCampusDto.acronym, createCampusDto.description);
+    //}
 
 }
