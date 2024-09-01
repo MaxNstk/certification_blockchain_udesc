@@ -5,23 +5,25 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 
 @Injectable()
-export class InitService implements OnModuleInit {
-  constructor(private readonly usersService: UsersService) {}
+export class UserInitService implements OnModuleInit {
+  constructor(
+    private readonly usersService: UsersService
+  ) {}
 
   async onModuleInit() {
     const username = process.env.ADMIN_USER;
     const password = process.env.ADMIN_PASSWORD; 
+    const fullName = "Admin Admin";
     try{
-        const adminUser = await this.usersService.findUserByUsername(username);        
+        await this.usersService.findUserByUsername(username);        
     }catch(e){
 			if (!(e instanceof NotFoundException)){ throw e }
 			else{
-        const fullName = "Admin Admin";
 				await this.usersService.createUser(
 					username,
 					password,
           fullName
-				);
+				); 
 			}
     }
   }

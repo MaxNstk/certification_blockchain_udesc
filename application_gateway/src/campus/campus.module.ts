@@ -6,6 +6,7 @@ import { Campus, CampusSchema } from './campus.schema';
 import { CampusService } from './campus.service';
 import { CampusController } from './campus.controller';
 import { UsersModule } from 'src/users/users.module';
+import { CampusInitService } from './campus.init.service';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { UsersModule } from 'src/users/users.module';
     }
     ])
   ],
-  providers: [CampusService],
+  providers: [CampusService, CampusInitService],
   controllers: [CampusController],
   exports: [CampusService]
 })

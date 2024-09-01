@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import BlockchainConnection from 'src/blockchain.connection';
 import { CertificateDTO } from './certificate.dto';
+import BlockchainConnection from 'src/blockchain/blockchain.connection';
 
 @Injectable()
 export class CertificatesService {
