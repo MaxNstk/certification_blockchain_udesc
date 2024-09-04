@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get} from '@nestjs/common';
 import { CampusService } from './campus.service';
-import { AuthGuard } from 'src/auth/auth.guard';
+//import { AuthGuard } from 'src/auth/auth.guard';
 import { Campus } from './campus.schema';
 
 @Controller('campus')
@@ -8,7 +8,7 @@ export class CampusController {
 
     constructor(private readonly campusService: CampusService) {}
 
-    @UseGuards(AuthGuard)
+   // @UseGuards(AuthGuard)
     @Get()
     async findAll(): Promise<Campus[]> {
       return await this.campusService.findAll();

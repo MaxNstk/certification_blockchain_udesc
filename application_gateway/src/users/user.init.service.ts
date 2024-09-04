@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, OnModuleInit } from '@nestjs/common';
 import UsersService from './users.service';
 
 import * as dotenv from 'dotenv';
+import { CreateUserDto } from './user.dto';
 dotenv.config();
 
 @Injectable()
@@ -20,9 +21,11 @@ export class UserInitService implements OnModuleInit {
 			if (!(e instanceof NotFoundException)){ throw e }
 			else{
 				await this.usersService.createUser(
-					username,
+					{username,
 					password,
-          fullName
+          fullName,
+          campusId:1
+        } as CreateUserDto
 				); 
 			}
     }

@@ -5,12 +5,10 @@ import { Connection } from 'mongoose';
 import { Campus, CampusSchema } from './campus.schema';
 import { CampusService } from './campus.service';
 import { CampusController } from './campus.controller';
-import { UsersModule } from 'src/users/users.module';
 import { CampusInitService } from './campus.init.service';
 
 @Module({
   imports: [
-    UsersModule,
     MongooseModule.forFeatureAsync([
     { 
       name: Campus.name, 
@@ -24,9 +22,9 @@ import { CampusInitService } from './campus.init.service';
     }
     ])
   ],
-  providers: [CampusService, CampusInitService],
   controllers: [CampusController],
-  exports: [CampusService]
+  providers: [CampusService, CampusInitService],
+  exports: [CampusService, MongooseModule]
 })
 export class CampusModule {}
 

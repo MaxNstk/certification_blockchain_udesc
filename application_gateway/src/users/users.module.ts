@@ -8,7 +8,7 @@ import { Connection } from 'mongoose';
 
 import * as dotenv from 'dotenv';
 import { UserInitService } from './user.init.service';
-import { CampusService } from 'src/campus/campus.service';
+import { CampusModule } from 'src/campus/campus.module';
 dotenv.config();
 
 @Module({
@@ -24,11 +24,12 @@ dotenv.config();
       },
       inject: [getConnectionToken()]
     }
-    ])
+    ]),
+    CampusModule
   ],
-  providers: [UsersService, UserInitService],
+  exports: [UsersService],
   controllers: [UsersController],
-  exports: [UsersService]
+  providers: [UsersService, UserInitService],
 })
 
 export class UsersModule {}

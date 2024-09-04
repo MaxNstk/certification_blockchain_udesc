@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Post, UseGuards } from "@nestjs/common";
 import UsersService from "./users.service";
 import { AuthGuard } from "src/auth/auth.guard";
 import { User } from "./user.schema";
+import { CreateUserDto } from "./user.dto";
 
 
 @Controller('users')
@@ -23,9 +24,7 @@ export class UsersController{
 
     @UseGuards(AuthGuard)
     @Post()
-    async createUser(@Body() createUserDto: {username: string; password: string, fullName:string}): Promise<User> {
-      return await this.userService.createUser(createUserDto.username, createUserDto.password, createUserDto.fullName);
+    async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
+      return await this.userService.createUser(createUserDto);
     }
-
-
 }
