@@ -3,16 +3,20 @@ import { connect, Contract, Network, Identity, Signer, signers, Gateway } from '
 import * as crypto from 'crypto';
 import { promises as fs } from 'fs';
 import * as path from 'path';
+import { User } from 'src/users/user.schema';
 
 class BlockchainConnection {
-  private static instance: BlockchainConnection;
+
   private network: Network;
   private contract: Contract;
   private gateway: Gateway;
   private grpcClient: grpc.Client;
 
+  private user: User;
+
   private channelName: string;
   private chaincodeName: string;
+
   private cryptoPath: string;
   private certDirectoryPath: string;
   private keyDirectoryPath: string;
@@ -22,19 +26,17 @@ class BlockchainConnection {
 
   private utf8Decoder = new TextDecoder();
 
-  private constructor() {
-    // Inicialização privada não pode ser assíncrona, então inicialize variáveis aqui
+  private constructor() {}
+
+  public static async getConnection(user: User): Promise<BlockchainConnection>{
+    let connection: BlockchainConnection = new BlockchainConnection();
+    await connection.initialize(user);
+    return connection;
   }
 
-  public static async getInstance(): Promise<BlockchainConnection> {
-    if (!BlockchainConnection.instance) {
-      BlockchainConnection.instance = new BlockchainConnection();
-      await BlockchainConnection.instance.initialize();
-    }
-    return BlockchainConnection.instance;
-  }
 
-  private async initialize(): Promise<void> {
+  public async initialize(user: User): Promise<void> {
+    this.user = user;
     this.initializeVariables();
     this.displayInputParameters();
 
@@ -105,12 +107,11 @@ class BlockchainConnection {
   }
 
   private initializeVariables(): void {
-    this.cryptoPath = this.envOrDefault('CRYPTO_PATH', path.resolve(__dirname,'..', '..', '..', 'blockchain', 'network', 'organizations', 'peerOrganizations', 'udesc.local.com'));
-    this.certDirectoryPath = this.envOrDefault('CERT_DIRECTORY_PATH', path.resolve(this.cryptoPath, 'users', 'userCEAVI@udesc.local.com', 'msp', 'signcerts'));
-    this.tlsCertPath = this.envOrDefault('TLS_CERT_PATH', path.resolve(this.cryptoPath, 'peers', 'peerCEAVI.udesc.local.com', 'tls', 'ca.crt'));
-    this.keyDirectoryPath = this.envOrDefault('KEY_DIRECTORY_PATH', path.resolve(this.cryptoPath, 'users', 'userCEAVI@udesc.local.com', 'msp', 'keystore'));
-    this.peerEndpoint = this.envOrDefault('PEER_ENDPOINT', 'localhost:7051');
-    this.peerHostAlias = this.envOrDefault('PEER_HOST_ALIAS', 'peerCEAVI.udesc.local.com');
+    this.certDirectoryPath = this.user.campus.certDirectoryPath;
+    this.tlsCertPath = this.user.campus.tlsCertPath;
+    this.keyDirectoryPath = this.user.campus.keyDirectoryPath;
+    this.peerEndpoint = this.user.campus.peerEndpoint;
+    this.peerHostAlias = this.user.campus.peerHostAlias;
     this.channelName = this.envOrDefault('CHANNEL_NAME', 'certificationchannel');
     this.chaincodeName = this.envOrDefault('CHAINCODE_NAME', 'certificatesCC');
   }
