@@ -34,7 +34,6 @@ class BlockchainConnection {
     return connection;
   }
 
-
   public async initialize(user: User): Promise<void> {
     this.user = user;
     this.initializeVariables();
@@ -55,7 +54,6 @@ class BlockchainConnection {
     this.network = this.gateway.getNetwork(this.channelName);
     this.contract = this.network.getContract(this.chaincodeName);
 
-    await this.initLedger();
   }
 
   public disconnect(): void {

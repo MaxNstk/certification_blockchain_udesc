@@ -3,6 +3,8 @@ import UsersService from './users.service';
 
 import * as dotenv from 'dotenv';
 import { CreateUserDto } from './user.dto';
+import { User } from './user.schema';
+import BlockchainConnection from 'src/blockchain/blockchain.connection';
 dotenv.config();
 
 @Injectable()
@@ -20,13 +22,19 @@ export class UserInitService implements OnModuleInit {
     }catch(e){
 			if (!(e instanceof NotFoundException)){ throw e }
 			else{
-				await this.usersService.createUser(
+				const user: User = await this.usersService.createUser(
 					{username,
 					password,
           fullName,
           campusId:1
-        } as CreateUserDto
+          } as CreateUserDto
 				); 
+        const connection: BlockchainConnection = await BlockchainConnection.getConnection(user);
+        try{
+          await connection.initLedger();
+        }finally{
+          connection.disconnect();
+        }
 			}
     }
   }

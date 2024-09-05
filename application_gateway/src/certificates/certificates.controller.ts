@@ -25,6 +25,7 @@ export class CertificatesController {
       return await this.certificateService.createCertificate(req.user, certificateDTO);
     }
 
+    @UseGuards(AuthGuard)
     @Put(':certificateNumber')
     async updateCertificate(
       @Request() req, 
