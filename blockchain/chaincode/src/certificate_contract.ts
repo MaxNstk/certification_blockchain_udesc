@@ -11,6 +11,14 @@ import {CAMPI} from './campusInfo'
 @Info({title: 'AssetTransfer', description: 'Smart contract for trading assets'})
 export class AssetTransferContract extends Contract {
 
+    public getClientId(ctx: Context): string{
+        const clientId: string|null = ctx.clientIdentity.getAttributeValue('hf.EnrollmentID');
+        if (!clientId){
+            throw new Error(`The clientId is not defined`);
+        }
+        return clientId;
+    }
+
     @Transaction()
     public async InitLedger(ctx: Context): Promise<void> {
         console.info("Initing ledger");
@@ -94,10 +102,7 @@ export class AssetTransferContract extends Contract {
         if (exists) {
             throw new Error(`The certificate ${certificateNumber} already exists`);
         }
-        const clientId: string|null = ctx.clientIdentity.getAttributeValue('hf.EnrollmentID');
-        if (!clientId){
-            throw new Error(`The clientId is not defined`);
-        }
+        const clientId = this.getClientId(ctx);
         try{
             const certificate: Certificate = {
                 certificateNumber,
@@ -153,8 +158,6 @@ export class AssetTransferContract extends Contract {
         ownerRG: string,
         ownerBirthDate: string,
         ownerBirthState: string,
-        campusName: string,
-        campusAcronym: string,
         campusDirector: string,
         universityPresidentName: string,
         universityCertificateCoordinator: string,
@@ -167,6 +170,9 @@ export class AssetTransferContract extends Contract {
     ): Promise<string> {
         console.info("updating certificate with number "+certificateNumber);
         const exists = await this.CertificateExists(ctx, certificateNumber);
+
+        const clientId = this.getClientId(ctx);
+
         if (!exists) {
             throw new Error(`The certificate ${certificateNumber} does not exist`);
         }
@@ -181,8 +187,8 @@ export class AssetTransferContract extends Contract {
                 ownerRG,
                 ownerBirthDate,
                 ownerBirthState,
-                campusName,
-                campusAcronym,
+                campusName: CAMPI[clientId].campusName,
+                campusAcronym: CAMPI[clientId].campusAcronym,
                 campusDirector,
                 universityPresidentName,
                 universityCertificateCoordinator,

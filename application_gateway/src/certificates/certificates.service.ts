@@ -68,8 +68,6 @@ export class CertificatesService {
                 certificateDTO.ownerRG,
                 new Date(certificateDTO.ownerBirthDate).toISOString(),
                 certificateDTO.ownerBirthState,
-                certificateDTO.campusName,
-                certificateDTO.campusAcronym,
                 certificateDTO.campusDirector,
                 certificateDTO.universityPresidentName,
                 certificateDTO.universityCertificateCoordinator,
