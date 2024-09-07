@@ -8,6 +8,7 @@ import { Connection } from 'mongoose';
 
 import * as dotenv from 'dotenv';
 import { UserInitService } from './user.init.service';
+import { CampusService } from 'src/campus/campus.service';
 import { CampusModule } from 'src/campus/campus.module';
 dotenv.config();
 
@@ -29,7 +30,7 @@ dotenv.config();
   ],
   exports: [UsersService],
   controllers: [UsersController],
-  providers: [UsersService, UserInitService],
+  providers: [UserInitService, UsersService],
 })
 
 export class UsersModule {}

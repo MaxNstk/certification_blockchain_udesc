@@ -30,7 +30,7 @@ dotenv.config();
     CampusModule
   ],
   controllers: [CoursesController],
-  providers: [CoursesService, CampusService, CourseInitService],
+  providers: [CourseInitService, CoursesService],
 })
 
 export class CoursesModule {}

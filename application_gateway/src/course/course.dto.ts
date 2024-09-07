@@ -1,5 +1,6 @@
 // src/user/dto/create-user.dto.ts
 import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
+import { Campus } from 'src/campus/campus.schema';
 
 export class CourseDto {
         
@@ -9,5 +10,5 @@ export class CourseDto {
 
   @IsNotEmpty()
   @IsNumber()
-  campusId: number;  // Add the campusId to link the user with the campus
+  campusId: number; 
 }

@@ -9,26 +9,29 @@ import { CourseDto } from "./course.dto";
 @Injectable()
 export default class CoursesService{
 
-    constructor(
-      @InjectModel(Course.name) private courseModel: Model<Course>,
-      @InjectModel(Campus.name) private campusModel: Model<Campus>
-    ){}
+  constructor(
+    @InjectModel(Course.name) private courseModel: Model<Course>,
+    @InjectModel(Campus.name) private campusModel: Model<Campus>
+  ){}
 
-    findAll(): Promise<Course[]> {
-      return this.courseModel.find().exec();
-    }
+  findAll(): Promise<Course[]> {
+    return this.courseModel.find().exec();
+  }
 
-    async createCourse(courseDTO: CourseDto): Promise<Course>{
-      const campus = await this.campusModel.findOne({ campusId:courseDTO.campusId }).exec();
-      if (!campus) {
-        throw new NotFoundException('Campus not found');
-      }
-      const course:Course = new this.courseModel(courseDTO);
-      return course;
+  async createCourse(courseDTO: CourseDto): Promise<Course>{
+    const campus = await this.campusModel.findOne({ campusId:courseDTO.campusId }).exec();
+    if (!campus) {
+      throw new NotFoundException('Campus not found');
     }
+    const course = new this.courseModel({
+      name:courseDTO.name,
+      campus:campus
+    });
+    return course.save();
+  }
 
-    async findCoursesByCampus(campusId: string): Promise<Course[]> {
-      const campus = await this.campusModel.findOne({ campusId }).exec();
-      return await this.courseModel.find({ campus:campus._id }).exec();
-    }
+  async findCoursesByCampus(campusId: string): Promise<Course[]> {
+    const campus = await this.campusModel.findOne({ campusId }).exec();
+    return await this.courseModel.find({ campus:campus }).exec();
+  }
 }

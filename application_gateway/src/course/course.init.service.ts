@@ -18,10 +18,11 @@ export class CourseInitService implements OnModuleInit {
   }
 
   async createCourses(){
-    const campusCourses = {
+
+    const campusCourses:Record<string, string[]> = {
         "CEAVI":[ 
             "Ciências Contábeis",
-            "Engenharia Civil - Ibirama",
+            "Engenharia Civil",
             "Engenharia de Software",
             "Engenharia Sanitária",
         ],
@@ -46,7 +47,7 @@ export class CourseInitService implements OnModuleInit {
     };
     for (const campusAcronym in campusCourses){
 
-        const campus:Campus =  await this.campusService.findCampusByAcronym(campusAcronym);
+        const campus:Campus = await this.campusService.findCampusByAcronym(campusAcronym);
         const courses = campusCourses[campusAcronym];
 
         courses.forEach(async name => {

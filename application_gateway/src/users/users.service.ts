@@ -4,6 +4,7 @@ import { Model } from "mongoose";
 import * as bcrypt from 'bcrypt';
 import { User } from "./user.schema";
 import { CreateUserDto } from "./user.dto";
+import { CampusService } from "src/campus/campus.service";
 import { Campus } from "src/campus/campus.schema";
 
 
@@ -12,7 +13,7 @@ export default class UsersService{
 
     constructor(
       @InjectModel(User.name) private userModel: Model<User>,
-      @InjectModel(Campus.name) private campusModel: Model<Campus>
+      private readonly campusService: CampusService,
     ){}
 
     findAll(): Promise<User[]> {
@@ -20,7 +21,7 @@ export default class UsersService{
     }
 
     async createUser(userDTO: CreateUserDto): Promise<User>{
-      const campus = await this.campusModel.findOne({ campusId:userDTO.campusId }).exec();
+      const campus: Campus = await this.campusService.findCampus(userDTO.campusId);
       if (!campus) {
         throw new NotFoundException('Campus not found');
       }
@@ -37,7 +38,7 @@ export default class UsersService{
           username:userDTO.username, 
           fullName:userDTO.fullName, 
           password:hashPassword, 
-          campus:campus._id,
+          campus:campus,
         })
         return newUser.save();
       }

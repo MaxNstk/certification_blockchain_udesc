@@ -23,7 +23,7 @@ import { CampusInitService } from './campus.init.service';
     ])
   ],
   controllers: [CampusController],
-  providers: [CampusService, CampusInitService],
+  providers: [CampusInitService, CampusService],
   exports: [CampusService, MongooseModule]
 })
 export class CampusModule {}
