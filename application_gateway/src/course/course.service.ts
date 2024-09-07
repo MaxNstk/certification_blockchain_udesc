@@ -26,4 +26,9 @@ export default class CoursesService{
       const course:Course = new this.courseModel(courseDTO);
       return course;
     }
+
+    async findCoursesByCampus(campusId: string): Promise<Course[]> {
+      const campus = await this.campusModel.findOne({ campusId }).exec();
+      return await this.courseModel.find({ campus:campus._id }).exec();
+    }
 }
