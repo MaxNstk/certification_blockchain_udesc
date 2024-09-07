@@ -8,9 +8,9 @@ export class CoursesController{
 
     constructor(private readonly courseService: CoursesService) {}
 
-    @Get('campus/:campusId')
-    async getUser(@Param('campusId') campusId: string): Promise<Course[]>{
-        return await this.courseService.findCoursesByCampus(campusId);
+    @Get('campus/:acronym')
+    async getUser(@Param('acronym') acronym: string): Promise<Course[]>{
+        return await this.courseService.findCoursesByCampusAcronym(acronym);
     }
 
     @Get()

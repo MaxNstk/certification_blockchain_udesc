@@ -6,7 +6,8 @@ export async function getCertificates(reqUser: User): Promise<SimplifiedCertific
   if (!response.ok) {
     throw new Error('Failed to fetch certificates: '+response);
   }
-  return await response.json() as SimplifiedCertificate[];
+  const responseJson = await response.json();
+  return responseJson as SimplifiedCertificate[];
 }
 
 export async function createCertificate(certificate: Certificate, reqUser: User): Promise<Certificate> {

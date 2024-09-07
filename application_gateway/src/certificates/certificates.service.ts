@@ -2,9 +2,14 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CertificateDTO } from './certificate.dto';
 import BlockchainConnection from 'src/blockchain/blockchain.connection';
 import { User } from 'src/users/user.schema';
+import CoursesService from 'src/course/course.service';
 
 @Injectable()
 export class CertificatesService {
+
+    constructor(
+        private coursesService: CoursesService,
+    ){}
 
     async getAllCertificates(reqUser: User, ): Promise<JSON>  {
         const connection: BlockchainConnection = await BlockchainConnection.getConnection(reqUser);
@@ -31,7 +36,7 @@ export class CertificatesService {
                 'CreateCertificate',
                 certificateDTO.certificateNumber,
                 new Date(certificateDTO.certificateEmissionDate).toISOString(),
-                certificateDTO.certificateCourse,
+                (await this.coursesService.findCourseById(certificateDTO.certificateCourseId)).name,
                 certificateDTO.certificateStatus,
                 certificateDTO.ownerName,
                 certificateDTO.ownerRG,
@@ -62,7 +67,7 @@ export class CertificatesService {
                 'UpdateCertificate',
                 certificateNumber,
                 new Date(certificateDTO.certificateEmissionDate).toISOString(),
-                certificateDTO.certificateCourse,
+                (await this.coursesService.findCourseById(certificateDTO.certificateCourseId)).name,
                 certificateDTO.certificateStatus,
                 certificateDTO.ownerName,
                 certificateDTO.ownerRG,

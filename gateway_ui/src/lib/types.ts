@@ -1,7 +1,7 @@
 export interface SimplifiedCertificate {
     certificateNumber: string;
     certificateEmissionDate: Date;
-    certificateCourse: string;
+    certificateCourseId: number;
     certificateStatus: string;
     ownerName: string;
     campusAcronym: string;
@@ -10,7 +10,7 @@ export interface SimplifiedCertificate {
 export interface Certificate {
     certificateNumber: string;
     certificateEmissionDate: string;
-    certificateCourse: string;
+    certificateCourseId: number;
     certificateStatus: string;
     ownerName: string;
     ownerRG: string;
@@ -38,4 +38,9 @@ export interface User {
   fullName:string;
   jwt: string;
   campus: Campus;
+}
+
+export interface Course{
+  name: string;
+  courseId: number;
 }

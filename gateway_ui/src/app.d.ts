@@ -12,6 +12,7 @@ declare global {
 		interface PageData {
 			certificates: Certificate[];
 			certificate: Certificate;
+			availableCourses: Course[];
 		}
 		// interface PageState {}
 		// interface Platform {}

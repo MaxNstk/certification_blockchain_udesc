@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
-		import type { Certificate } from "$lib/types";
+		import type { Certificate, Course } from "$lib/types";
 
   export let certificate: Certificate = {
     certificateNumber: '',
     certificateEmissionDate: '',
-    certificateCourse: '',
+    certificateCourseId: 0,
     certificateStatus: 'valid',
     ownerName: '',
     ownerRG: '',
@@ -21,6 +21,8 @@
     wentToDegreeGranting: true,
     note: ''
   };
+
+  export let availableCourses:Course[] = [];
 
   export async function handleSubmit(event: Event) {
     event.preventDefault();
@@ -122,8 +124,18 @@
     <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 col-span-2"> Dados do universitários </h2>
 
     <div class="mb-5">
-      <label for="certificateCourse" class="block mb-2 text-sm font-medium dark:text-white">Curso</label>
-      <input type="text" id="certificateCourse" name="certificateCourse" bind:value={certificate.certificateCourse} class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
+      <label for="certificateCourseId" class="block mb-2 text-sm font-medium dark:text-white">Estado de Nascimento</label>
+      <select id="certificateCourseId" name="certificateCourseId" bind:value={certificate.certificateCourseId} 
+        class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500
+        focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400
+         dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light" required>
+        <option value="" disabled selected>Selecione o curso</option>
+        {#each availableCourses as course (course.courseId) }
+          <option value={course.courseId}>
+            {course.name}
+          </option>
+        {/each }
+      </select>
     </div>
     
     <div class="mb-5">

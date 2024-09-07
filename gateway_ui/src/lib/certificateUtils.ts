@@ -4,7 +4,7 @@ export function certificateFromFormData(data: FormData): Certificate | null {
     const requiredFields = [
         'certificateNumber',
         'certificateEmissionDate',
-        'certificateCourse',
+        'certificateCourseId',
         'certificateStatus',
         'ownerName',
         'ownerRG',
@@ -27,7 +27,7 @@ export function certificateFromFormData(data: FormData): Certificate | null {
     return {
         certificateNumber: data.get('certificateNumber') as string,
         certificateEmissionDate: data.get('certificateEmissionDate') as string,
-        certificateCourse: data.get('certificateCourse') as string,
+        certificateCourseId: data.get('certificateCourseId') as unknown as number,
         certificateStatus: data.get('certificateStatus') as string,
         ownerName: data.get('ownerName') as string,
         ownerRG: data.get('ownerRG') as string,
@@ -42,5 +42,5 @@ export function certificateFromFormData(data: FormData): Certificate | null {
         hasSentAllRequiredDocuments: data.get('hasSentAllRequiredDocuments') === 'on', 
         wentToDegreeGranting: data.get('wentToDegreeGranting') === 'on', 
         note: data.get('note') as string
-    };
+    } as Certificate;
 }

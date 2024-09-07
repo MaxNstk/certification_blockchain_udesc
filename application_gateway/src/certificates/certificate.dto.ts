@@ -1,4 +1,4 @@
-import { IsString, IsEnum, IsBoolean, IsDateString } from 'class-validator';
+import { IsString, IsInt, IsEnum, IsBoolean, IsDateString } from 'class-validator';
 
 export class CertificateDTO {
   @IsString()
@@ -7,8 +7,8 @@ export class CertificateDTO {
   @IsDateString()
   certificateEmissionDate: string;
 
-  @IsString()
-  certificateCourse: string;
+  @IsInt()
+  certificateCourseId: number;
 
   @IsEnum(['valid', 'revoked'])
   certificateStatus: 'valid' | 'revoked';

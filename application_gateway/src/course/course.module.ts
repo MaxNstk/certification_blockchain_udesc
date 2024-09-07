@@ -29,6 +29,7 @@ dotenv.config();
     ]),
     CampusModule
   ],
+  exports: [CoursesService],
   controllers: [CoursesController],
   providers: [CourseInitService, CoursesService],
 })
