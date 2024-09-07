@@ -44,7 +44,7 @@ export class CertificatesService {
                 certificateDTO.hasSentAllRequiredDocuments.toString(),
                 certificateDTO.wentToDegreeGranting.toString(),
                 certificateDTO.note,
-                'UsuarioSessao',
+                reqUser.fullName,
                 new Date().toISOString(),
             );
             return await this.getCertificateByNumber(reqUser, certificateDTO.certificateNumber);
@@ -75,7 +75,7 @@ export class CertificatesService {
                 certificateDTO.hasSentAllRequiredDocuments.toString(),
                 certificateDTO.wentToDegreeGranting.toString(),
                 certificateDTO.note,
-                'UsuarioSessao',
+                reqUser.fullName,
                 new Date().toISOString(),
             );
             return await this.getCertificateByNumber(reqUser, certificateDTO.certificateNumber);         

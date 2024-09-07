@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { CampusModule } from './campus/campus.module';
 
 import * as dotenv from 'dotenv';
+import { CoursesModule } from './course/course.module';
 dotenv.config();
 
 @Module({
@@ -14,9 +15,10 @@ dotenv.config();
   providers: [AppService],
   imports: [
     MongooseModule.forRoot(process.env.MONGO_URI),
-    AuthModule,
     CampusModule,
+    AuthModule,
     CertificatesModule,
+    CoursesModule,
   ],
 })
 export class AppModule {}

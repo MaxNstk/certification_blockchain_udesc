@@ -27,9 +27,15 @@ export interface Certificate {
     note?: string;
 }
 
+export interface Campus{
+  acronym: string;
+  description: string;
+}
+
 export interface User {
   userId: number;
   username: string;
   fullName:string;
   jwt: string;
+  campus: Campus;
 }
