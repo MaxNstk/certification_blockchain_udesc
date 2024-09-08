@@ -1,20 +1,22 @@
 import { updateCertificate } from "$lib/certificateService";
 import { certificateFromFormData } from "$lib/certificateUtils";
-import type { User } from "$lib/types";
+import type { Course, User } from "$lib/types";
 import { getCertificate } from "$lib/certificateService";
 import type { Certificate } from "$lib/types";
 import type { PageLoad } from "./$types";
+import { getUserCampusCourses } from "$lib/courseService";
 
 export const load: PageLoad = async ({params, locals}) => {
+    const certificate: Certificate = await getCertificate(params.certificateId, locals.user as User) as Certificate; 
   return {
-    certificate: await getCertificate(params.certificateId, locals.user as User) as Certificate 
+    certificate,
+    availableCourses: await getUserCampusCourses(locals.user as User) as Course[],
   };
 };
 
 export const actions = {
     POST: async ({ locals, request }) => {
 
-        // todo validar usuário
         const data = await request.formData();
 
         const certificate = certificateFromFormData(data);

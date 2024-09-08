@@ -23,7 +23,9 @@ export class CertificatesService {
     async getCertificateByNumber(reqUser: User, certificateNumber: string): Promise<JSON>  {
         const connection: BlockchainConnection = await BlockchainConnection.getConnection(reqUser);
         try{
-            return await connection.evaluateTransaction('RetrieveCompleteCertificate',certificateNumber)
+            const bcResponse:JSON = await connection.evaluateTransaction('RetrieveCompleteCertificate', certificateNumber);
+            bcResponse["certificateCourseId"] = ((await this.coursesService.findCourse({name:bcResponse["certificateCourse"]})).courseId);
+            return bcResponse;
         }finally{
             connection.disconnect();
         }
@@ -36,7 +38,7 @@ export class CertificatesService {
                 'CreateCertificate',
                 certificateDTO.certificateNumber,
                 new Date(certificateDTO.certificateEmissionDate).toISOString(),
-                (await this.coursesService.findCourseById(certificateDTO.certificateCourseId)).name,
+                (await this.coursesService.findCourse({courseId:certificateDTO.certificateCourseId})).name,
                 certificateDTO.certificateStatus,
                 certificateDTO.ownerName,
                 certificateDTO.ownerRG,
@@ -67,7 +69,7 @@ export class CertificatesService {
                 'UpdateCertificate',
                 certificateNumber,
                 new Date(certificateDTO.certificateEmissionDate).toISOString(),
-                (await this.coursesService.findCourseById(certificateDTO.certificateCourseId)).name,
+                (await this.coursesService.findCourse({courseId:certificateDTO.certificateCourseId})).name,
                 certificateDTO.certificateStatus,
                 certificateDTO.ownerName,
                 certificateDTO.ownerRG,

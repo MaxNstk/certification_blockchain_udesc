@@ -30,11 +30,12 @@ export default class CoursesService{
     return course.save();
   }
 
+  async findCourse(search:Record<string,string|number>){
+    return await this.courseModel.findOne(search).exec();  
+  }
+
   async findCoursesByCampusAcronym(acronym: string): Promise<Course[]> {
     const campus = await this.campusModel.findOne({ acronym }).exec();
     return await this.courseModel.find({ campus:campus }).exec();
-  }
-  async findCourseById(id: number): Promise<Course> {
-    return await this.courseModel.findOne({ courseId:id }).exec();
   }
 }

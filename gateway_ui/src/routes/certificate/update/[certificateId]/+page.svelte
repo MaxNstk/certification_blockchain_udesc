@@ -4,9 +4,11 @@
 
   export let data: PageData;
   $: certificate = data.certificate;
+  $: availableCourses = data.availableCourses;
+
   
 </script>
 
 <div class="dark">
-  <CertificateForm {certificate}/>
+  <CertificateForm {certificate} {availableCourses}/>
 </div>

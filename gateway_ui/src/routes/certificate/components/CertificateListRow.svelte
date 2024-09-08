@@ -15,7 +15,7 @@
           {certificate.certificateEmissionDate}
       </td>
       <td class="px-6 py-4">
-          {certificate.certificateCourseId}
+          {certificate.certificateCourse}
       </td>
       <td class="px-6 py-4">
         {#if certificate.certificateStatus === 'valid'}

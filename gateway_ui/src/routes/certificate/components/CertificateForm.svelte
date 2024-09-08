@@ -124,7 +124,7 @@
     <h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-4 col-span-2"> Dados do universitários </h2>
 
     <div class="mb-5">
-      <label for="certificateCourseId" class="block mb-2 text-sm font-medium dark:text-white">Estado de Nascimento</label>
+      <label for="certificateCourseId" class="block mb-2 text-sm font-medium dark:text-white">Curso</label>
       <select id="certificateCourseId" name="certificateCourseId" bind:value={certificate.certificateCourseId} 
         class="shadow-sm bg-gray-50 border border-gray-300 text-sm rounded-lg focus:ring-blue-500
         focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400

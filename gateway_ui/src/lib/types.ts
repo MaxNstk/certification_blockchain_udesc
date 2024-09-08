@@ -1,7 +1,7 @@
 export interface SimplifiedCertificate {
     certificateNumber: string;
     certificateEmissionDate: Date;
-    certificateCourseId: number;
+    certificateCourse: string;
     certificateStatus: string;
     ownerName: string;
     campusAcronym: string;

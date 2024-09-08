@@ -10,6 +10,7 @@ export class CoursesController{
 
     @Get('campus/:acronym')
     async getUser(@Param('acronym') acronym: string): Promise<Course[]>{
+        
         return await this.courseService.findCoursesByCampusAcronym(acronym);
     }
 
