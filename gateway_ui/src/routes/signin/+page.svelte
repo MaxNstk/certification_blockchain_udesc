@@ -1,5 +1,3 @@
-
-
 <form action="?/POST" method="POST" class="max-w-sm mx-auto">
     <div class="mb-5">
       <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Usuário</label>

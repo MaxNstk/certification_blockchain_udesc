@@ -21,7 +21,7 @@ export default class UsersService{
     }
 
     async createUser(userDTO: UserDto): Promise<User>{
-      const campus: Campus = await this.campusService.findCampus(userDTO.campusId);
+      const campus: Campus = await this.campusService.findCampusByAcronym(userDTO.campusAcronym);
       if (!campus) {
         throw new NotFoundException('Campus not found');
       }
@@ -39,6 +39,8 @@ export default class UsersService{
           fullName:userDTO.fullName, 
           password:hashPassword, 
           campus:campus,
+          isAdmin:userDTO.isAdmin,
+          isCoordinator:userDTO.isCoordinator
         })
         return newUser.save();
       }

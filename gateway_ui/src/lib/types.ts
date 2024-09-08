@@ -32,15 +32,26 @@ export interface Campus{
   description: string;
 }
 
-export interface User {
-  userId: number;
+export interface AbstractUser {
   username: string;
   fullName:string;
   jwt: string;
+  isAdmin: boolean;
+  isCoordinator: boolean;
+}
+
+export interface UserDTO extends AbstractUser{
+  campusAcronym: string;
+  password: string;
+}
+
+export interface User extends AbstractUser{
+  userId: number;
   campus: Campus;
+
 }
 
 export interface Course{
-  name: string;
+  description: string;
   courseId: number;
 }

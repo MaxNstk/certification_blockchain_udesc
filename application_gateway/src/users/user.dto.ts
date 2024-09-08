@@ -17,7 +17,7 @@ export class UserDto {
 
   @IsNotEmpty()
   @IsNumber()
-  campusId: number;  
+  campusAcronym: string;  
   
   @IsBoolean()
   isCoordinator: boolean = false;

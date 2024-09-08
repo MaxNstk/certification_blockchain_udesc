@@ -28,7 +28,7 @@ export class UserInitService implements OnModuleInit {
             fullName:"Admin Admin",
             isCoordinator:true,
             isAdmin:true,
-            campusId:1
+            campusAcronym:"CEAVI"
           } as UserDto
 				); 
         const connection: BlockchainConnection = await BlockchainConnection.getConnection(user);

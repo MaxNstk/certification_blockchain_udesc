@@ -2,7 +2,6 @@ import { createCertificate } from "$lib/certificateService";
 import { certificateFromFormData } from "$lib/certificateUtils";
 import { getUserCampusCourses } from "$lib/courseService";
 import type { Course, User } from "$lib/types";
-import type { Certificate } from "crypto";
 import type { PageData } from "../$types";
 
 

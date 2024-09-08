@@ -28,7 +28,7 @@ export class UsersController{
     if (req.user.isAdmin){
       return await this.userService.createUser(userDto);
     }
-    if (req.user.campus.campusId != userDto.campusId){
+    if (req.user.campus.acronym != userDto.campusAcronym){
       throw new ForbiddenException("The campus is not allowed. Should be yours"); 
     }
     if (req.user.isCoordinator && !userDto.isAdmin){
