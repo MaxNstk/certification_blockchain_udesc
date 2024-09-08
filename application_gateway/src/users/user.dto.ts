@@ -1,7 +1,7 @@
 // src/user/dto/create-user.dto.ts
-import { IsNotEmpty, IsString, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsString, IsNumber, IsBoolean } from 'class-validator';
 
-export class CreateUserDto {
+export class UserDto {
 
   @IsNotEmpty()
   @IsString()
@@ -17,5 +17,11 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @IsNumber()
-  campusId: number;  // Add the campusId to link the user with the campus
+  campusId: number;  
+  
+  @IsBoolean()
+  isCoordinator: boolean = false;
+
+  @IsBoolean()
+  isAdmin: boolean = false;
 }

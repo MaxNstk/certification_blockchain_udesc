@@ -3,7 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import * as bcrypt from 'bcrypt';
 import { User } from "./user.schema";
-import { CreateUserDto } from "./user.dto";
+import { UserDto } from "./user.dto";
 import { CampusService } from "src/campus/campus.service";
 import { Campus } from "src/campus/campus.schema";
 
@@ -20,7 +20,7 @@ export default class UsersService{
       return this.userModel.find().exec();
     }
 
-    async createUser(userDTO: CreateUserDto): Promise<User>{
+    async createUser(userDTO: UserDto): Promise<User>{
       const campus: Campus = await this.campusService.findCampus(userDTO.campusId);
       if (!campus) {
         throw new NotFoundException('Campus not found');

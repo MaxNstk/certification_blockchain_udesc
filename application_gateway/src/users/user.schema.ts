@@ -22,6 +22,12 @@ export class User {
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Campus.name })
   campus: Campus;
 
+  @Prop({ default:false })
+  isAdmin: boolean;
+
+  @Prop({ default:false })
+  isCoordinator: boolean;
+
   @Prop({default: Date.now})
   createdAt: Date;
 }
