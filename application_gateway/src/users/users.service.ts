@@ -21,9 +21,12 @@ export default class UsersService{
     }
 
     async createUser(userDTO: UserDto): Promise<User>{
-      const campus: Campus = await this.campusService.findCampusByAcronym(userDTO.campusAcronym);
-      if (!campus) {
-        throw new NotFoundException('Campus not found');
+      let campus: Campus = null;
+      if (userDTO.campusAcronym){
+        campus = await this.campusService.findCampusByAcronym(userDTO.campusAcronym);
+        if (!campus) {
+          throw new NotFoundException('Campus not found');
+        }
       }
       try{
         await this.findUserByUsername(userDTO.username);

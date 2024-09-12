@@ -29,6 +29,7 @@
     const formData = new FormData(event.target as HTMLFormElement);
     
     const response = await fetch('?/POST', {
+      //TODO send the certificate, max you re dumb
       method: 'POST',
       body: formData,
     });

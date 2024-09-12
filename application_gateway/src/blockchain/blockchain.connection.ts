@@ -17,7 +17,6 @@ class BlockchainConnection {
   private channelName: string;
   private chaincodeName: string;
 
-  private cryptoPath: string;
   private certDirectoryPath: string;
   private keyDirectoryPath: string;
   private tlsCertPath: string;
@@ -30,15 +29,13 @@ class BlockchainConnection {
 
   public static async getConnection(user: User): Promise<BlockchainConnection>{
     let connection: BlockchainConnection = new BlockchainConnection();
-    await connection.initialize(user);
+    connection.initializeVariables(user);
+    await connection.initialize();
     return connection;
   }
 
-  public async initialize(user: User): Promise<void> {
-    this.user = user;
-    this.initializeVariables();
+  public async initialize(): Promise<void> {
     this.displayInputParameters();
-
     this.grpcClient = await this.newGrpcConnection();
 
     this.gateway = connect({
@@ -104,20 +101,30 @@ class BlockchainConnection {
     return process.env[key] || defaultValue;
   }
 
-  private initializeVariables(): void {
-    this.certDirectoryPath = this.user.campus.certDirectoryPath;
-    this.tlsCertPath = this.user.campus.tlsCertPath;
-    this.keyDirectoryPath = this.user.campus.keyDirectoryPath;
-    this.peerEndpoint = this.user.campus.peerEndpoint;
-    this.peerHostAlias = this.user.campus.peerHostAlias;
-    this.channelName = this.envOrDefault('CHANNEL_NAME', 'certificationchannel');
-    this.chaincodeName = this.envOrDefault('CHAINCODE_NAME', 'certificatesCC');
+  private initializeVariables(user : User): void {
+    if (user.campus){
+      this.certDirectoryPath = this.user.campus.certDirectoryPath;
+      this.tlsCertPath = this.user.campus.tlsCertPath;
+      this.keyDirectoryPath = this.user.campus.keyDirectoryPath;
+      this.peerEndpoint = this.user.campus.peerEndpoint;
+      this.peerHostAlias = this.user.campus.peerHostAlias;
+      this.channelName = this.envOrDefault('CHANNEL_NAME', 'certificationchannel');
+      this.chaincodeName = this.envOrDefault('CHAINCODE_NAME', 'certificatesCC');
+    }else{
+      const cryptoPath = path.resolve(__dirname,'..', '..', '..', 'blockchain', 'network', 'organizations', 'peerOrganizations', 'public.local.com');    
+      this.certDirectoryPath =path.resolve(cryptoPath, 'users', 'User1@public.local.com', 'msp', 'signcerts'),
+      this.tlsCertPath =path.resolve(cryptoPath, 'peers', 'peer0.public.local.com', 'tls', 'ca.crt'),
+      this.keyDirectoryPath =path.resolve(cryptoPath, 'users', 'User1@public.local.com', 'msp', 'keystore'),
+      this.peerEndpoint ='localhost:9051',
+      this.peerHostAlias ='peer0.public.local.com'
+      this.channelName = this.envOrDefault('CHANNEL_NAME', 'certificationchannel');
+      this.chaincodeName = this.envOrDefault('CHAINCODE_NAME', 'certificatesCC');
+    }
   }
 
   private displayInputParameters(): void {
     console.log(`channelName:       ${this.channelName}`);
     console.log(`chaincodeName:     ${this.chaincodeName}`);
-    console.log(`cryptoPath:        ${this.cryptoPath}`);
     console.log(`certDirectoryPath: ${this.certDirectoryPath}`);
     console.log(`keyDirectoryPath:  ${this.keyDirectoryPath}`);
     console.log(`tlsCertPath:       ${this.tlsCertPath}`);

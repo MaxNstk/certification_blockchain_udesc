@@ -16,11 +16,24 @@ export class UserInitService implements OnModuleInit {
   async onModuleInit() {
     const username = process.env.ADMIN_USER;
     const password = process.env.ADMIN_PASSWORD; 
+    
+    const publicUsername = process.env.PUBLIC_USER;
+    const publicPassword = process.env.PUBLIC_PASSWORD; 
+    
     try{
         await this.usersService.findUserByUsername(username);        
     }catch(e){
 			if (!(e instanceof NotFoundException)){ throw e }
 			else{
+        await this.usersService.createUser(
+          {
+            username: publicUsername,
+            password: publicPassword,
+            fullName:"Public user",
+            isCoordinator:false,
+            isAdmin:false,
+          } as UserDto
+        ); 
 				const user: User = await this.usersService.createUser(
 					{
             username,

@@ -15,8 +15,7 @@ export class UserDto {
   @IsString()
   password: string;
 
-  @IsNotEmpty()
-  @IsNumber()
+  @IsString()
   campusAcronym: string;  
   
   @IsBoolean()

@@ -3,7 +3,7 @@ import type { Handle } from "@sveltejs/kit";
 import type { User } from "$lib/types";
 
 // Define the routes that should be accessible without authentication
-const public_paths: string[] = ['/signin'];
+const public_paths: string[] = ['/signin', '/'];
 
 function isPathAllowed(path: string): boolean {
   return public_paths.some(allowedPath =>
