@@ -38,7 +38,7 @@ export class CertificatesService {
                 'CreateCertificate',
                 certificateDTO.certificateNumber,
                 new Date(certificateDTO.certificateEmissionDate).toISOString(),
-                'asasas',
+                (await this.coursesService.findCourse({courseId:certificateDTO.certificateCourseId})).name,
                 certificateDTO.certificateStatus,
                 certificateDTO.ownerName,
                 certificateDTO.ownerRG,
@@ -92,5 +92,5 @@ export class CertificatesService {
             connection.disconnect();
         }
     }
-  
+
 }
