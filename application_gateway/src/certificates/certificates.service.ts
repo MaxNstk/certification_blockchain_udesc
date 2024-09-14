@@ -38,7 +38,7 @@ export class CertificatesService {
                 'CreateCertificate',
                 certificateDTO.certificateNumber,
                 new Date(certificateDTO.certificateEmissionDate).toISOString(),
-                (await this.coursesService.findCourse({courseId:certificateDTO.certificateCourseId})).name,
+                'asasas',
                 certificateDTO.certificateStatus,
                 certificateDTO.ownerName,
                 certificateDTO.ownerRG,
@@ -56,7 +56,7 @@ export class CertificatesService {
             );
             return await this.getCertificateByNumber(reqUser, certificateDTO.certificateNumber);
         } catch (error) {
-            throw new HttpException(`Certificate with number ${certificateDTO.certificateNumber} already exist.`, HttpStatus.BAD_REQUEST);
+            throw new HttpException(`${error}    Certificate with number ${certificateDTO.certificateNumber} already exist.`, HttpStatus.BAD_REQUEST);
         }finally{
             connection.disconnect();
         }

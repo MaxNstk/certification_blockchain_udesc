@@ -5,7 +5,6 @@ import { Connection } from 'mongoose';
 import { Campus, CampusSchema } from './campus.schema';
 import { CampusService } from './campus.service';
 import { CampusController } from './campus.controller';
-import { CampusInitService } from './campus.init.service';
 
 @Module({
   imports: [
@@ -23,7 +22,7 @@ import { CampusInitService } from './campus.init.service';
     ])
   ],
   controllers: [CampusController],
-  providers: [CampusInitService, CampusService],
+  providers: [CampusService],
   exports: [CampusService, MongooseModule]
 })
 export class CampusModule {}

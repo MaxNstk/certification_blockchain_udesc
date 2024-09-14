@@ -7,8 +7,6 @@ import * as dotenv from 'dotenv';
 import { Course, CourseSchema } from './course.schema';
 import { CampusModule } from 'src/campus/campus.module';
 import CoursesService from './course.service';
-import { CampusService } from 'src/campus/campus.service';
-import { CourseInitService } from './course.init.service';
 import { CoursesController } from './course.controller';
 
 dotenv.config();
@@ -31,7 +29,7 @@ dotenv.config();
   ],
   exports: [CoursesService],
   controllers: [CoursesController],
-  providers: [CourseInitService, CoursesService],
+  providers: [CoursesService],
 })
 
 export class CoursesModule {}
