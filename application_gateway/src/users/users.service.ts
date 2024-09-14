@@ -45,7 +45,7 @@ export default class UsersService{
           isAdmin:userDTO.isAdmin,
           isCoordinator:userDTO.isCoordinator
         })
-        return newUser.save();
+        return await newUser.save();
       }
     }
 

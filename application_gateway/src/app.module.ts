@@ -9,6 +9,7 @@ import { CampusModule } from './campus/campus.module';
 import * as dotenv from 'dotenv';
 import { CoursesModule } from './course/course.module';
 import { UsersModule } from './users/users.module';
+import { InitModule } from './init/init.module';
 dotenv.config();
 
 @Module({
@@ -20,6 +21,7 @@ dotenv.config();
     UsersModule,
     AuthModule,
     CoursesModule,
+    InitModule,
     CertificatesModule,
   ],
 })

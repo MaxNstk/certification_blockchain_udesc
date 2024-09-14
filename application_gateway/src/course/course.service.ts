@@ -27,7 +27,7 @@ export default class CoursesService{
       name:courseDTO.name,
       campus:campus
     });
-    return course.save();
+    return await course.save();
   }
 
   async findCourse(search:Record<string,string|number>){

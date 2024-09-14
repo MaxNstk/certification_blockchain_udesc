@@ -12,8 +12,6 @@ class BlockchainConnection {
   private gateway: Gateway;
   private grpcClient: grpc.Client;
 
-  private user: User;
-
   private channelName: string;
   private chaincodeName: string;
 
@@ -103,11 +101,11 @@ class BlockchainConnection {
 
   private initializeVariables(user : User): void {
     if (user.campus){
-      this.certDirectoryPath = this.user.campus.certDirectoryPath;
-      this.tlsCertPath = this.user.campus.tlsCertPath;
-      this.keyDirectoryPath = this.user.campus.keyDirectoryPath;
-      this.peerEndpoint = this.user.campus.peerEndpoint;
-      this.peerHostAlias = this.user.campus.peerHostAlias;
+      this.certDirectoryPath = user.campus.certDirectoryPath;
+      this.tlsCertPath = user.campus.tlsCertPath;
+      this.keyDirectoryPath = user.campus.keyDirectoryPath;
+      this.peerEndpoint = user.campus.peerEndpoint;
+      this.peerHostAlias = user.campus.peerHostAlias;
       this.channelName = this.envOrDefault('CHANNEL_NAME', 'certificationchannel');
       this.chaincodeName = this.envOrDefault('CHAINCODE_NAME', 'certificatesCC');
     }else{

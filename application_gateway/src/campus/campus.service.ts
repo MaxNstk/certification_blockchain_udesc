@@ -40,15 +40,7 @@ export class CampusService {
       peerHostAlias:string
     }
   ): Promise<Campus> {
-    try{
-      await this.findCampusByAcronym(createCampusDto.acronym);
-      throw new BadRequestException('campus already exists');
-    }catch (e){
-      if (!(e instanceof NotFoundException)){
-        throw e;
-      }
-      const newCampus = new this.campusModel(createCampusDto)
-      return newCampus.save();
-    }
+    const newCampus = new this.campusModel({...createCampusDto})
+    return await newCampus.save();
   }
 }

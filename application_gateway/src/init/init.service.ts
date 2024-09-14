@@ -19,12 +19,30 @@ export class InitService implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    if ((await this.campusService.findAll()).length > 0){
-      return;
+    const campusList = await this.campusService.findAll();
+    const courseList  = await this.coursesService.findAll();
+    const userList = await this.usersService.findAll();
+    if (campusList.length == 0){
+      await this.createCampus();
     }
-    await this.createCampus();
-    await this.createCourses();
-    await this.createUsers();
+    if (courseList.length == 0){
+      await this.createCourses();
+    }
+    if (userList.length == 0){
+      await this.createUsers();
+    }
+    await this.initLedger();
+  }
+  
+  async initLedger() {
+    const connection: BlockchainConnection = await BlockchainConnection.getConnection(
+      await this.usersService.findUserByUsername(process.env.ADMIN_USER)
+    );
+    try{
+      await connection.initLedger();
+    }finally{
+      connection.disconnect();
+    }
   }
 
   async createUsers(){
@@ -59,20 +77,13 @@ export class InitService implements OnModuleInit {
             campusAcronym:"CEAVI"
           } as UserDto
 				); 
-        const connection: BlockchainConnection = await BlockchainConnection.getConnection(user);
-        try{
-          await connection.initLedger();
-        }finally{
-          connection.disconnect();
-        }
-       
 			}
     }
   }
 
   async createCampus(){
     const cryptoPath = path.resolve(__dirname,'..', '..', '..', 'blockchain', 'network', 'organizations', 'peerOrganizations', 'udesc.local.com');    
-    const campus = [
+    const campusList = [
       {
         cryptoPath: cryptoPath,
         acronym:"CEAVI",
@@ -114,9 +125,9 @@ export class InitService implements OnModuleInit {
         peerHostAlias : 'peerCESMO.udesc.local.com'
       },
     ]
-    campus.forEach(async campi => {
-      await this.campusService.createCampus(campi)
-    });
+    for (const campi of campusList) {
+      const newCampus = await this.campusService.createCampus(campi);
+    }
   }
 
   async createCourses(){
@@ -147,18 +158,15 @@ export class InitService implements OnModuleInit {
             "Sistemas de Informação",
         ]
     };
-    for (const campusAcronym in campusCourses){
-
-        const campus:Campus = await this.campusService.findCampusByAcronym(campusAcronym);
-        const courses = campusCourses[campusAcronym];
-
-        courses.forEach(async name => {
-          await this.coursesService.createCourse({
-              name,
-              campusId:campus.campusId
-          })
+    for (const campusAcronym in campusCourses) {
+      const campus: Campus = await this.campusService.findCampusByAcronym(campusAcronym);
+      const courses = campusCourses[campusAcronym];
+      for (const name of courses) {
+        const course = await this.coursesService.createCourse({
+          name,
+          campusId: campus.campusId,
         });
+      }
     }
-  }
-  
+  } 
 }

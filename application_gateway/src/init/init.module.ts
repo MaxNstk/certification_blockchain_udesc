@@ -3,6 +3,7 @@ import * as dotenv from 'dotenv';
 import { CampusModule } from 'src/campus/campus.module';
 import { InitService } from './init.service';
 import { CoursesModule } from 'src/course/course.module';
+import { UsersModule } from 'src/users/users.module';
 dotenv.config();
 
 @Module({
@@ -14,4 +15,4 @@ dotenv.config();
   providers: [InitService],
 })
 
-export class UsersModule {}
+export class InitModule {}
