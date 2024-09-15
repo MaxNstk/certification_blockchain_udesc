@@ -1,22 +1,38 @@
+import type { Certificate, User } from '$lib/types';
+import { getCertificate } from '../lib/certificateService';
 
+
+export async function load({ cookies }) {
+	let certId = cookies.get('certId');
+
+	if (!certId) {
+		return
+	}
+
+  cookies.set('certId', '' ,{ path: '/' });
+
+  const response = await fetch('http://localhost:3000/auth/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      username: 'public',
+      password: 'RnywrCGXWpnlPgf',
+    }),
+  });
+
+  const data = await response.json();
+  const user: User = { jwt: data.jwt, ...data.user };
+
+  const certificate: Certificate = await getCertificate(certId, user);
+
+  return { certificate };
+}
 
 export const actions = {
-  POST: async ({ locals, request }) => {
-
-      const data: FormData = await request.formData();
-
-      const user: UserDTO = {
-          username: data.get('username') as string,
-          fullName: data.get('fullName') as string,
-          password: data.get('password') as string,
-          jwt: data.get('jwt') as string,
-          campusAcronym: data.get('campus') as string,
-          isAdmin: data.get('isAdmin') as string =='on',
-          isCoordinator: data.get('isCoordinator') as string =='on'
-      } as UserDTO;
-      const createdUser = await createUser(user, locals.user as User);
-      if (!createdUser){
-
-      }
-  }
-}
+  getCert: async ({ cookies, request }) => {
+    const formData = await request.formData();
+    const certificateNumber = formData.get('certificateNumber') as string;
+    cookies.set('certId', certificateNumber, { path: '/' });
+  },
+};
+  
