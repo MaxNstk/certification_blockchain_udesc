@@ -10,3 +10,12 @@ export async function createUser(formUser: UserDTO, reqUser: User): Promise<User
   }
   return await response.json() as User;
 }
+
+export async function listUsers(reqUser: User): Promise<User[]> {
+
+  const response = await (new HttpClient(reqUser.jwt)).get('users/');
+  if (!response.ok) {
+    throw new Error('Error creating user');
+  }
+  return await response.json() as User[];
+}
