@@ -48,7 +48,6 @@ export interface UserDTO extends AbstractUser{
 export interface User extends AbstractUser{
   userId: number;
   campus: Campus;
-
 }
 
 export interface Course{

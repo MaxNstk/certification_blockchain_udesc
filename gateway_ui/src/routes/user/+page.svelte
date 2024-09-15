@@ -1,4 +1,9 @@
 <script lang="ts">
+	import UserList from './components/UserList.svelte';
+  
+  export let data; 
+  $: users = data.users;
+
 </script>
 
 <div class="dark">
@@ -13,6 +18,7 @@
              Adicionar
             </a>
         </div>
-    </div>
+        <UserList {users}/>
+      </div>
   </div>
 </div>

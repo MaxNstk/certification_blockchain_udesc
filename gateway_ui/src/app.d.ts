@@ -13,6 +13,8 @@ declare global {
 			certificates: Certificate[];
 			certificate: Certificate;
 			availableCourses: Course[];
+			users: User[];
+			
 		}
 		// interface PageState {}
 		// interface Platform {}

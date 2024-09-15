@@ -17,7 +17,7 @@ export default class UsersService{
     ){}
 
     findAll(): Promise<User[]> {
-      return this.userModel.find().exec();
+      return this.userModel.find().populate('campus').exec();
     }
 
     async createUser(userDTO: UserDto): Promise<User>{
