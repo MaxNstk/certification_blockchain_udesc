@@ -14,6 +14,7 @@ class BlockchainConnection {
 
   private channelName: string;
   private chaincodeName: string;
+  private mspId: string;
 
   private certDirectoryPath: string;
   private keyDirectoryPath: string;
@@ -73,7 +74,7 @@ class BlockchainConnection {
   }
 
   private async newIdentity(): Promise<Identity> {
-    const mspId = this.envOrDefault('MSP_ID', 'UdescMSP'); 
+    const mspId = this.mspId; 
     const certPath = await this.getFirstDirFileName(this.certDirectoryPath);
     const credentials = await fs.readFile(certPath);
     return { mspId, credentials };
@@ -101,6 +102,7 @@ class BlockchainConnection {
 
   private initializeVariables(user : User): void {
     if (user.campus){
+      this.mspId = 'UdescMSP';
       this.certDirectoryPath = user.campus.certDirectoryPath;
       this.tlsCertPath = user.campus.tlsCertPath;
       this.keyDirectoryPath = user.campus.keyDirectoryPath;
@@ -109,6 +111,7 @@ class BlockchainConnection {
       this.channelName = this.envOrDefault('CHANNEL_NAME', 'certificationchannel');
       this.chaincodeName = this.envOrDefault('CHAINCODE_NAME', 'certificatesCC');
     }else{
+      this.mspId = 'PublicMSP';
       const cryptoPath = path.resolve(__dirname,'..', '..', '..', 'blockchain', 'network', 'organizations', 'peerOrganizations', 'public.local.com');    
       this.certDirectoryPath =path.resolve(cryptoPath, 'users', 'User1@public.local.com', 'msp', 'signcerts'),
       this.tlsCertPath =path.resolve(cryptoPath, 'peers', 'peer0.public.local.com', 'tls', 'ca.crt'),
