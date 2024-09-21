@@ -134,9 +134,32 @@ export class AssetTransferContract extends Contract {
         }catch(e){
             const response = `Error creating certificate: ${e}` 
             console.info(response);
-            return response;        }
-            
+            return response;        }            
     }
+
+    @Transaction(false)
+    public async GetCertificateHistory(ctx: Context, certificateNumber: string): Promise<string> {
+        console.info(`Fetching history for certificate with number: ${certificateNumber}`);
+        const iterator = await ctx.stub.getHistoryForKey(certificateNumber);
+        const allResults = [];
+    
+        let result = await iterator.next();
+        while (!result.done) {
+            const record = {
+                txId: result.value.txId,
+                isDelete: result.value.isDelete,
+                value: result.value.value.toString(),
+                timestamp: result.value.timestamp,
+            };
+            allResults.push(record);
+            result = await iterator.next();
+        }
+    
+        await iterator.close();
+        return JSON.stringify(allResults);
+    }
+    
+
 
     @Transaction(false)
     public async RetrieveCompleteCertificate(ctx: Context, certificateNumber: string): Promise<string> {

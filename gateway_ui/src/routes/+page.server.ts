@@ -15,8 +15,8 @@ export async function load({ cookies }) {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      username: 'public',
-      password: 'RnywrCGXWpnlPgf',
+      username: 'user',
+      password: 'user',
     }),
   });
 
