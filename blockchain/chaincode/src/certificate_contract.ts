@@ -1,7 +1,3 @@
-/*
- * SPDX-License-Identifier: Apache-2.0
- */
-// Deterministic JSON.stringify()
 import {Context, Contract, Info, Returns, Transaction} from 'fabric-contract-api';
 import stringify from 'json-stringify-deterministic';
 import sortKeysRecursive from 'sort-keys-recursive';
@@ -130,7 +126,7 @@ export class AssetTransferContract extends Contract {
             const stringContent = stringify(sortKeysRecursive(certificate));
             await ctx.stub.putState(certificateNumber, Buffer.from(stringContent));
             console.info(`Certificate ${certificateNumber} created`);
-            return await this.RetrieveCompleteCertificate(ctx,certificate.certificateNumber);
+            return await this.RetrieveCertificate(ctx,certificate.certificateNumber);
         }catch(e){
             const response = `Error creating certificate: ${e}` 
             console.info(response);
@@ -158,11 +154,9 @@ export class AssetTransferContract extends Contract {
         await iterator.close();
         return JSON.stringify(allResults);
     }
-    
-
 
     @Transaction(false)
-    public async RetrieveCompleteCertificate(ctx: Context, certificateNumber: string): Promise<string> {
+    public async RetrieveCertificate(ctx: Context, certificateNumber: string): Promise<string> {
         console.info("Retrieving complete certificate with number "+certificateNumber);
         const assetJSON = await ctx.stub.getState(certificateNumber);
         if (assetJSON.length === 0) {
@@ -200,7 +194,7 @@ export class AssetTransferContract extends Contract {
             throw new Error(`The certificate ${certificateNumber} does not exist`);
         }
         try{
-            const currentCertificate: Certificate = JSON.parse(await this.RetrieveCompleteCertificate(ctx, certificateNumber)) as Certificate;       
+            const currentCertificate: Certificate = JSON.parse(await this.RetrieveCertificate(ctx, certificateNumber)) as Certificate;       
             const updatedCertificate: Certificate = {
                 certificateNumber,
                 certificateEmissionDate,
@@ -227,7 +221,7 @@ export class AssetTransferContract extends Contract {
             const stringContent = stringify(sortKeysRecursive(updatedCertificate));
             await ctx.stub.putState(certificateNumber, Buffer.from(stringContent));
             console.info(`Certificate ${certificateNumber} updated`);
-            return await this.RetrieveCompleteCertificate(ctx, updatedCertificate.certificateNumber);
+            return await this.RetrieveCertificate(ctx, updatedCertificate.certificateNumber);
         }catch(e){
             const response = `Error updating certificate: ${e}` 
             console.info(response);

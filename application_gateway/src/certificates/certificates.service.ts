@@ -33,7 +33,7 @@ export class CertificatesService {
     async getCertificateByNumber(reqUser: User, certificateNumber: string): Promise<JSON>  {
         const connection: BlockchainConnection = await BlockchainConnection.getConnection(reqUser);
         try{
-            const bcResponse:JSON = await connection.evaluateTransaction('RetrieveCompleteCertificate', certificateNumber);
+            const bcResponse:JSON = await connection.evaluateTransaction('RetrieveCertificate', certificateNumber);
             bcResponse["certificateCourseId"] = ((await this.coursesService.findCourse({name:bcResponse["certificateCourse"]})).courseId);
             return bcResponse;
         }finally{
