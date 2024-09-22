@@ -8,6 +8,7 @@ export const load: PageLoad = async ({params, locals}) => {
     const history = await getCertificateHistory(params.certificateId, locals.user as User);
 
     return {
+        certificateId:params.certificateId,
         transactionList: history.map(transaction => {
             const date = format(
                 new Date(transaction.timestamp.seconds * 1000),

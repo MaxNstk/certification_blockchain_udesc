@@ -11,7 +11,7 @@
   <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
     <div class="container mx-auto px-4 py-8">
       <h1 class="text-2xl font-bold mb-6 text-gray-900 dark:text-gray-100">
-        Histórico de Transações
+        Histórico de Transações do Diploma n° {data.certificateId}
       </h1>
       <div class="space-y-6">
         {#each transactionList as transaction (transaction.txId)}
