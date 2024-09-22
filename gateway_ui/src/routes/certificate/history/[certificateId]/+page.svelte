@@ -33,6 +33,14 @@
                   {transaction.date}
                 </p>
               </div>
+              <div>
+                <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                  Autor
+                </h2>
+                <p class="text-gray-700 dark:text-gray-300 break-all">
+                  {transaction.value.updateUser}
+                </p>
+              </div>
             </div>
 
             <div class="mt-4">

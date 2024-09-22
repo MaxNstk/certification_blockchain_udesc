@@ -39,7 +39,7 @@ export class AssetTransferContract extends Contract {
                 note: "Certificado emitido sem pendências.", 
                 creationUser: "Maxuel",
                 creationDate: "2002-05-29T00:00:00Z",
-                updateUser: "Jones",
+                updateUser: "InitLedger Function",
                 updateDate: "2002-05-29T00:00:00Z"
             },
             {
@@ -62,7 +62,7 @@ export class AssetTransferContract extends Contract {
                 note: "João faltou na cerimônia, é um pangaré" ,
                 creationUser: "Jones",
                 creationDate: "2002-05-29T00:00:00Z",
-                updateUser: "Maxuel",
+                updateUser: "InitLedger Function",
                 updateDate: "2002-05-29T00:00:00Z"                
             }
         ];

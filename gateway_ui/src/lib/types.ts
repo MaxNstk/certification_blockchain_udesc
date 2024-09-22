@@ -51,6 +51,6 @@ export interface User extends AbstractUser{
 }
 
 export interface Course{
-  description: string;
+  name: string;
   courseId: number;
 }

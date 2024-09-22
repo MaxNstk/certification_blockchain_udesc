@@ -11,17 +11,15 @@ export async function getCertificates(reqUser: User): Promise<SimplifiedCertific
 }
 
 export async function createCertificate(certificate: Certificate, reqUser: User): Promise<Certificate> {
-
   const response = await (new HttpClient(reqUser.jwt)).post('certificates/',JSON.stringify(certificate));
   if (!response.ok) {
-    throw new Error('Failed to update certificate');
+    throw new Error('Failed to create certificate');
   }
   const content = await response.json();
   return content as Certificate;
 }
 
 export async function updateCertificate(certificate: Certificate, reqUser: User): Promise<Certificate> {
-
   const response = await (new HttpClient(reqUser.jwt)).put(`certificates/${certificate.certificateNumber}/`,JSON.stringify(certificate));
   if (!response.ok) {
     throw new Error('Failed to update certificate');
@@ -30,19 +28,17 @@ export async function updateCertificate(certificate: Certificate, reqUser: User)
 }
 
 export async function getCertificate(certificateNumber: string, reqUser: User): Promise<Certificate> {
-
   const response = await (new HttpClient(reqUser.jwt)).get(`certificates/${certificateNumber}/`);
   if (!response.ok) {
-    throw new Error('Failed to update certificate');
+    throw new Error('Failed to retrieve certificate');
   }
   return await response.json() as Certificate;
 }
 
 export async function getCertificateHistory(certificateNumber: string, reqUser: User) {
-
   const response = await (new HttpClient(reqUser.jwt)).get(`certificates/${certificateNumber}/history/`);
   if (!response.ok) {
-    throw new Error('Failed to update certificate');
+    throw new Error('Failed to get certificate history');
   }
   return await response.json();
 }

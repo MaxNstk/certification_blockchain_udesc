@@ -133,7 +133,7 @@
         <option value="" disabled selected>Selecione o curso</option>
         {#each availableCourses as course (course.courseId) }
           <option value={course.courseId}>
-            {course.description}
+            {course.name}
           </option>
         {/each }
       </select>

@@ -7,10 +7,11 @@ import type { PageLoad } from "./$types";
 import { getUserCampusCourses } from "$lib/courseService";
 
 export const load: PageLoad = async ({params, locals}) => {
-    const certificate: Certificate = await getCertificate(params.certificateId, locals.user as User) as Certificate; 
+  const certificate: Certificate = await getCertificate(params.certificateId, locals.user as User) as Certificate; 
+  const availableCourses:Course[] = await getUserCampusCourses(locals.user as User);
   return {
     certificate,
-    availableCourses: await getUserCampusCourses(locals.user as User) as Course[],
+    availableCourses
   };
 };
 
