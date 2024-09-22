@@ -241,6 +241,16 @@ export class AssetTransferContract extends Contract {
     @Transaction(false)
     @Returns('string')
     public async GetAllCertificates(ctx: Context): Promise<string> {
+
+        const clientMSPId = ctx.clientIdentity.getMSPID();
+        console.log('clientMSPId: '+clientMSPId);
+        console.log('clientMSPId: '+clientMSPId);
+        console.log('clientMSPId: '+clientMSPId);
+        console.log('clientMSPId: '+clientMSPId);
+        if (clientMSPId == 'PublicMSP'){
+            throw new Error(`Public organization has't permission to list certificates`);
+        }
+
         const allResults = [];
         const iterator = await ctx.stub.getStateByRange('', '');
         let result = await iterator.next();

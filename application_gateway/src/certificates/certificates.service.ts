@@ -13,10 +13,16 @@ export class CertificatesService {
     ){}
 
     async getAllCertificates(reqUser: User, ): Promise<JSON>  {
+        if (!reqUser.campus){
+            throw new HttpException(`The public organization has no permissions to query all certificates`, HttpStatus.UNAUTHORIZED);
+        }
         const connection: BlockchainConnection = await BlockchainConnection.getConnection(reqUser);
         try{
             return await connection.evaluateTransaction('GetAllCertificates');
-        }finally{
+        }catch(e){
+            throw new HttpException(`Error getting all certificates: ${e}`, HttpStatus.BAD_REQUEST);
+        }
+        finally{
             connection.disconnect();
         }
     }
@@ -66,7 +72,7 @@ export class CertificatesService {
             );
             return await this.getCertificateByNumber(reqUser, certificateDTO.certificateNumber);
         } catch (error) {
-            throw new HttpException(`${error}    Certificate with number ${certificateDTO.certificateNumber} already exist.`, HttpStatus.BAD_REQUEST);
+            throw new HttpException(`${error} Certificate with number ${certificateDTO.certificateNumber} already exist.`, HttpStatus.BAD_REQUEST);
         }finally{
             connection.disconnect();
         }

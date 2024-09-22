@@ -142,7 +142,8 @@ class BlockchainConnection {
       console.log('*** Result:', result);
       return result;
     }catch(e){
-      console.log(`Erro: ${e}`)
+      console.log(`Error evaluating transaction: ${e}`);
+      throw e;
     }
   }
   public async initLedger(): Promise<void> {
