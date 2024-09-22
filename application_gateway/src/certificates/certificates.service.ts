@@ -50,7 +50,7 @@ export class CertificatesService {
     async createCertificate(reqUser: User, certificateDTO: CertificateDTO): Promise<JSON>  {
         const connection: BlockchainConnection = await BlockchainConnection.getConnection(reqUser);
         try{
-            await connection.submitTransaction(  
+            return await connection.submitTransaction(  
                 'CreateCertificate',
                 certificateDTO.certificateNumber,
                 new Date(certificateDTO.certificateEmissionDate).toISOString(),
@@ -70,7 +70,6 @@ export class CertificatesService {
                 reqUser.fullName,
                 new Date().toISOString(),
             );
-            return await this.getCertificateByNumber(reqUser, certificateDTO.certificateNumber);
         } catch (error) {
             throw new HttpException(`${error} Certificate with number ${certificateDTO.certificateNumber} already exist.`, HttpStatus.BAD_REQUEST);
         }finally{
@@ -101,7 +100,6 @@ export class CertificatesService {
                 reqUser.fullName,
                 new Date().toISOString(),
             );
-            return await this.getCertificateByNumber(reqUser, certificateDTO.certificateNumber);         
         } catch (error) {
             throw new HttpException('Failed to retrieve certificate', HttpStatus.BAD_REQUEST);
         }finally{

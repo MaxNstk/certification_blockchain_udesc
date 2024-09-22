@@ -16,7 +16,8 @@ export async function createCertificate(certificate: Certificate, reqUser: User)
   if (!response.ok) {
     throw new Error('Failed to update certificate');
   }
-  return await response.json() as Certificate;
+  const content = await response.json();
+  return content as Certificate;
 }
 
 export async function updateCertificate(certificate: Certificate, reqUser: User): Promise<Certificate> {

@@ -125,8 +125,7 @@ export class AssetTransferContract extends Contract {
             };
             const stringContent = stringify(sortKeysRecursive(certificate));
             await ctx.stub.putState(certificateNumber, Buffer.from(stringContent));
-            console.info(`Certificate ${certificateNumber} created`);
-            return await this.RetrieveCertificate(ctx,certificate.certificateNumber);
+            return `Certificate ${certificateNumber} created`
         }catch(e){
             const response = `Error creating certificate: ${e}` 
             console.info(response);
@@ -187,13 +186,11 @@ export class AssetTransferContract extends Contract {
     ): Promise<string> {
         console.info("updating certificate with number "+certificateNumber);
         const exists = await this.CertificateExists(ctx, certificateNumber);
-
-        const clientId = this.getClientId(ctx);
-
         if (!exists) {
             throw new Error(`The certificate ${certificateNumber} does not exist`);
         }
         try{
+            const clientId = this.getClientId(ctx);
             const currentCertificate: Certificate = JSON.parse(await this.RetrieveCertificate(ctx, certificateNumber)) as Certificate;       
             const updatedCertificate: Certificate = {
                 certificateNumber,
@@ -220,8 +217,7 @@ export class AssetTransferContract extends Contract {
             };
             const stringContent = stringify(sortKeysRecursive(updatedCertificate));
             await ctx.stub.putState(certificateNumber, Buffer.from(stringContent));
-            console.info(`Certificate ${certificateNumber} updated`);
-            return await this.RetrieveCertificate(ctx, updatedCertificate.certificateNumber);
+            return `Certificate ${certificateNumber} updated`
         }catch(e){
             const response = `Error updating certificate: ${e}` 
             console.info(response);

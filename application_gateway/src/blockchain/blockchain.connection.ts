@@ -137,29 +137,32 @@ class BlockchainConnection {
     try{
       console.log(`\n Evaluationg Transaction: ${transaction}, with args: ${args}`);
       const resultBytes = await this.getContract().evaluateTransaction(transaction,...args);
-      const resultJson = this.utf8Decoder.decode(resultBytes);
-      const result: JSON = JSON.parse(resultJson);
+      const resultStr = this.utf8Decoder.decode(resultBytes);
+      const result: JSON = JSON.parse(resultStr);
       console.log('Result:', result);
       return result;
     }catch(e){
       console.log(`Error evaluating transaction: ${e}`);
       throw e;
-    }
+    } 
   }
 
-  public async submitTransaction(transaction:string, ...args: Array<string | Uint8Array>): Promise<JSON> {
+  public async submitTransaction(transaction:string, ...args: Array<string | Uint8Array>):Promise<JSON>  {
     try{
       console.log(`\n--> Submiting Transaction: ${transaction}, with args: ${args}`);
       const resultBytes = await this.getContract().submitTransaction(transaction,...args);
-      const resultJson = this.utf8Decoder.decode(resultBytes);
-      if (!resultJson){
+      const resultStr = this.utf8Decoder.decode(resultBytes);
+      console.log('Result:', resultStr);
+      if (!resultStr){
         return;
       }
-      const result: JSON = JSON.parse(resultJson);
-      console.log('Result:', result);
-      return result;
+      try{
+        return JSON.parse(resultStr);
+      }catch{
+        return JSON.parse(JSON.stringify({ message: resultStr }));
+      }
     }catch(e){
-      console.log(`Error evaluating transaction: ${e}`);
+      console.log(`Error submiting transaction: ${e}`);
       throw e;
     }
   }
