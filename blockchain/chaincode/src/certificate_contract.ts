@@ -130,7 +130,8 @@ export class AssetTransferContract extends Contract {
         }catch(e){
             const response = `Error creating certificate: ${e}` 
             console.info(response);
-            return response;        }            
+            return response;        
+        }            
     }
 
     @Transaction(false)
@@ -144,13 +145,12 @@ export class AssetTransferContract extends Contract {
             const record = {
                 txId: result.value.txId,
                 isDelete: result.value.isDelete,
-                value: result.value.value.toString(),
+                value: JSON.parse(result.value.value.toString()),
                 timestamp: result.value.timestamp,
             };
             allResults.push(record);
             result = await iterator.next();
         }
-    
         await iterator.close();
         return JSON.stringify(allResults);
     }
@@ -243,10 +243,6 @@ export class AssetTransferContract extends Contract {
     public async GetAllCertificates(ctx: Context): Promise<string> {
 
         const clientMSPId = ctx.clientIdentity.getMSPID();
-        console.log('clientMSPId: '+clientMSPId);
-        console.log('clientMSPId: '+clientMSPId);
-        console.log('clientMSPId: '+clientMSPId);
-        console.log('clientMSPId: '+clientMSPId);
         if (clientMSPId == 'PublicMSP'){
             throw new Error(`Public organization has't permission to list certificates`);
         }

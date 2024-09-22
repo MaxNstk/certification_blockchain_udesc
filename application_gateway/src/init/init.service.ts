@@ -39,7 +39,10 @@ export class InitService implements OnModuleInit {
       await this.usersService.findUserByUsername(process.env.ADMIN_USER)
     );
     try{
-      await connection.initLedger();
+      const certificates = await connection.evaluateTransaction('GetAllCertificates');
+      if (Array.isArray(certificates) && certificates.length === 0) {
+        await connection.initLedger();
+      }
     }finally{
       connection.disconnect();
     }

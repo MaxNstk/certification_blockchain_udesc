@@ -50,7 +50,7 @@ export class CertificatesService {
     async createCertificate(reqUser: User, certificateDTO: CertificateDTO): Promise<JSON>  {
         const connection: BlockchainConnection = await BlockchainConnection.getConnection(reqUser);
         try{
-            await connection.getContract().submitTransaction(  
+            await connection.submitTransaction(  
                 'CreateCertificate',
                 certificateDTO.certificateNumber,
                 new Date(certificateDTO.certificateEmissionDate).toISOString(),
@@ -81,7 +81,7 @@ export class CertificatesService {
     async updateCertificate(reqUser: User, certificateDTO: CertificateDTO, certificateNumber:string): Promise<JSON>  {
         const connection: BlockchainConnection = await BlockchainConnection.getConnection(reqUser);
         try{
-            await connection.getContract().submitTransaction(  
+            return await connection.submitTransaction(  
                 'UpdateCertificate',
                 certificateNumber,
                 new Date(certificateDTO.certificateEmissionDate).toISOString(),

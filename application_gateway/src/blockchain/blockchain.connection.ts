@@ -135,22 +135,39 @@ class BlockchainConnection {
 
   public async evaluateTransaction(transaction:string, ...args: Array<string | Uint8Array>): Promise<JSON> {
     try{
-      console.log(`\n--> Evaluate Transaction: ${transaction}, with args: ${args}`);
+      console.log(`\n Evaluationg Transaction: ${transaction}, with args: ${args}`);
       const resultBytes = await this.getContract().evaluateTransaction(transaction,...args);
       const resultJson = this.utf8Decoder.decode(resultBytes);
       const result: JSON = JSON.parse(resultJson);
-      console.log('*** Result:', result);
+      console.log('Result:', result);
       return result;
     }catch(e){
       console.log(`Error evaluating transaction: ${e}`);
       throw e;
     }
   }
+
+  public async submitTransaction(transaction:string, ...args: Array<string | Uint8Array>): Promise<JSON> {
+    try{
+      console.log(`\n--> Submiting Transaction: ${transaction}, with args: ${args}`);
+      const resultBytes = await this.getContract().submitTransaction(transaction,...args);
+      const resultJson = this.utf8Decoder.decode(resultBytes);
+      if (!resultJson){
+        return;
+      }
+      const result: JSON = JSON.parse(resultJson);
+      console.log('Result:', result);
+      return result;
+    }catch(e){
+      console.log(`Error evaluating transaction: ${e}`);
+      throw e;
+    }
+  }
+
   public async initLedger(): Promise<void> {
     console.log('\n--> Submit Transaction: InitLedger, function creates the initial set of Certificates on the ledger');
-    await this.getContract().submitTransaction('InitLedger');
-    console.log('*** Transaction committed successfully');
-}
+    await this.submitTransaction('InitLedger');
+  }
 }
 
 export default BlockchainConnection;
