@@ -7,5 +7,6 @@
         <th scope="col" class="px-6 py-3">Status</th>
         <th scope="col" class="px-6 py-3">Campus</th>
         <th scope="col" class="px-6 py-3"><span class="sr-only">Editar</span></th>
+        <th scope="col" class="px-6 py-3"><span class="sr-only">Histórico</span></th>
     </tr>
 </thead>

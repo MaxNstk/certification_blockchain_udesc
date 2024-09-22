@@ -37,4 +37,14 @@ export async function getCertificate(certificateNumber: string, reqUser: User): 
   return await response.json() as Certificate;
 }
 
+export async function getCertificateHistory(certificateNumber: string, reqUser: User) {
+
+  const response = await (new HttpClient(reqUser.jwt)).get(`certificates/${certificateNumber}/history/`);
+  if (!response.ok) {
+    throw new Error('Failed to update certificate');
+  }
+  return await response.json();
+}
+
+
 

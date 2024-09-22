@@ -20,6 +20,12 @@ export class CertificatesController {
     }
 
     @UseGuards(AuthGuard)
+    @Get(':certificateNumber/history')
+    async getCertificateHistory(@Request() req, @Param('certificateNumber') certificateNumber: string): Promise<JSON>  {
+      return await this.certificateService.getCertificateHistory(req.user, certificateNumber);
+    }
+
+    @UseGuards(AuthGuard)
     @Post()
     async createCertificate(@Request() req, @Body() certificateDTO: CertificateDTO): Promise<JSON> {
       return await this.certificateService.createCertificate(req.user, certificateDTO);

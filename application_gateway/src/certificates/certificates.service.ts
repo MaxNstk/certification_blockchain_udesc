@@ -4,6 +4,7 @@ import BlockchainConnection from 'src/blockchain/blockchain.connection';
 import { User } from 'src/users/user.schema';
 import CoursesService from 'src/course/course.service';
 
+
 @Injectable()
 export class CertificatesService {
 
@@ -19,6 +20,15 @@ export class CertificatesService {
             connection.disconnect();
         }
     }
+
+    async getCertificateHistory(reqUser: User, certificateNumber: string): Promise<JSON>  {
+        const connection: BlockchainConnection = await BlockchainConnection.getConnection(reqUser);
+        try{
+            return await connection.evaluateTransaction('GetCertificateHistory', certificateNumber);
+        }finally{
+            connection.disconnect();
+        }
+    } 
   
     async getCertificateByNumber(reqUser: User, certificateNumber: string): Promise<JSON>  {
         const connection: BlockchainConnection = await BlockchainConnection.getConnection(reqUser);

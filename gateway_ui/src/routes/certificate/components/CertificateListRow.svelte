@@ -30,5 +30,8 @@
       <td class="px-6 py-4 text-right">
           <a href="/certificate/update/{certificate.certificateNumber}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Editar</a>
       </td>
+      <td class="px-6 py-4 text-right">
+        <a href="/certificate/history/{certificate.certificateNumber}" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Histórico</a>
+    </td>
   </tr>
   
