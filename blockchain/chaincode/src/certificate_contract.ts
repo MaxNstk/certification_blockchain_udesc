@@ -4,6 +4,7 @@ import sortKeysRecursive from 'sort-keys-recursive';
 import {Certificate} from './certificate';
 import {CAMPI} from './campusInfo'
 
+
 @Info({title: 'AssetTransfer', description: 'Smart contract for trading assets'})
 export class AssetTransferContract extends Contract {
 
@@ -19,54 +20,22 @@ export class AssetTransferContract extends Contract {
     public async InitLedger(ctx: Context): Promise<void> {
         console.info("Initing ledger");
         const certificates: Certificate[] = [
-            {
-                certificateNumber: "1",
-                certificateEmissionDate: "2024-08-04T12:00:00Z",
-                certificateCourse: "Engenharia de Software", 
-                certificateStatus: "valid", 
-                ownerName: "Max Starke", 
-                ownerRG: "987654321",
-                ownerBirthDate: "2002-05-29T00:00:00Z", 
-                ownerBirthState: "Santa Catarina", 
-                campusName: "Centro de Educação do Alto Vale do Itajaí", 
-                campusAcronym: "CEAVI", 
-                campusDirector: "Marino", 
-                universityPresidentName: "Dilmar Baretta", 
-                universityCertificateCoordinator: "Elaine",
-                hasCompletedAllSubjects: true, 
-                hasSentAllRequiredDocuments: true, 
-                wentToDegreeGranting: true,
-                note: "Certificado emitido sem pendências.", 
-                creationUser: "Maxuel",
-                creationDate: "2002-05-29T00:00:00Z",
-                updateUser: "InitLedger Function",
-                updateDate: "2002-05-29T00:00:00Z"
+            { 
+                certificateNumber: "1", certificateEmissionDate: "2024-08-04T12:00:00Z", certificateCourse: "Engenharia de Software",
+                certificateStatus: "valid",  ownerName: "Max Starke",  ownerRG: "987654321", ownerBirthDate: "2002-05-29T00:00:00Z",  
+                ownerBirthState: "Santa Catarina",  campusName: "Centro de Educação do Alto Vale do Itajaí",  campusAcronym: "CEAVI",
+                campusDirector: "Marino",  universityPresidentName: "Dilmar Baretta",  universityCertificateCoordinator: "Elaine", 
+                hasCompletedAllSubjects: true,  hasSentAllRequiredDocuments: true,  wentToDegreeGranting: true, note: "Certificado emitido sem pendências.",  
+                creationUser: "Maxuel", creationDate: "2002-05-29T00:00:00Z", updateUser: "InitLedger Function", updateDate: "2002-05-29T00:00:00Z"
             },
             {
-                certificateNumber: "2",
-                certificateEmissionDate: "2024-08-04T12:00:00Z",
-                certificateCourse: "Engenharia de Software", 
-                certificateStatus: "revoked", 
-                ownerName: "João Krieger", 
-                ownerRG: "987654321",
-                ownerBirthDate: "2002-05-29T00:00:00Z", 
-                ownerBirthState: "Santa Catarina", 
-                campusName: "Centro de Educação do Alto Vale do Itajaí", 
-                campusAcronym: "CEAVI", 
-                campusDirector: "Marino", 
-                universityPresidentName: "Dilmar Baretta", 
-                universityCertificateCoordinator: "Elaine",
-                hasCompletedAllSubjects: true,
-                hasSentAllRequiredDocuments: true, 
-                wentToDegreeGranting: false, 
-                note: "João faltou na cerimônia, é um pangaré" ,
-                creationUser: "Jones",
-                creationDate: "2002-05-29T00:00:00Z",
-                updateUser: "InitLedger Function",
-                updateDate: "2002-05-29T00:00:00Z"                
+                certificateNumber: "2", certificateEmissionDate: "2024-08-04T12:00:00Z", certificateCourse: "Engenharia de Software",  certificateStatus: "revoked", 
+                ownerName: "João Krieger", ownerRG: "987654321",ownerBirthDate: "2002-05-29T00:00:00Z", ownerBirthState: "Santa Catarina", campusName: "Centro de Educação do Alto Vale do Itajaí", 
+                campusAcronym: "CEAVI", campusDirector: "Marino", universityPresidentName: "Dilmar Baretta", universityCertificateCoordinator: "Elaine",hasCompletedAllSubjects: true,
+                hasSentAllRequiredDocuments: true,  wentToDegreeGranting: false,  note: "João faltou na cerimônia, é um pangaré" , creationUser: "Jones", creationDate: "2002-05-29T00:00:00Z",
+                updateUser: "InitLedger Function", updateDate: "2002-05-29T00:00:00Z"                
             }
         ];
-
         for (const certificate of certificates) {
             await ctx.stub.putState(certificate.certificateNumber, Buffer.from(stringify(sortKeysRecursive(certificate))));
             console.info(`Certificate ${certificate.certificateNumber} initialized`);
@@ -75,23 +44,10 @@ export class AssetTransferContract extends Contract {
 
     @Transaction()
     public async CreateCertificate(ctx: Context,
-        certificateNumber: string,
-        certificateEmissionDate: string,
-        certificateCourse: string,
-        certificateStatus: 'valid' | 'revoked',
-        ownerName: string,
-        ownerRG: string,
-        ownerBirthDate: string,
-        ownerBirthState: string,
-        campusDirector: string,
-        universityPresidentName: string,
-        universityCertificateCoordinator: string,
-        hasCompletedAllSubjects: boolean,
-        hasSentAllRequiredDocuments: boolean,
-        wentToDegreeGranting: boolean,
-        note: string,
-        user: string,
-        dateString: string
+        certificateNumber: string, certificateEmissionDate: string, certificateCourse: string, certificateStatus: 'valid' | 'revoked', ownerName: string,
+        ownerRG: string, ownerBirthDate: string, ownerBirthState: string, campusDirector: string, universityPresidentName: string,
+        universityCertificateCoordinator: string, hasCompletedAllSubjects: boolean, hasSentAllRequiredDocuments: boolean, wentToDegreeGranting: boolean,
+        note: string, user: string, dateString: string
     ): Promise<string> {
         console.info("creating certificate with number "+certificateNumber);
         const exists = await this.CertificateExists(ctx, certificateNumber);
@@ -101,27 +57,12 @@ export class AssetTransferContract extends Contract {
         const clientId = this.getClientId(ctx);
         try{
             const certificate: Certificate = {
-                certificateNumber,
-                certificateEmissionDate,
-                certificateCourse,
-                certificateStatus,
-                ownerName,
-                ownerRG,
-                ownerBirthDate,
-                ownerBirthState,
-                campusName: CAMPI[clientId].campusName,
-                campusAcronym: CAMPI[clientId].campusAcronym,
-                campusDirector,
-                universityPresidentName,
-                universityCertificateCoordinator,
-                hasCompletedAllSubjects,
-                hasSentAllRequiredDocuments,
-                wentToDegreeGranting,
-                note,
-                creationUser: user,
-                creationDate: dateString,
-                updateUser: user,
-                updateDate: dateString
+                certificateNumber, certificateEmissionDate, certificateCourse, certificateStatus,
+                ownerName, ownerRG, ownerBirthDate, ownerBirthState,
+                campusName: CAMPI[clientId].campusName, campusAcronym: CAMPI[clientId].campusAcronym,
+                campusDirector, universityPresidentName, universityCertificateCoordinator, hasCompletedAllSubjects,
+                hasSentAllRequiredDocuments, wentToDegreeGranting, note, creationUser: user,
+                creationDate: dateString, updateUser: user, updateDate: dateString
             };
             const stringContent = stringify(sortKeysRecursive(certificate));
             await ctx.stub.putState(certificateNumber, Buffer.from(stringContent));
@@ -166,23 +107,10 @@ export class AssetTransferContract extends Contract {
 
     @Transaction()
     public async UpdateCertificate(ctx: Context,
-        certificateNumber: string,
-        certificateEmissionDate: string,
-        certificateCourse: string,
-        certificateStatus: 'valid' | 'revoked',
-        ownerName: string,
-        ownerRG: string,
-        ownerBirthDate: string,
-        ownerBirthState: string,
-        campusDirector: string,
-        universityPresidentName: string,
-        universityCertificateCoordinator: string,
-        hasCompletedAllSubjects: boolean,
-        hasSentAllRequiredDocuments: boolean,
-        wentToDegreeGranting: boolean,
-        note: string,
-        user: string,
-        dateString: string
+        certificateNumber: string, certificateEmissionDate: string, certificateCourse: string, certificateStatus: 'valid' | 'revoked', ownerName: string,
+        ownerRG: string, ownerBirthDate: string, ownerBirthState: string, campusDirector: string, universityPresidentName: string,
+        universityCertificateCoordinator: string, hasCompletedAllSubjects: boolean, hasSentAllRequiredDocuments: boolean, 
+        wentToDegreeGranting: boolean, note: string, user: string, dateString: string
     ): Promise<string> {
         console.info("updating certificate with number "+certificateNumber);
         const exists = await this.CertificateExists(ctx, certificateNumber);
@@ -193,27 +121,10 @@ export class AssetTransferContract extends Contract {
             const clientId = this.getClientId(ctx);
             const currentCertificate: Certificate = JSON.parse(await this.RetrieveCertificate(ctx, certificateNumber)) as Certificate;       
             const updatedCertificate: Certificate = {
-                certificateNumber,
-                certificateEmissionDate,
-                certificateCourse,
-                certificateStatus,
-                ownerName,
-                ownerRG,
-                ownerBirthDate,
-                ownerBirthState,
-                campusName: CAMPI[clientId].campusName,
-                campusAcronym: CAMPI[clientId].campusAcronym,
-                campusDirector,
-                universityPresidentName,
-                universityCertificateCoordinator,
-                hasCompletedAllSubjects,
-                hasSentAllRequiredDocuments,
-                wentToDegreeGranting,
-                note,
-                creationUser: currentCertificate.creationUser,
-                creationDate: currentCertificate.creationDate,
-                updateUser: user,
-                updateDate: dateString
+                certificateNumber, certificateEmissionDate, certificateCourse, certificateStatus, ownerName, ownerRG,
+                ownerBirthDate, ownerBirthState, campusName: CAMPI[clientId].campusName, campusAcronym: CAMPI[clientId].campusAcronym, 
+                campusDirector, universityPresidentName, universityCertificateCoordinator,hasCompletedAllSubjects,hasSentAllRequiredDocuments,wentToDegreeGranting,
+                note, creationUser: currentCertificate.creationUser, creationDate: currentCertificate.creationDate, updateUser: user, updateDate: dateString
             };
             const stringContent = stringify(sortKeysRecursive(updatedCertificate));
             await ctx.stub.putState(certificateNumber, Buffer.from(stringContent));
