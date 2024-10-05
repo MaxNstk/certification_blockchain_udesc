@@ -1,21 +1,5 @@
 ---
 Organizations:
-  - &OrdererOrg
-    Name: OrdererOrg
-    ID: OrdererMSP
-    MSPDir: ../organizations/ordererOrganizations/example.com/msp
-    Policies:
-      Readers:
-        Type: Signature
-        Rule: "OR('OrdererMSP.member')"
-      Writers:
-        Type: Signature
-        Rule: "OR('OrdererMSP.member')"
-      Admins:
-        Type: Signature
-        Rule: "OR('OrdererMSP.admin')"
-    OrdererEndpoints:
-      - orderer.example.com:7050
   - &Udesc
     Name: UdescMSP
     ID: UdescMSP
@@ -50,7 +34,22 @@ Organizations:
       Endorsement:
         Type: Signature
         Rule: "OR('PublicMSP.peer')"
-
+  - &OrdererOrg
+    Name: OrdererOrg
+    ID: OrdererMSP
+    MSPDir: ../organizations/ordererOrganizations/example.com/msp
+    Policies:
+      Readers:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+      Writers:
+        Type: Signature
+        Rule: "OR('OrdererMSP.member')"
+      Admins:
+        Type: Signature
+        Rule: "OR('OrdererMSP.admin')"
+    OrdererEndpoints:
+      - orderer.example.com:7050
 Capabilities:
   Channel: &ChannelCapabilities
     V2_0: true
