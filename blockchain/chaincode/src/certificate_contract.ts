@@ -1,12 +1,12 @@
-import {Context, Contract, Info, Returns, Transaction} from 'fabric-contract-api';
 import stringify from 'json-stringify-deterministic';
 import sortKeysRecursive from 'sort-keys-recursive';
 import {Certificate} from './certificate';
 import {CAMPI} from './campusInfo'
 
+import {Context, Contract, Info, Returns, Transaction} from 'fabric-contract-api';
 
-@Info({title: 'AssetTransfer', description: 'Smart contract for trading assets'})
-export class AssetTransferContract extends Contract {
+@Info({title: 'CertificateStorage', description: 'Smart contract for storing certificates'})
+export class CertificateStorageContract extends Contract {
 
     public getClientId(ctx: Context): string{
         const clientId: string|null = ctx.clientIdentity.getAttributeValue('hf.EnrollmentID');
@@ -75,6 +75,25 @@ export class AssetTransferContract extends Contract {
     }
 
     @Transaction(false)
+    @Returns('boolean')
+    public async CertificateExists(ctx: Context, certificateNumber: string): Promise<boolean> {
+        console.info(`Checking if certificate with number ${certificateNumber} exists`);
+        const assetJSON = await ctx.stub.getState(certificateNumber);
+        console.info(`Response exists: ${assetJSON.toString()}`);
+        return assetJSON.length > 0;
+    }
+
+    @Transaction(false)
+    public async RetrieveCertificate(ctx: Context, certificateNumber: string): Promise<string> {
+        console.info("Retrieving complete certificate with number "+certificateNumber);
+        const assetJSON = await ctx.stub.getState(certificateNumber);
+        if (assetJSON.length === 0) {
+            throw new Error(`The certificate ${certificateNumber} does not exist`);
+        }
+        return assetJSON.toString();
+    }
+
+    @Transaction(false)
     public async GetCertificateHistory(ctx: Context, certificateNumber: string): Promise<string> {
         console.info(`Fetching history for certificate with number: ${certificateNumber}`);
         const iterator = await ctx.stub.getHistoryForKey(certificateNumber);
@@ -93,16 +112,6 @@ export class AssetTransferContract extends Contract {
         }
         await iterator.close();
         return JSON.stringify(allResults);
-    }
-
-    @Transaction(false)
-    public async RetrieveCertificate(ctx: Context, certificateNumber: string): Promise<string> {
-        console.info("Retrieving complete certificate with number "+certificateNumber);
-        const assetJSON = await ctx.stub.getState(certificateNumber);
-        if (assetJSON.length === 0) {
-            throw new Error(`The certificate ${certificateNumber} does not exist`);
-        }
-        return assetJSON.toString();
     }
 
     @Transaction()
@@ -137,15 +146,6 @@ export class AssetTransferContract extends Contract {
     }
 
     @Transaction(false)
-    @Returns('boolean')
-    public async CertificateExists(ctx: Context, certificateNumber: string): Promise<boolean> {
-        console.info(`Checking if certificate with number ${certificateNumber} exists`);
-        const assetJSON = await ctx.stub.getState(certificateNumber);
-        console.info(`Response exists: ${assetJSON.toString()}`);
-        return assetJSON.length > 0;
-    }
-
-    @Transaction(false)
     @Returns('string')
     public async GetAllCertificates(ctx: Context): Promise<string> {
 
@@ -173,3 +173,5 @@ export class AssetTransferContract extends Contract {
     }
 
 }
+
+

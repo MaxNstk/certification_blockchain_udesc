@@ -52,50 +52,6 @@ class BlockchainConnection {
 
   }
 
-  public disconnect(): void {
-    this.gateway.close();
-    this.grpcClient.close();
-  }
-
-  public getNetwork(): Network {
-    return this.network;
-  }
-
-  public getContract(): Contract {
-    return this.contract;
-  }
-
-  private async newGrpcConnection(): Promise<grpc.Client> {
-    const tlsRootCert = await fs.readFile(this.tlsCertPath);
-    const tlsCredentials = grpc.credentials.createSsl(tlsRootCert);
-    return new grpc.Client(this.peerEndpoint, tlsCredentials, {
-      'grpc.ssl_target_name_override': this.peerHostAlias,
-    });
-  }
-
-  private async newIdentity(): Promise<Identity> {
-    const mspId = this.mspId; 
-    const certPath = await this.getFirstDirFileName(this.certDirectoryPath);
-    const credentials = await fs.readFile(certPath);
-    return { mspId, credentials };
-  }
-
-  private async getFirstDirFileName(dirPath: string): Promise<string> {
-    const files = await fs.readdir(dirPath);
-    const file = files[0];
-    if (!file) {
-      throw new Error(`No files in directory: ${dirPath}`);
-    }
-    return path.join(dirPath, file);
-  }
-
-  private async newSigner(): Promise<Signer> {
-    const keyPath = await this.getFirstDirFileName(this.keyDirectoryPath);
-    const privateKeyPem = await fs.readFile(keyPath);
-    const privateKey = crypto.createPrivateKey(privateKeyPem);
-    return signers.newPrivateKeySigner(privateKey);
-  }
-
   private envOrDefault(key: string, defaultValue: string): string {
     return process.env[key] || defaultValue;
   }
@@ -123,6 +79,23 @@ class BlockchainConnection {
     }
   }
 
+  public getNetwork(): Network {
+    return this.network;
+  }
+
+  public getContract(): Contract {
+    return this.contract;
+  }
+
+  private async getFirstDirFileName(dirPath: string): Promise<string> {
+    const files = await fs.readdir(dirPath);
+    const file = files[0];
+    if (!file) {
+      throw new Error(`No files in directory: ${dirPath}`);
+    }
+    return path.join(dirPath, file);
+  }
+
   private displayInputParameters(): void {
     console.log(`channelName:       ${this.channelName}`);
     console.log(`chaincodeName:     ${this.chaincodeName}`);
@@ -133,38 +106,47 @@ class BlockchainConnection {
     console.log(`peerHostAlias:     ${this.peerHostAlias}`);
   }
 
+  public disconnect(): void {
+    this.gateway.close();
+    this.grpcClient.close();
+  }
+
+  private async newGrpcConnection(): Promise<grpc.Client> {
+    const tlsRootCert = await fs.readFile(this.tlsCertPath);
+    const tlsCredentials = grpc.credentials.createSsl(tlsRootCert);
+    return new grpc.Client(this.peerEndpoint, tlsCredentials, {
+      'grpc.ssl_target_name_override': this.peerHostAlias,
+    });
+  }
+
+  private async newIdentity(): Promise<Identity> {
+    const mspId = this.mspId; 
+    const certPath = await this.getFirstDirFileName(this.certDirectoryPath);
+    const credentials = await fs.readFile(certPath);
+    return { mspId, credentials };
+  }
+
+  private async newSigner(): Promise<Signer> {
+    const keyPath = await this.getFirstDirFileName(this.keyDirectoryPath);
+    const privateKeyPem = await fs.readFile(keyPath);
+    const privateKey = crypto.createPrivateKey(privateKeyPem);
+    return signers.newPrivateKeySigner(privateKey);
+  }
+
   public async evaluateTransaction(transaction:string, ...args: Array<string | Uint8Array>): Promise<JSON> {
-    try{
-      console.log(`\n Evaluationg Transaction: ${transaction}, with args: ${args}`);
-      const resultBytes = await this.getContract().evaluateTransaction(transaction,...args);
-      const resultStr = this.utf8Decoder.decode(resultBytes);
-      const result: JSON = JSON.parse(resultStr);
-      console.log('Result:', result);
-      return result;
-    }catch(e){
-      console.log(`Error evaluating transaction: ${e}`);
-      throw e;
-    } 
+    const resultBytes = await this.getContract().evaluateTransaction(transaction,...args);
+    const resultStr = this.utf8Decoder.decode(resultBytes);
+    const result: JSON = JSON.parse(resultStr);
+    return result;
   }
 
   public async submitTransaction(transaction:string, ...args: Array<string | Uint8Array>):Promise<JSON>  {
-    try{
-      console.log(`\n--> Submiting Transaction: ${transaction}, with args: ${args}`);
-      const resultBytes = await this.getContract().submitTransaction(transaction,...args);
-      const resultStr = this.utf8Decoder.decode(resultBytes);
-      console.log('Result:', resultStr);
-      if (!resultStr){
-        return;
-      }
-      try{
-        return JSON.parse(resultStr);
-      }catch{
-        return JSON.parse(JSON.stringify({ message: resultStr }));
-      }
-    }catch(e){
-      console.log(`Error submiting transaction: ${e}`);
-      throw e;
+    const resultBytes = await this.getContract().submitTransaction(transaction,...args);
+    const resultStr = this.utf8Decoder.decode(resultBytes);
+    if (!resultStr){
+      return;
     }
+    return JSON.parse(resultStr);
   }
 
   public async initLedger(): Promise<void> {
