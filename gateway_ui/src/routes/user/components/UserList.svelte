@@ -29,10 +29,10 @@
             {user.fullName}
         </td>
         <td class="px-6 py-4">
-            {user.isAdmin}
+            {user.isAdmin? "Sim":"Não"}
         </td>
         <td class="px-6 py-4">
-          {user.isCoordinator}
+          {user.isCoordinator? "Sim":"Não"}
       </td>
       <td class="px-6 py-4">
         {#if user.campus}

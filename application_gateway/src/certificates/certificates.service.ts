@@ -28,6 +28,9 @@ export class CertificatesService {
     }
 
     async getCertificateHistory(reqUser: User, certificateNumber: string): Promise<JSON>  {
+        if (!reqUser.campus){
+            throw new HttpException(`The public organization has no permissions to get certificate hytory`, HttpStatus.UNAUTHORIZED);
+        }
         const connection: BlockchainConnection = await BlockchainConnection.getConnection(reqUser);
         try{
             return await connection.evaluateTransaction('GetCertificateHistory', certificateNumber);
@@ -48,6 +51,9 @@ export class CertificatesService {
     }
 
     async createCertificate(reqUser: User, certificateDTO: CertificateDTO): Promise<JSON>  {
+        if (!reqUser.campus){
+            throw new HttpException(`The public organization has no permissions to createCertificate`, HttpStatus.UNAUTHORIZED);
+        }
         const connection: BlockchainConnection = await BlockchainConnection.getConnection(reqUser);
         try{
             return await connection.submitTransaction(  
@@ -71,7 +77,7 @@ export class CertificatesService {
                 new Date().toISOString(),
             );
         } catch (error) {
-            throw new HttpException(`${error} Certificate with number ${certificateDTO.certificateNumber} already exist.`, HttpStatus.BAD_REQUEST);
+            throw new HttpException(`${error}`, HttpStatus.BAD_REQUEST);
         }finally{
             connection.disconnect();
         }

@@ -141,13 +141,27 @@ class BlockchainConnection {
   }
 
   public async submitTransaction(transaction:string, ...args: Array<string | Uint8Array>):Promise<JSON>  {
-    const resultBytes = await this.getContract().submitTransaction(transaction,...args);
-    const resultStr = this.utf8Decoder.decode(resultBytes);
-    if (!resultStr){
-      return;
+    try{
+      console.log(`\n--> Submiting Transaction: ${transaction}, with args: ${args}`);
+      const resultBytes = await this.getContract().submitTransaction(transaction,...args);
+      const resultStr = this.utf8Decoder.decode(resultBytes);
+      console.log('Result:', resultStr);
+      if (!resultStr){
+        return;
+      }
+      try{
+        return JSON.parse(resultStr);
+      }catch{
+        return JSON.parse(JSON.stringify({ message: resultStr }));
+      }
+    }catch(e){
+      console.log(`Error submiting transaction: ${e}`);
+      throw e;
     }
-    return JSON.parse(resultStr);
   }
+
+
+
 
   public async initLedger(): Promise<void> {
     console.log('\n--> Submit Transaction: InitLedger, function creates the initial set of Certificates on the ledger');

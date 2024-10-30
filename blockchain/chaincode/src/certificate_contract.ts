@@ -55,11 +55,21 @@ export class CertificateStorageContract extends Contract {
             throw new Error(`The certificate ${certificateNumber} already exists`);
         }
         const clientId = this.getClientId(ctx);
+        var _campusName;
+        var _campusAcronym;
+        if (clientId){
+            _campusName = CAMPI[clientId].campusName;
+            _campusAcronym = CAMPI[clientId].campusAcronym;
+        }else{
+            _campusName = '';
+            _campusAcronym = '';
+        };
+
         try{
             const certificate: Certificate = {
                 certificateNumber, certificateEmissionDate, certificateCourse, certificateStatus,
                 ownerName, ownerRG, ownerBirthDate, ownerBirthState,
-                campusName: CAMPI[clientId].campusName, campusAcronym: CAMPI[clientId].campusAcronym,
+                campusName: _campusName, campusAcronym: _campusAcronym, 
                 campusDirector, universityPresidentName, universityCertificateCoordinator, hasCompletedAllSubjects,
                 hasSentAllRequiredDocuments, wentToDegreeGranting, note, creationUser: user,
                 creationDate: dateString, updateUser: user, updateDate: dateString
@@ -71,8 +81,8 @@ export class CertificateStorageContract extends Contract {
             const response = `Error creating certificate: ${e}` 
             console.info(response);
             return response;        
-        }            
-    }
+        } 
+    } 
 
     @Transaction(false)
     @Returns('boolean')
@@ -95,6 +105,10 @@ export class CertificateStorageContract extends Contract {
 
     @Transaction(false)
     public async GetCertificateHistory(ctx: Context, certificateNumber: string): Promise<string> {
+        const clientMSPId = ctx.clientIdentity.getMSPID();
+        if (clientMSPId == 'PublicMSP'){
+            throw new Error(`Public organization has't permission to list certificates`);
+        }
         console.info(`Fetching history for certificate with number: ${certificateNumber}`);
         const iterator = await ctx.stub.getHistoryForKey(certificateNumber);
         const allResults = [];
