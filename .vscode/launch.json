@@ -4,6 +4,14 @@
       {
         "type": "node",
         "request": "launch",
+        "name": "Debug createCertificates Script",
+        "program": "${workspaceFolder}/application_gateway/test/createCertificates.mjs", // Use .mjs extension
+        "skipFiles": ["<node_internals>/**"],
+        "console": "integratedTerminal"
+      },
+      {
+        "type": "node",
+        "request": "launch",
         "name": "Debug Nest Framework",
         "runtimeExecutable": "npm",
         "runtimeArgs": [
